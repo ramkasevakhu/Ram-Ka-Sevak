@@ -16,7 +16,7 @@ import { SITE_CONFIG } from '@/lib/constants';
 
 export const CreatorTrustSection: React.FC = () => {
   return (
-    <section id="creator-trust" className="py-16 lg:py-24 bg-gradient-to-b from-amber-50/50 via-white to-amber-50/70 border-t border-b border-amber-200/60">
+    <section id="creator-trust" className="py-16 lg:py-24 bg-gradient-to-b from-amber-50/40 via-white to-amber-50/60 border-t border-b border-amber-200/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -29,25 +29,25 @@ export const CreatorTrustSection: React.FC = () => {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
             रील्स से लेकर ज़मीनी हक़ीक़त तक
             <span className="block mt-1 bg-gradient-to-r from-kesariya-600 to-amber-600 bg-clip-text text-transparent">
-              ग्राउंड सेवा की पहचान — @{SITE_CONFIG.creatorUsername}
+              प्रत्यक्ष सेवा, निष्कपट भाव
             </span>
           </h2>
 
           <p className="mt-4 text-base sm:text-lg text-slate-600">
-            Aapne Instagram aur YouTube par hamara ground kaam dekha hai. 
-            <strong> {SITE_CONFIG.domain} </strong> ko isliye banaya gaya hai taaki Prabhu Shri Ram ki sakshi me har ek rupaye ka hisaab aur direct ground seva ho sake.
+            Social media reels par aapne hamara zameeni kaam dekha hai. 
+            <strong> {SITE_CONFIG.domain} </strong> ka maksad hai ki bina kisi bicholiye ke, sidha zarooratmand tak prabhu ki seva pahuche.
           </p>
         </div>
 
         {/* 2-Column Showcase */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
-          {/* Left Column: Creator Identity Card */}
+          {/* Left Column: Creator & Mission Card */}
           <div className="lg:col-span-5 glass-3d-card rounded-3xl p-8 border-2 border-amber-200">
             
             <div className="flex items-center gap-4 mb-6">
               <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-kesariya-500 to-amber-600 flex items-center justify-center text-white font-black text-2xl shadow-lg border-2 border-white">
-                V
+                R
                 <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-[10px] text-white font-bold">
                   ✓
                 </span>
@@ -56,23 +56,23 @@ export const CreatorTrustSection: React.FC = () => {
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="text-xl font-extrabold text-slate-900">
-                    {SITE_CONFIG.creatorName} ({SITE_CONFIG.creatorUsername})
+                    राम का सेवक (Ram Ka Sevak)
                   </h3>
                 </div>
                 <p className="text-xs sm:text-sm text-kesariya-700 font-semibold">
-                  Founder & Ground Sevak • {SITE_CONFIG.domain}
+                  Ground Seva Initiative • Lead by @{SITE_CONFIG.creatorUsername}
                 </p>
               </div>
             </div>
 
             <p className="text-sm text-slate-600 leading-relaxed mb-6">
-              "Mera lakshya hai ki sadak par koi bhookha na soye, koi ghayal jeev bina dawai ke na tadpe, aur kisi garib parivaar ka sadasya paiso ki kami se hospital me la-ilaaj na rahe. Har ek bhent ko hum prabhu ka aashirwaad maan kar ground par lagate hain."
+              "Humara lakshya spasht hai — sadak par koi bhookha na tarse, koi mook jeev bina ilaj ke na dam tode, aur kisi garib parivaar ka sadasya paiso ki kami se hospital me la-ilaaj na rahe. Har ek bhent ko hum prabhu Ram ka aashirwaad maan kar ground par lagate hain."
             </p>
 
             {/* Verified Social Handles */}
             <div className="space-y-3 mb-6">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block">
-                ऑफिशियल सोशल मीडिया व संपर्क
+                ऑफिशियल सोशल मीडिया व रील्स
               </span>
 
               {/* Instagram */}
@@ -80,7 +80,7 @@ export const CreatorTrustSection: React.FC = () => {
                 href={SITE_CONFIG.socialLinks.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-pink-50 border border-slate-200 hover:border-pink-300 transition-all group"
+                className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 hover:bg-pink-50 border border-slate-200 hover:border-pink-300 transition-all group"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-pink-100 text-pink-600 flex items-center justify-center">
@@ -101,7 +101,7 @@ export const CreatorTrustSection: React.FC = () => {
                 href={SITE_CONFIG.socialLinks.youtube}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-red-50 border border-slate-200 hover:border-red-300 transition-all group"
+                className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 hover:bg-red-50 border border-slate-200 hover:border-red-300 transition-all group"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center">
@@ -122,7 +122,7 @@ export const CreatorTrustSection: React.FC = () => {
                 href={SITE_CONFIG.socialLinks.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 transition-all group"
+                className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 transition-all group"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
@@ -141,7 +141,7 @@ export const CreatorTrustSection: React.FC = () => {
               {/* Official Email */}
               <a
                 href={`mailto:${SITE_CONFIG.officialEmail}`}
-                className="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-300 transition-all group"
+                className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-300 transition-all group"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
@@ -160,22 +160,22 @@ export const CreatorTrustSection: React.FC = () => {
 
           </div>
 
-          {/* Right Column: Zero Fake Transparency Manifesto */}
+          {/* Right Column: Ground Transparency Manifesto */}
           <div className="lg:col-span-7 space-y-6">
             
-            <div className="p-6 sm:p-8 rounded-3xl bg-white border-2 border-amber-200 shadow-sm">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border-2 border-amber-200 shadow-xs">
               <div className="flex items-center gap-3 mb-4">
                 <span className="p-2 rounded-xl bg-amber-100 text-kesariya-700">
                   <Sparkles className="w-5 h-5" />
                 </span>
                 <h3 className="text-xl sm:text-2xl font-black text-slate-900">
-                  हमार संकल्प: १००% शुद्ध सेवा (No Fake Drama)
+                  हमार संकल्प: १००% शुद्ध सेवा (Zero Fake Drama)
                 </h3>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6">
                 
-                <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80">
+                <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200">
                   <div className="flex items-center gap-2 text-emerald-700 font-bold text-sm mb-1">
                     <CheckCircle className="w-4 h-4" />
                     <span>सच्चा ग्राउंड वर्क</span>
@@ -185,7 +185,7 @@ export const CreatorTrustSection: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80">
+                <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200">
                   <div className="flex items-center gap-2 text-emerald-700 font-bold text-sm mb-1">
                     <CheckCircle className="w-4 h-4" />
                     <span>कोई फ़र्ज़ी टाइमर नहीं</span>
@@ -195,17 +195,17 @@ export const CreatorTrustSection: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80">
+                <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200">
                   <div className="flex items-center gap-2 text-emerald-700 font-bold text-sm mb-1">
                     <CheckCircle className="w-4 h-4" />
                     <span>सीधा UPI भुगतान</span>
                   </div>
                   <p className="text-xs text-slate-600">
-                    0% platform commission — aapka paisa seedhe seva account me transfer hota hai.
+                    0% platform commission — aapka paisa seedhe ground relief me transfer hota hai.
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/80">
+                <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200">
                   <div className="flex items-center gap-2 text-emerald-700 font-bold text-sm mb-1">
                     <CheckCircle className="w-4 h-4" />
                     <span>डिजिटल सेवा रसीद</span>

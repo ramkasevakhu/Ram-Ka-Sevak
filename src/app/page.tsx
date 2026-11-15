@@ -3,18 +3,18 @@
 import React, { useState } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
+import { RamSevaStories } from '@/components/RamSevaStories';
 import { SevaCategories } from '@/components/SevaCategories';
 import { CreatorTrustSection } from '@/components/CreatorTrustSection';
 import { SankalpFeed } from '@/components/SankalpFeed';
 import { Footer } from '@/components/Footer';
 import { PaymentModal } from '@/components/PaymentModal';
 import { DivineBlessingModal } from '@/components/DivineBlessingModal';
-import { SEVA_CATEGORIES } from '@/lib/constants';
-import { SevaCategory } from '@/lib/types';
+import { SEVA_CATEGORIES, ExtendedSevaCategory } from '@/lib/constants';
 import { Heart, Sparkles } from 'lucide-react';
 
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState<SevaCategory | null>(SEVA_CATEGORIES[0]);
+  const [selectedCategory, setSelectedCategory] = useState<ExtendedSevaCategory | null>(SEVA_CATEGORIES[0]);
   const [selectedAmount, setSelectedAmount] = useState<number>(250);
   const [selectedQuantity, setSelectedQuantity] = useState<number>(5);
   const [selectedUnitLabel, setSelectedUnitLabel] = useState<string>('व्यक्ति का भोजन');
@@ -32,7 +32,7 @@ export default function Home() {
 
   // Triggered from SevaCategories or Quick Select
   const handleOpenDonate = (
-    cat: SevaCategory,
+    cat: ExtendedSevaCategory,
     amount: number,
     quantity: number,
     unitLabel: string
@@ -42,6 +42,11 @@ export default function Home() {
     setSelectedQuantity(quantity);
     setSelectedUnitLabel(unitLabel);
     setIsPaymentModalOpen(true);
+  };
+
+  const handleScrollToCategories = () => {
+    const el = document.getElementById('seva-categories');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
   // Triggered when user confirms payment
@@ -64,14 +69,15 @@ export default function Home() {
       <Navbar onOpenDonateModal={() => setIsPaymentModalOpen(true)} />
 
       {/* Hero Section */}
-      <HeroSection 
-        onSelectCategory={(cat) => handleOpenDonate(cat, cat.minAmount * 5, 5, cat.unitConfig.unitLabelHindi)} 
-      />
+      <HeroSection />
 
-      {/* 4 Evergreen Seva Categories with Multiplier Live Calculator */}
+      {/* Bhagwan Shri Ram Seva Stories (High Conversion & Inspiration) */}
+      <RamSevaStories onDonateNow={handleScrollToCategories} />
+
+      {/* 4 Evergreen Seva Categories with Multiplier Live Calculator & Real Photography */}
       <SevaCategories onDonateClick={handleOpenDonate} />
 
-      {/* Creator Trust & 100% Genuine Ground Verification (@vipuone) */}
+      {/* Creator Trust & 100% Genuine Ground Verification */}
       <CreatorTrustSection />
 
       {/* Community Sankalp Wall */}
@@ -105,11 +111,11 @@ export default function Home() {
             const cat = selectedCategory || SEVA_CATEGORIES[0];
             handleOpenDonate(cat, 250, 5, cat.unitConfig.unitLabelHindi);
           }}
-          className="w-full btn-divine-3d text-white font-extrabold py-3.5 px-6 rounded-2xl flex items-center justify-between shadow-2xl border-2 border-white/60"
+          className="w-full btn-divine-3d text-white font-extrabold py-3.5 px-6 rounded-2xl flex items-center justify-between shadow-2xl border-2 border-white/60 cursor-pointer"
         >
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-yellow-200" />
-            <span className="text-sm">जय श्री राम • सेवा संकल्प लें</span>
+            <span className="text-sm">सेवा ही भक्ति है • संकल्प लें</span>
           </div>
           <div className="flex items-center gap-1.5 text-xs bg-black/20 px-2.5 py-1 rounded-lg">
             <Heart className="w-3.5 h-3.5 fill-white text-white" />
