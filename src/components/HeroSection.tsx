@@ -1,190 +1,149 @@
 'use client';
 
-import React from 'react';
-import { ShieldCheck, Video, ArrowDown, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { Play } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
 
 export const HeroSection: React.FC = () => {
-  const scrollToMission = () => {
+  const [selectedChip, setSelectedChip] = useState<number>(50);
+
+  const scrollToDonate = (amount: number = 50) => {
+    setSelectedChip(amount);
     const el = document.getElementById('seva-projects');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+    // Select matching amount chip in the existing donate section
+    setTimeout(() => {
+      const buttons = document.querySelectorAll('#seva-projects button');
+      for (const btn of Array.from(buttons)) {
+        if (btn.textContent && btn.textContent.includes(`₹${amount}`)) {
+          (btn as HTMLButtonElement).click();
+          break;
+        }
+      }
+    }, 350);
   };
 
   return (
-    <section className="relative overflow-hidden pt-10 pb-14 lg:pt-16 lg:pb-20 bg-gradient-to-b from-amber-50/70 via-white to-amber-50/30">
+    <section className="relative overflow-hidden bg-[#FFF8EC] pt-8 sm:pt-12 pb-16 sm:pb-20">
       
-      {/* Background Divine Golden Rays */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[420px] bg-gradient-to-b from-amber-200/40 via-kesariya-100/20 to-transparent blur-3xl -z-10 pointer-events-none"></div>
+      {/* Halka Saffron Glow (Poora gradient nahi) */}
+      <div 
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-80 pointer-events-none -z-10"
+        style={{
+          background: 'radial-gradient(ellipse at top, rgba(232, 117, 26, 0.12) 0%, transparent 70%)',
+        }}
+      />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-xl mx-auto px-4 sm:px-6 text-center">
         
-        {/* Top Sacred Tagline Badge */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-amber-300 shadow-xs text-xs sm:text-sm font-bold text-slate-800">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="text-kesariya-700 font-extrabold uppercase tracking-wide">
-              {SITE_CONFIG.tagline}
-            </span>
-            <span className="text-slate-300">|</span>
-            <span className="text-slate-600 font-medium">{SITE_CONFIG.domain}</span>
-          </div>
-
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100/80 border border-amber-200 text-xs font-bold text-amber-900">
-            <ShieldCheck className="w-3.5 h-3.5 text-amber-700" />
-            <span>100% Direct Ground Action • Har Rupaye Ka Hisaab</span>
-          </div>
+        {/* 1. Chhota tag upar */}
+        <div className="inline-block px-3.5 py-1 rounded-full bg-amber-100/70 border border-amber-200/90 text-xs font-black text-amber-900 tracking-wider mb-4 shadow-2xs font-devanagari">
+          ॥ जय श्री राम ॥
         </div>
 
-        {/* Main Headline (25% Pure Hindi + 60% Hinglish + 15% English) */}
-        <div className="text-center max-w-4xl mx-auto mb-10">
-          <div className="text-amber-600 font-extrabold tracking-widest text-xs sm:text-sm uppercase mb-3.5 flex items-center justify-center gap-2">
-            <span>🚩</span>
-            <span>॥ मर्यादा पुरुषोत्तम प्रभु श्री राम की पावन प्रेरणा ॥</span>
-            <span>🚩</span>
-          </div>
+        {/* 2. Heading (Devanagari, ek hi rang, 36-40px, color #3B1F0A) */}
+        <h1 
+          className="text-[36px] sm:text-[40px] font-black leading-[1.15] text-[#3B1F0A] mb-3 tracking-tight font-devanagari"
+          style={{ fontFamily: "'Mukta', 'Noto Sans Devanagari', sans-serif" }}
+        >
+          कोई भूखा न सोए।
+        </h1>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.14] mb-6">
-            मानव सेवा ही सबसे बड़ा धर्म है:
-            <span className="block mt-2 bg-gradient-to-r from-kesariya-600 via-amber-600 to-kesariya-700 bg-clip-text text-transparent">
-              Bhookhe ko Annadaan, Bejubaan Pashuon ki Raksha aur Free Medical Aid
-            </span>
-          </h1>
+        {/* 3. Subtext (max 2-3 line, 16-17px, grey-brown #6B5E55, line-height 1.6) */}
+        <p className="text-[16px] sm:text-[17px] text-[#6B5E55] leading-[1.6] max-w-md mx-auto mb-6 font-normal">
+          रोज़ सड़क पर बुज़ुर्गों को गरम खाना, घायल बेज़ुबानों का इलाज और मरीज़ों को दवा। ₹50 से आप भी जुड़ सकते हैं।
+        </p>
 
-          <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed max-w-3xl mx-auto mb-8">
-            Har dharm aur granth ka ek hi paavan sandesh hai — kisi majboor aur zarooratmand ki madad karna hi Ishwar ki sacchi pooja hai. 
-            Hum Instagram reels (@{SITE_CONFIG.creatorUsername}) ke madhyam se directly zameen par utarkar roadside beghar buzurgon ko garam thali khana, injured animals ka ilaaj aur gareeb marizon ko dawaaiyan deliver karte hain.
-          </p>
-
-          {/* Action CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-            <button
-              onClick={scrollToMission}
-              className="px-8 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all cursor-pointer"
-            >
-              <span>4 Pavitra Seva Sankalp Dekhein</span>
-              <ArrowDown className="w-4 h-4 text-amber-400" />
-            </button>
-
-            <a
-              href={SITE_CONFIG.socialLinks.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-7 py-3.5 rounded-2xl bg-white hover:bg-amber-50 border-2 border-amber-300 font-extrabold text-slate-800 text-sm sm:text-base flex items-center justify-center gap-2 shadow-xs transition-all"
-            >
-              <Video className="w-4 h-4 text-pink-600" />
-              <span>Watch Ground Reels (@{SITE_CONFIG.creatorUsername})</span>
-            </a>
-          </div>
-        </div>
-
-        {/* Authentic Indian Seva Photo Grid (Replacing 'Project' with 'Seva 01', etc.) */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-6 mb-14">
-          
-          {/* Annadaan / Food Relief */}
-          <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
+        {/* 4. Rounded Photo/Video Card (16:9) */}
+        <div className="w-full max-w-md mx-auto mb-5">
+          <a
+            href={SITE_CONFIG.socialLinks.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative block aspect-video w-full rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md bg-slate-900 cursor-pointer"
+            aria-label="सेवा की रील देखें"
+          >
+            {/* Placeholder photo for real reel photo */}
             <img
               src="/images/annadaan-seva.jpg"
-              alt="Annadaan Hot Meal Seva"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              alt="@vipuone • सेवा की रील"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
-              <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">
-                Seva 01 • Food Relief
-              </span>
-              <h4 className="font-extrabold text-sm sm:text-base leading-tight mt-0.5">
-                Annadaan & Garam Thali
-              </h4>
-              <p className="text-xs text-amber-200/90 mt-1 font-semibold hidden sm:block">4 Tazi Roti, Sabzi, Dal-Chawal</p>
-            </div>
-          </div>
 
-          {/* Desi Cow / Animal Care */}
-          <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
-            <img
-              src="/images/gau-pashu-seva.jpg"
-              alt="Cow & Stray Animal Care"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
-              <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">
-                Seva 02 • Animal Care
-              </span>
-              <h4 className="font-extrabold text-sm sm:text-base leading-tight mt-0.5">
-                Gau Seva & Street Dogs
-              </h4>
-              <p className="text-xs text-amber-200/90 mt-1 font-semibold hidden sm:block">Doodh, Roti, Chara & First-Aid</p>
-            </div>
-          </div>
+            {/* Dark gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
 
-          {/* Medical Support */}
-          <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
-            <img
-              src="/images/medical-seva.jpg"
-              alt="Hospital Patient Support"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
-              <span className="text-[10px] font-black uppercase tracking-wider text-rose-300">
-                Seva 03 • Medical Aid
-              </span>
-              <h4 className="font-extrabold text-sm sm:text-base leading-tight mt-0.5">
-                Doctor & Hospital Support
-              </h4>
-              <p className="text-xs text-rose-200/90 mt-1 font-semibold hidden sm:block">Direct Chemist & Bed Relief</p>
+            {/* Center Play Icon */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/90 group-hover:bg-[#E8751A] text-[#E8751A] group-hover:text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-all">
+                <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-current ml-0.5" />
+              </div>
             </div>
-          </div>
 
-          {/* Disaster Relief Supplies */}
-          <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
-            <img
-              src="/images/disaster-seva.jpg"
-              alt="Disaster Relief Packaging"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
-              <span className="text-[10px] font-black uppercase tracking-wider text-orange-300">
-                Seva 04 • Disaster Aid
+            {/* Caption */}
+            <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs font-bold font-devanagari">
+              <span className="flex items-center gap-1.5 drop-shadow-sm">
+                <span>@{SITE_CONFIG.creatorUsername}</span>
+                <span className="opacity-80">•</span>
+                <span>सेवा की रील</span>
               </span>
-              <h4 className="font-extrabold text-sm sm:text-base leading-tight mt-0.5">
-                Aapda & Emergency Relief
-              </h4>
-              <p className="text-xs text-orange-200/90 mt-1 font-semibold hidden sm:block">Tripal, Sukha Ration & Saaf Paani</p>
+              <span className="text-[11px] text-amber-300 font-semibold underline underline-offset-2">
+                Reel देखें ↗
+              </span>
             </div>
-          </div>
-
+          </a>
         </div>
 
-        {/* 3 Real Human Trust Pillars */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl mx-auto">
-          <div className="p-5 rounded-3xl bg-white border border-amber-200 shadow-sm flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-800 shrink-0 font-black text-lg">
-              01
-            </div>
-            <div>
-              <h4 className="font-extrabold text-slate-900 text-sm">100% Grassroots Seva</h4>
-              <p className="text-xs text-slate-500 mt-0.5">Aapka diya har ek rupaya directly garam khana, davaai aur pashu chara me lagta hai.</p>
-            </div>
-          </div>
+        {/* 5. 3 Amount Chips (₹50, ₹250, ₹500) */}
+        <div className="flex items-center justify-center gap-2.5 sm:gap-3 mb-5 max-w-md mx-auto">
+          {[50, 250, 500].map((amt) => {
+            const isSelected = selectedChip === amt;
+            return (
+              <button
+                key={amt}
+                type="button"
+                onClick={() => scrollToDonate(amt)}
+                className={`flex-1 py-2.5 px-3 rounded-xl sm:rounded-2xl text-sm sm:text-base font-black transition-all cursor-pointer border-2 ${
+                  isSelected
+                    ? 'border-[#E8751A] bg-amber-100 text-[#3B1F0A] shadow-xs scale-[1.02]'
+                    : 'border-amber-200 bg-white hover:border-amber-300 hover:bg-amber-50 text-slate-800'
+                }`}
+              >
+                ₹{amt}
+              </button>
+            );
+          })}
+        </div>
 
-          <div className="p-5 rounded-3xl bg-white border border-amber-200 shadow-sm flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-800 shrink-0 font-black text-lg">
-              02
-            </div>
-            <div>
-              <h4 className="font-extrabold text-slate-900 text-sm">Direct Video Proof on Reels</h4>
-              <p className="text-xs text-slate-500 mt-0.5">Har hafte social media (@{SITE_CONFIG.creatorUsername}) par transparent ground video updates.</p>
-            </div>
-          </div>
+        {/* 6. Ek hi bada saffron button (#E8751A, min 52px height, full-width on mobile) */}
+        <div className="w-full max-w-md mx-auto mb-4">
+          <button
+            type="button"
+            onClick={() => scrollToDonate(50)}
+            className="w-full min-h-[52px] h-[54px] rounded-2xl bg-[#E8751A] hover:bg-[#d66713] active:scale-[0.98] text-white font-black text-base sm:text-lg flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all cursor-pointer font-devanagari tracking-wide"
+          >
+            <span>₹50 से एक थाली दान करें</span>
+          </button>
+        </div>
 
-          <div className="p-5 rounded-3xl bg-white border border-amber-200 shadow-sm flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-orange-100 flex items-center justify-center text-orange-800 shrink-0 font-black text-lg">
-              03
-            </div>
-            <div>
-              <h4 className="font-extrabold text-slate-900 text-sm">0% Middlemen • Direct Handover</h4>
-              <p className="text-xs text-slate-500 mt-0.5">Seedha zarooratmand ke haathon me madad, zero commission ya cut.</p>
-            </div>
-          </div>
+        {/* 7. Text link under button (Instagram link) */}
+        <div className="mb-5">
+          <a
+            href={SITE_CONFIG.socialLinks.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-700 hover:text-[#E8751A] transition-colors cursor-pointer font-devanagari"
+          >
+            <span>▶</span>
+            <span className="underline underline-offset-4">सेवा के वीडियो देखें</span>
+          </a>
+        </div>
+
+        {/* 8. Sabse neeche ek line trust */}
+        <div className="text-xs font-semibold text-[#6B5E55] flex items-center justify-center gap-1 font-devanagari">
+          <span>🎥 हर सेवा का वीडियो प्रमाण</span>
         </div>
 
       </div>
