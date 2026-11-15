@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { 
   Instagram, 
   Youtube, 
@@ -28,7 +27,7 @@ export const Footer: React.FC = () => {
           </p>
         </div>
 
-        {/* 4 Column Layout */}
+        {/* 3 Column Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 py-12 border-b border-slate-800">
           
           {/* Brand & Vision */}
@@ -39,10 +38,10 @@ export const Footer: React.FC = () => {
               </div>
               <div>
                 <span className="text-xl font-black text-white tracking-tight">
-                  राम का सेवक
+                  RAM KA SEVAK
                 </span>
                 <span className="text-xs text-amber-400 font-bold block">
-                  {SITE_CONFIG.domain}
+                  सेवा ही भक्ति है • {SITE_CONFIG.domain}
                 </span>
               </div>
             </div>
@@ -60,20 +59,20 @@ export const Footer: React.FC = () => {
           {/* Evergreen Seva Pillars */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="text-sm font-bold uppercase tracking-wider text-white">
-              ४ पावन सेवा कोष
+              4 Evergreen Seva Causes
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm text-slate-400">
-              <li>• अन्नदान एवं सड़क सहायता (Food Relief)</li>
-              <li>• मूक जीव एवं गौ सेवा (Animal Care)</li>
-              <li>• आपातकालीन चिकित्सा (Medical Emergency)</li>
-              <li>• प्राकृतिक आपदा राहत कोष (Disaster Relief)</li>
+              <li>• 01. Annadaan & Street Relief (Food)</li>
+              <li>• 02. Jeev Daya & Animal Rescue (Care)</li>
+              <li>• 03. Emergency Medical Fund (Hospital)</li>
+              <li>• 04. Disaster & Calamity Relief (Aid)</li>
             </ul>
           </div>
 
           {/* Social Media & Contact */}
           <div className="lg:col-span-4 space-y-4">
             <h4 className="text-sm font-bold uppercase tracking-wider text-white">
-              ऑफिशियल संपर्क व सोशल मीडिया
+              Official Contact & Social Links
             </h4>
 
             <div className="space-y-2.5 text-xs sm:text-sm">
