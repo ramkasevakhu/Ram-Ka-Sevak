@@ -3,21 +3,21 @@
 import React, { useState } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
-import { RamSevaStories } from '@/components/RamSevaStories';
-import { SevaCategories } from '@/components/SevaCategories';
+import { UniversalStories } from '@/components/UniversalStories';
+import { SevaProjects } from '@/components/SevaProjects';
 import { CreatorTrustSection } from '@/components/CreatorTrustSection';
 import { SankalpFeed } from '@/components/SankalpFeed';
 import { Footer } from '@/components/Footer';
 import { PaymentModal } from '@/components/PaymentModal';
 import { DivineBlessingModal } from '@/components/DivineBlessingModal';
-import { SEVA_CATEGORIES, ExtendedSevaCategory } from '@/lib/constants';
-import { Heart, Sparkles, ArrowRight } from 'lucide-react';
+import { DETAILED_SEVA_CATEGORIES, DetailedSevaCategory } from '@/lib/constants';
+import { Heart, ArrowRight } from 'lucide-react';
 
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState<ExtendedSevaCategory | null>(SEVA_CATEGORIES[0]);
+  const [selectedCategory, setSelectedCategory] = useState<DetailedSevaCategory | null>(DETAILED_SEVA_CATEGORIES[0]);
   const [selectedAmount, setSelectedAmount] = useState<number>(250);
-  const [selectedQuantity, setSelectedQuantity] = useState<number>(5);
-  const [selectedUnitLabel, setSelectedUnitLabel] = useState<string>('व्यक्ति का भोजन');
+  const [selectedQuantityText, setSelectedQuantityText] = useState<string>('5 व्यक्तियों का भोजन');
+  const [selectedExactBreakdown, setSelectedExactBreakdown] = useState<string>('5 थाली संपूर्ण भोजन पैकेट (सड़क किनारे वितरण)');
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isBlessingModalOpen, setIsBlessingModalOpen] = useState(false);
@@ -30,26 +30,24 @@ export default function Home() {
     message?: string;
   } | null>(null);
 
-  // Triggered from SevaCategories or Quick Select
   const handleOpenDonate = (
-    cat: ExtendedSevaCategory,
+    cat: DetailedSevaCategory,
     amount: number,
-    quantity: number,
-    unitLabel: string
+    quantityText: string,
+    exactWhatIsGiven: string
   ) => {
     setSelectedCategory(cat);
     setSelectedAmount(amount);
-    setSelectedQuantity(quantity);
-    setSelectedUnitLabel(unitLabel);
+    setSelectedQuantityText(quantityText);
+    setSelectedExactBreakdown(exactWhatIsGiven);
     setIsPaymentModalOpen(true);
   };
 
-  const handleScrollToCategories = () => {
-    const el = document.getElementById('seva-categories');
+  const handleScrollToProjects = () => {
+    const el = document.getElementById('seva-projects');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Triggered when user confirms payment
   const handlePaymentSuccess = (details: {
     donorName: string;
     categoryName: string;
@@ -65,51 +63,56 @@ export default function Home() {
 
   return (
     <main className="min-h-screen flex flex-col justify-between">
-      {/* Navigation */}
+      {/* 1. Navigation */}
       <Navbar onOpenDonateModal={() => setIsPaymentModalOpen(true)} />
 
-      {/* Hero Section */}
+      {/* 2. Hero Section (Humble, Trust-Building, No Aggressive CTAs) */}
       <HeroSection />
 
-      {/* Bhagwan Shri Ram Seva Stories (High Conversion & Inspiration) */}
-      <RamSevaStories onDonateNow={handleScrollToCategories} />
+      {/* 3. 12 Universal Compassion Stories Carousel (Horizontal Slider across all faiths) */}
+      <UniversalStories onExploreSeva={handleScrollToProjects} />
 
-      {/* 4 Evergreen Seva Categories with Multiplier Live Calculator & Real Photography */}
-      <SevaCategories onDonateClick={handleOpenDonate} />
+      {/* 4. 4 Sacred Seva Projects (Side-by-side horizontal layout with exact food & medicine breakdown) */}
+      <SevaProjects onDonateClick={handleOpenDonate} />
 
-      {/* Creator Trust & 100% Genuine Ground Verification */}
+      {/* 5. Creator Trust & 100% Genuine Ground Verification (@vipuone) */}
       <CreatorTrustSection />
 
-      {/* Community Sankalp Wall (Horizontal Auto-Scrolling Carousel) */}
+      {/* 6. Community Sankalp Wall (Horizontal Auto-Scrolling Carousel) */}
       <SankalpFeed />
 
-      {/* Pavitra Footer */}
+      {/* 7. Footer */}
       <Footer />
 
-      {/* Payment & UPI Modal */}
+      {/* 8. Payment & UPI Modal */}
       <PaymentModal
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
         category={selectedCategory}
         amount={selectedAmount}
-        quantity={selectedQuantity}
-        unitLabel={selectedUnitLabel}
+        quantityText={selectedQuantityText}
+        exactWhatIsGiven={selectedExactBreakdown}
         onPaymentSuccess={handlePaymentSuccess}
       />
 
-      {/* Divine Blessing & Seva Receipt Modal */}
+      {/* 9. Divine Blessing & Seva Receipt Modal */}
       <DivineBlessingModal
         isOpen={isBlessingModalOpen}
         onClose={() => setIsBlessingModalOpen(false)}
         details={blessingDetails}
       />
 
-      {/* Ultra-Premium Floating Mobile Donate Bar */}
+      {/* 10. Sleek Floating Mobile Donate Bar */}
       <div className="fixed bottom-4 left-4 right-4 z-40 lg:hidden">
         <button
           onClick={() => {
-            const cat = selectedCategory || SEVA_CATEGORIES[0];
-            handleOpenDonate(cat, 250, 5, cat.unitConfig.unitLabelHindi);
+            const cat = selectedCategory || DETAILED_SEVA_CATEGORIES[0];
+            handleOpenDonate(
+              cat, 
+              cat.options[1]?.amount || 250, 
+              cat.options[1]?.label || '5 व्यक्तियों का भोजन',
+              cat.options[1]?.whatIsGiven || 'ताज़ा भरपेट भोजन'
+            );
           }}
           className="w-full bg-gradient-to-r from-kesariya-600 via-amber-600 to-kesariya-700 text-white font-black py-3.5 px-5 rounded-2xl flex items-center justify-between shadow-[0_10px_30px_rgba(234,88,12,0.45)] border border-amber-300/40 active:scale-98 transition-transform cursor-pointer"
         >
@@ -122,14 +125,14 @@ export default function Home() {
                 सेवा ही भक्ति है
               </span>
               <span className="text-sm font-extrabold text-white leading-tight">
-                पवित्र दान / सेवा संकल्प
+                पवित्र सेवा संकल्प
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-1.5 text-xs font-bold bg-white text-kesariya-700 px-3.5 py-1.5 rounded-xl shadow-sm">
             <Heart className="w-3.5 h-3.5 fill-kesariya-600" />
-            <span>दान करें</span>
+            <span>सहयोग करें</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </div>
         </button>

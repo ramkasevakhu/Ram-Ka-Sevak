@@ -33,9 +33,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* Logo Brand (Clean, Luxury, No .ORG badge) */}
+          {/* Logo Brand */}
           <Link href="/" className="flex items-center gap-3.5 group">
-            {/* 3D Sacred Emblem */}
             <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 via-kesariya-500 to-kesariya-600 flex items-center justify-center shadow-lg shadow-kesariya-500/25 border-2 border-white transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-kesariya-500/40">
               <span className="text-2xl select-none" role="img" aria-label="Ram Bow">🏹</span>
               <div className="absolute -inset-1 rounded-2xl bg-amber-400/30 blur-md -z-10 group-hover:blur-lg transition-all"></div>
@@ -51,21 +50,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
             </div>
           </Link>
 
-          {/* Desktop Navigation Links with English numbers */}
+          {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-8 text-sm font-bold text-slate-700">
             <button
-              onClick={() => scrollToSection('ram-seva-stories')}
+              onClick={() => scrollToSection('universal-stories')}
               className="hover:text-kesariya-600 transition-colors cursor-pointer flex items-center gap-1.5"
             >
               <BookOpen className="w-4 h-4 text-amber-600" />
-              <span>राम भक्ति कथाएं</span>
+              <span>12 धर्म कथाएं</span>
             </button>
             <button
-              onClick={() => scrollToSection('seva-categories')}
+              onClick={() => scrollToSection('seva-projects')}
               className="hover:text-kesariya-600 transition-colors cursor-pointer flex items-center gap-1.5"
             >
               <Layers className="w-4 h-4 text-kesariya-600" />
-              <span>4 Seva Causes</span>
+              <span>सेवा प्रकल्प (Projects)</span>
             </button>
             <button
               onClick={() => scrollToSection('creator-trust')}
@@ -92,22 +91,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
           {/* Right Action Button */}
           <div className="hidden sm:flex items-center gap-3">
             <button
-              onClick={onOpenDonateModal || (() => scrollToSection('seva-categories'))}
+              onClick={onOpenDonateModal || (() => scrollToSection('seva-projects'))}
               className="btn-divine-3d text-white font-black text-sm px-7 py-3 rounded-2xl flex items-center gap-2 cursor-pointer shadow-lg hover:shadow-xl transition-all"
             >
               <Heart className="w-4 h-4 fill-white text-white animate-pulse" />
-              <span>अभी सेवा करें</span>
+              <span>सहयोग करें</span>
             </button>
           </div>
 
           {/* Mobile Right Controls */}
           <div className="flex lg:hidden items-center gap-2.5">
             <button
-              onClick={onOpenDonateModal || (() => scrollToSection('seva-categories'))}
+              onClick={onOpenDonateModal || (() => scrollToSection('seva-projects'))}
               className="bg-gradient-to-r from-kesariya-600 to-amber-600 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-md shadow-kesariya-600/25 active:scale-95 transition-transform"
             >
               <Heart className="w-3.5 h-3.5 fill-white" />
-              <span>दान करें</span>
+              <span>सहयोग</span>
             </button>
             
             <button
@@ -130,28 +129,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
           </div>
 
           <button
-            onClick={() => scrollToSection('ram-seva-stories')}
+            onClick={() => scrollToSection('universal-stories')}
             className="flex items-center gap-3 w-full text-left py-3 px-3.5 rounded-2xl text-sm font-bold text-slate-800 hover:bg-amber-50/80 transition-colors border border-transparent hover:border-amber-200"
           >
             <div className="w-9 h-9 rounded-xl bg-amber-100/80 text-amber-700 flex items-center justify-center shrink-0">
               <BookOpen className="w-4 h-4" />
             </div>
             <div>
-              <span className="block text-slate-900 leading-tight">राम भक्ति व सेवा कथाएं</span>
-              <span className="text-[11px] text-slate-400 font-normal">शबरी, जटायु व गिलहरी की प्रेरणा</span>
+              <span className="block text-slate-900 leading-tight">12 धर्म कथाएं व सीख</span>
+              <span className="text-[11px] text-slate-400 font-normal">रामायण, महाभारत, नानक, इस्लाम, बुद्ध व ईसा मसीह</span>
             </div>
           </button>
 
           <button
-            onClick={() => scrollToSection('seva-categories')}
+            onClick={() => scrollToSection('seva-projects')}
             className="flex items-center gap-3 w-full text-left py-3 px-3.5 rounded-2xl text-sm font-bold text-slate-800 hover:bg-amber-50/80 transition-colors border border-transparent hover:border-amber-200"
           >
             <div className="w-9 h-9 rounded-xl bg-kesariya-100 text-kesariya-700 flex items-center justify-center shrink-0">
               <Layers className="w-4 h-4" />
             </div>
             <div>
-              <span className="block text-slate-900 leading-tight">4 Seva Causes (सदाबहार कोष)</span>
-              <span className="text-[11px] text-slate-400 font-normal">अन्नदान, मूक जीव, चिकित्सा व आपदा</span>
+              <span className="block text-slate-900 leading-tight">हमारे 4 मुख्य सेवा प्रकल्प</span>
+              <span className="text-[11px] text-slate-400 font-normal">अन्नदान, मूक जीव, चिकित्सा व आपदा राहत</span>
             </div>
           </button>
 
@@ -199,12 +198,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
               onClick={() => {
                 setMobileMenuOpen(false);
                 if (onOpenDonateModal) onOpenDonateModal();
-                else scrollToSection('seva-categories');
+                else scrollToSection('seva-projects');
               }}
               className="w-full btn-divine-3d text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2.5 shadow-xl text-base"
             >
               <Heart className="w-5 h-5 fill-white" />
-              <span>पवित्र सेवा संकल्प लें (Donate Now)</span>
+              <span>पवित्र सेवा संकल्प लें (Proceed)</span>
             </button>
           </div>
         </div>

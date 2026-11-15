@@ -56,16 +56,16 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Evergreen Seva Pillars */}
+          {/* Seva Projects List (Dignified Title, NOT "Seva Causes") */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="text-sm font-bold uppercase tracking-wider text-white">
-              4 Evergreen Seva Causes
+              हमारे ४ मुख्य सेवा प्रकल्प
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm text-slate-400">
-              <li>• 01. Annadaan & Street Relief (Food)</li>
-              <li>• 02. Jeev Daya & Animal Rescue (Care)</li>
-              <li>• 03. Emergency Medical Fund (Hospital)</li>
-              <li>• 04. Disaster & Calamity Relief (Aid)</li>
+              <li>• 01. अन्नदान एवं सड़क सहायता (ताज़ा भोजन)</li>
+              <li>• 02. मूक जीव एवं गौ सेवा (गौ-ग्रास व डॉग्स)</li>
+              <li>• 03. आपातकालीन चिकित्सा (अस्पताल व दवा)</li>
+              <li>• 04. प्राकृतिक आपदा राहत (बाढ़ व विपदा)</li>
             </ul>
           </div>
 

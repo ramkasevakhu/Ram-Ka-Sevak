@@ -7,21 +7,20 @@ import {
   Check, 
   Heart, 
   ShieldCheck, 
-  Sparkles, 
   Smartphone, 
   QrCode,
-  ArrowRight
+  ArrowRight,
+  CheckCircle2
 } from 'lucide-react';
-import { SITE_CONFIG } from '@/lib/constants';
-import { SevaCategory } from '@/lib/types';
+import { SITE_CONFIG, DetailedSevaCategory } from '@/lib/constants';
 
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  category: SevaCategory | null;
+  category: DetailedSevaCategory | null;
   amount: number;
-  quantity: number;
-  unitLabel: string;
+  quantityText: string;
+  exactWhatIsGiven: string;
   onPaymentSuccess: (details: {
     donorName: string;
     categoryName: string;
@@ -37,8 +36,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   onClose,
   category,
   amount,
-  quantity,
-  unitLabel,
+  quantityText,
+  exactWhatIsGiven,
   onPaymentSuccess,
 }) => {
   const [donorName, setDonorName] = useState('');
@@ -72,10 +71,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     setIsSubmitting(true);
 
     const finalDonorName = isAnonymous ? 'गुप्त दानी (Anonymous Sevak)' : (donorName.trim() || 'प्रभु भक्त');
-    const unitsText = `${quantity} ${unitLabel}`;
 
     try {
-      // Send to server API to record in Supabase
       await fetch('/api/donate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -84,8 +81,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           donorPhone: donorPhone.trim(),
           categoryId: category.id,
           categoryName: category.titleHindi,
-          quantity,
-          unitLabel,
+          quantity: 1,
+          unitLabel: quantityText,
           amount,
           paymentMethod: 'UPI',
           transactionRef: transactionRef.trim() || 'UPI-DIRECT',
@@ -101,7 +98,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
       onPaymentSuccess({
         donorName: finalDonorName,
         categoryName: category.titleHindi,
-        unitsText,
+        unitsText: quantityText,
         amount,
         transactionRef: transactionRef.trim() || `RKS-${Math.floor(100000 + Math.random() * 900000)}`,
         message: sankalpMessage.trim(),
@@ -129,7 +126,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
+            className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors cursor-pointer"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -137,24 +134,28 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
         </div>
 
         {/* Selected Category & Amount Summary Banner */}
-        <div className="bg-amber-50/90 px-6 py-4 border-b border-amber-200 flex items-center justify-between">
-          <div>
-            <span className="text-xs font-bold text-amber-800 uppercase tracking-wider block">
-              चुना गया सेवा कोष:
-            </span>
-            <div className="text-sm sm:text-base font-extrabold text-slate-900">
-              {category.titleHindi}
+        <div className="bg-amber-50/90 px-6 py-4 border-b border-amber-200">
+          <div className="flex items-center justify-between mb-1.5">
+            <div>
+              <span className="text-[10px] font-black text-amber-800 uppercase tracking-wider block">
+                चुना गया प्रकल्प:
+              </span>
+              <div className="text-sm sm:text-base font-black text-slate-900">
+                {category.titleHindi} ({quantityText})
+              </div>
             </div>
-            <div className="text-xs text-slate-600 font-medium">
-              {quantity} {unitLabel} का पावन सहयोग
+
+            <div className="text-right">
+              <span className="text-[10px] text-slate-500 block">कुल राशि:</span>
+              <span className="text-2xl font-black text-kesariya-700">
+                ₹{amount.toLocaleString('en-IN')}
+              </span>
             </div>
           </div>
 
-          <div className="text-right">
-            <span className="text-xs text-slate-500 block">कुल राशि:</span>
-            <span className="text-2xl font-black text-kesariya-700">
-              ₹{amount.toLocaleString('en-IN')}
-            </span>
+          <div className="flex items-center gap-2 text-xs font-semibold text-emerald-800 bg-white/80 p-2 rounded-xl border border-emerald-200">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span className="truncate">{exactWhatIsGiven}</span>
           </div>
         </div>
 
@@ -216,7 +217,6 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           {/* 2. QR Code & Direct UPI ID */}
           <div className="bg-amber-50/60 p-4 rounded-2xl border border-amber-200 flex flex-col sm:flex-row items-center gap-4">
             
-            {/* Dynamic Sharp QR Code */}
             <div className="w-36 h-36 bg-white p-2 rounded-xl border-2 border-amber-300 shadow-sm shrink-0 flex items-center justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
