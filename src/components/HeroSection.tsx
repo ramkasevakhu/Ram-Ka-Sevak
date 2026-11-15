@@ -1,17 +1,12 @@
 'use client';
 
 import React from 'react';
-import { ShieldCheck, Heart, Sparkles, Video, ArrowDown } from 'lucide-react';
+import { ShieldCheck, Video, ArrowDown } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
 
 export const HeroSection: React.FC = () => {
   const scrollToMission = () => {
     const el = document.getElementById('seva-projects');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const scrollToStories = () => {
-    const el = document.getElementById('universal-stories');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -36,7 +31,7 @@ export const HeroSection: React.FC = () => {
 
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100/80 border border-amber-200 text-xs font-bold text-amber-900">
             <ShieldCheck className="w-3.5 h-3.5 text-amber-700" />
-            <span>सच्ची ज़मीनी सेवा • 100% Transparency</span>
+            <span>सच्ची ज़मीनी सेवा • 100% Direct Ground Action</span>
           </div>
         </div>
 
@@ -60,7 +55,7 @@ export const HeroSection: React.FC = () => {
             हम सोशल मीडिया रील्स के ज़रिए ज़मीन पर उतरकर सीधे ज़रूरतमंदों तक भोजन, दवा और सहारा पहुँचाते हैं।
           </p>
 
-          {/* Humble, Inspiring CTAs (NOT begging for money) */}
+          {/* Humble Action CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
             <button
               onClick={scrollToMission}
@@ -82,13 +77,14 @@ export const HeroSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Visual Realistic Photo Grid (4 Pillars) */}
+        {/* Authentic Indian Seva Photo Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-6 mb-14">
           
+          {/* Indian Food / Annadaan */}
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
-              src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80"
-              alt="Annadaan Food Distribution"
+              src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80"
+              alt="Indian Annadaan Seva"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
@@ -102,10 +98,11 @@ export const HeroSection: React.FC = () => {
             </div>
           </div>
 
+          {/* Indian Desi Cow / Gau-Mata */}
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
-              src="https://images.unsplash.com/photo-1546445317-29f4545e9d53?auto=format&fit=crop&w=600&q=80"
-              alt="Cow & Dog Care"
+              src="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&w=600&q=80"
+              alt="Indian Sacred Cow Seva"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
@@ -119,10 +116,11 @@ export const HeroSection: React.FC = () => {
             </div>
           </div>
 
+          {/* Indian Doctor / Medical Support */}
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
-              src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=600&q=80"
-              alt="Medical Support"
+              src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80"
+              alt="Indian Hospital Patient Support"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
@@ -136,10 +134,11 @@ export const HeroSection: React.FC = () => {
             </div>
           </div>
 
+          {/* Indian Disaster / Relief Supplies */}
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
-              src="https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=600&q=80"
-              alt="Disaster Relief"
+              src="https://images.unsplash.com/photo-1605289982774-9a6fef564df8?auto=format&fit=crop&w=600&q=80"
+              alt="Disaster Relief Packaging"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
@@ -155,7 +154,7 @@ export const HeroSection: React.FC = () => {
 
         </div>
 
-        {/* 3 Real Human Trust Pillars (Clean, Dignified, No Jargon) */}
+        {/* 3 Real Human Trust Pillars */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl mx-auto">
           <div className="p-5 rounded-3xl bg-white border border-amber-200 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-800 shrink-0 font-black text-lg">
