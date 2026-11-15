@@ -16,8 +16,8 @@ import { Heart, ArrowRight } from 'lucide-react';
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<DetailedSevaCategory | null>(DETAILED_SEVA_CATEGORIES[0]);
   const [selectedAmount, setSelectedAmount] = useState<number>(250);
-  const [selectedQuantityText, setSelectedQuantityText] = useState<string>('5 व्यक्तियों का भोजन');
-  const [selectedExactBreakdown, setSelectedExactBreakdown] = useState<string>('5 थाली संपूर्ण भोजन पैकेट (सड़क किनारे वितरण)');
+  const [selectedQuantityText, setSelectedQuantityText] = useState<string>('5 People Meals');
+  const [selectedExactBreakdown, setSelectedExactBreakdown] = useState<string>('5 Complete Hot Meal Packs distributed to roadside homeless');
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isBlessingModalOpen, setIsBlessingModalOpen] = useState(false);
@@ -110,8 +110,8 @@ export default function Home() {
             handleOpenDonate(
               cat, 
               cat.options[1]?.amount || 250, 
-              cat.options[1]?.label || '5 व्यक्तियों का भोजन',
-              cat.options[1]?.whatIsGiven || 'ताज़ा भरपेट भोजन'
+              cat.options[1]?.label || '5 People Meals',
+              cat.options[1]?.whatIsGiven || '5 Complete Hot Meal Packs'
             );
           }}
           className="w-full bg-gradient-to-r from-kesariya-600 via-amber-600 to-kesariya-700 text-white font-black py-3.5 px-5 rounded-2xl flex items-center justify-between shadow-[0_10px_30px_rgba(234,88,12,0.45)] border border-amber-300/40 active:scale-98 transition-transform cursor-pointer"
@@ -125,14 +125,14 @@ export default function Home() {
                 सेवा ही भक्ति है
               </span>
               <span className="text-sm font-extrabold text-white leading-tight">
-                पवित्र सेवा संकल्प
+                Support Seva (सहयोग करें)
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-1.5 text-xs font-bold bg-white text-kesariya-700 px-3.5 py-1.5 rounded-xl shadow-sm">
             <Heart className="w-3.5 h-3.5 fill-kesariya-600" />
-            <span>सहयोग करें</span>
+            <span>Donate Now</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </div>
         </button>

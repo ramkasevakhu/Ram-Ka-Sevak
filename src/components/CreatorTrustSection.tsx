@@ -9,8 +9,7 @@ import {
   ExternalLink, 
   Sparkles, 
   Video,
-  ShieldCheck,
-  Heart
+  ShieldCheck
 } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
 
@@ -23,23 +22,23 @@ export const CreatorTrustSection: React.FC = () => {
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-300 text-xs sm:text-sm font-bold text-emerald-800 mb-3 shadow-xs">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>100% प्रामाणिक व पारदर्शी सेवा</span>
+            <span>100% Genuine Grassroots Seva • Direct Accountability</span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
-            रील्स से लेकर ज़मीनी हक़ीक़त तक
+            From Social Media Reels to Ground Reality
             <span className="block mt-1 bg-gradient-to-r from-kesariya-600 to-amber-600 bg-clip-text text-transparent">
-              प्रत्यक्ष सेवा, निष्कपट भाव
+              Direct Action, Pure Intent
             </span>
           </h2>
 
           <p className="mt-3 text-sm sm:text-base text-slate-600">
-            Social media reels par aapne hamara zameeni kaam dekha hai. 
-            <strong> {SITE_CONFIG.domain} </strong> ka maksad hai ki bina kisi bicholiye ke, sidha zarooratmand tak prabhu ki seva pahuche.
+            You have followed our ground distribution work on Instagram reels. 
+            <strong> {SITE_CONFIG.domain} </strong> is our official seva platform ensuring your support directly reaches the needy without any administrative middlemen.
           </p>
         </div>
 
-        {/* Unified High-Trust Creator & Reels Showcase (Cleaned, No Fake Drama Box) */}
+        {/* Unified High-Trust Creator & Reels Showcase */}
         <div className="max-w-4xl mx-auto glass-3d-card rounded-3xl p-6 sm:p-10 border-2 border-amber-300/80 shadow-xl">
           
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8 text-center sm:text-left">
@@ -74,7 +73,7 @@ export const CreatorTrustSection: React.FC = () => {
               </p>
 
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed italic bg-amber-50/60 p-4 rounded-2xl border border-amber-200/80">
-                "Humara lakshya spasht hai — sadak par koi bhookha na tarse, koi mook jeev bina ilaj ke na dam tode, aur kisi garib parivaar ka sadasya paiso ki kami se hospital me la-ilaaj na rahe. Har ek bhent ko hum prabhu Ram ka aashirwaad maan kar ground par lagate hain."
+                "Our mission is simple and unwavering: no one should sleep hungry on the roadside, no injured animal should suffer without medical care, and no poor family member should be deprived of hospital treatment due to lack of funds. Every contribution is treated as a sacred blessing and delivered directly on the ground."
               </p>
             </div>
           </div>
@@ -83,7 +82,7 @@ export const CreatorTrustSection: React.FC = () => {
           <div className="pt-6 border-t border-amber-200/80">
             <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
               <span className="text-xs font-black uppercase tracking-wider text-slate-400">
-                ऑफिशियल सोशल मीडिया व रील्स प्रमाण (Verified Handles)
+                Verified Social Channels & Ground Evidence
               </span>
               <span className="text-xs font-bold text-emerald-700 flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5" />
@@ -165,9 +164,9 @@ export const CreatorTrustSection: React.FC = () => {
                     <Mail className="w-4 h-4" />
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400 block font-semibold leading-none">Direct Email</span>
+                    <span className="text-[10px] text-slate-400 block font-semibold leading-none">Official Email</span>
                     <span className="text-xs font-black text-slate-800 group-hover:text-amber-700 truncate">
-                      Inquiries
+                      {SITE_CONFIG.officialEmail}
                     </span>
                   </div>
                 </div>
@@ -183,8 +182,8 @@ export const CreatorTrustSection: React.FC = () => {
                 <Video className="w-5 h-5" />
               </div>
               <div>
-                <h5 className="font-extrabold text-slate-900 text-sm">देखें ग्राउंड सेवा की असली रील्स</h5>
-                <p className="text-xs text-slate-600">Har hafte naye logo aur be-sahara jeevo ki sahayata video updates.</p>
+                <h5 className="font-extrabold text-slate-900 text-sm">Watch Weekly Ground Seva Reels</h5>
+                <p className="text-xs text-slate-600">See real-time video documentation of food distribution, cow care, and hospital aid.</p>
               </div>
             </div>
 
@@ -194,7 +193,7 @@ export const CreatorTrustSection: React.FC = () => {
               rel="noopener noreferrer"
               className="px-5 py-2.5 rounded-xl bg-kesariya-600 hover:bg-kesariya-700 text-white font-extrabold text-xs flex items-center gap-1.5 shadow-md hover:scale-102 transition-transform"
             >
-              <span>रील्स देखें (@{SITE_CONFIG.creatorUsername})</span>
+              <span>Watch Reels (@{SITE_CONFIG.creatorUsername})</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </a>
           </div>

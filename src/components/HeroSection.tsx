@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ShieldCheck, Video, ArrowDown } from 'lucide-react';
+import { ShieldCheck, Video, ArrowDown, Sparkles } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
 
 export const HeroSection: React.FC = () => {
@@ -31,11 +31,11 @@ export const HeroSection: React.FC = () => {
 
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100/80 border border-amber-200 text-xs font-bold text-amber-900">
             <ShieldCheck className="w-3.5 h-3.5 text-amber-700" />
-            <span>सच्ची ज़मीनी सेवा • 100% Direct Ground Action</span>
+            <span>100% Direct Ground Action • Zero Middlemen</span>
           </div>
         </div>
 
-        {/* Main Headline */}
+        {/* Main Headline (Clean English with Divine Touch) */}
         <div className="text-center max-w-4xl mx-auto mb-10">
           <div className="text-amber-600 font-extrabold tracking-widest text-xs sm:text-sm uppercase mb-3.5 flex items-center justify-center gap-2">
             <span>🚩</span>
@@ -44,15 +44,15 @@ export const HeroSection: React.FC = () => {
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.14] mb-6">
-            सेवा ही भक्ति है:
+            Service to Humanity is the Highest Devotion:
             <span className="block mt-2 bg-gradient-to-r from-kesariya-600 via-amber-600 to-kesariya-700 bg-clip-text text-transparent">
-              भूखों को अन्नदान, मूक जीवों की रक्षा व असहायों का सहारा
+              Feeding the Hungry, Healing the Sick & Rescuing Animals
             </span>
           </h1>
 
           <p className="text-base sm:text-xl text-slate-600 font-normal leading-relaxed max-w-3xl mx-auto mb-8">
-            संसार के हर धर्म और महापुरुषों ने सिखाया है कि दुखी, बेसहारा और मूक जीवों की सेवा से बढ़कर कोई पूजा नहीं है।
-            हम सोशल मीडिया रील्स के ज़रिए ज़मीन पर उतरकर सीधे ज़रूरतमंदों तक भोजन, दवा और सहारा पहुँचाते हैं।
+            Every great tradition and spiritual path teaches that lifting the helpless is the truest worship of God.
+            Through verified social media reels, we take action directly on the ground—delivering warm meals, emergency medical aid, and animal rescue.
           </p>
 
           {/* Humble Action CTAs */}
@@ -61,7 +61,7 @@ export const HeroSection: React.FC = () => {
               onClick={scrollToMission}
               className="px-8 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all cursor-pointer"
             >
-              <span>हमारा सेवा प्रकल्प देखें</span>
+              <span>Explore 4 Seva Projects</span>
               <ArrowDown className="w-4 h-4 text-amber-400" />
             </button>
 
@@ -72,7 +72,7 @@ export const HeroSection: React.FC = () => {
               className="px-7 py-3.5 rounded-2xl bg-white hover:bg-amber-50 border-2 border-amber-300 font-extrabold text-slate-800 text-sm sm:text-base flex items-center justify-center gap-2 shadow-xs transition-all"
             >
               <Video className="w-4 h-4 text-pink-600" />
-              <span>ग्राउंड रील्स देखें (@{SITE_CONFIG.creatorUsername})</span>
+              <span>Watch Ground Reels (@{SITE_CONFIG.creatorUsername})</span>
             </a>
           </div>
         </div>
@@ -84,17 +84,17 @@ export const HeroSection: React.FC = () => {
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
               src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80"
-              alt="Indian Annadaan Seva"
+              alt="Annadaan Hot Meal Seva"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
               <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">
-                अन्नदान सेवा
+                Project 01 • Food Relief
               </span>
               <h4 className="font-extrabold text-sm sm:text-base leading-tight mt-0.5">
-                ताज़ा भरपेट भोजन
+                Annadaan & Hot Meals
               </h4>
-              <p className="text-xs text-amber-200/90 mt-1 font-semibold hidden sm:block">4 रोटी, सब्ज़ी, दाल-चावल</p>
+              <p className="text-xs text-amber-200/90 mt-1 font-semibold hidden sm:block">4 Fresh Rotis, Sabzi, Dal-Rice</p>
             </div>
           </div>
 
@@ -102,17 +102,17 @@ export const HeroSection: React.FC = () => {
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
               src="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&w=600&q=80"
-              alt="Indian Sacred Cow Seva"
+              alt="Cow & Stray Animal Care"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
               <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">
-                मूक जीव व गौ सेवा
+                Project 02 • Animal Care
               </span>
               <h4 className="font-extrabold text-sm sm:text-base leading-tight mt-0.5">
-                गौ-ग्रास व डॉग फीडिंग
+                Gau Seva & Stray Dogs
               </h4>
-              <p className="text-xs text-amber-200/90 mt-1 font-semibold hidden sm:block">दूध, रोटी, चारा व दवा</p>
+              <p className="text-xs text-amber-200/90 mt-1 font-semibold hidden sm:block">Milk, Rotis, Fodder & First-Aid</p>
             </div>
           </div>
 
@@ -120,17 +120,17 @@ export const HeroSection: React.FC = () => {
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
               src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80"
-              alt="Indian Hospital Patient Support"
+              alt="Hospital Patient Support"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
               <span className="text-[10px] font-black uppercase tracking-wider text-rose-300">
-                आपातकालीन चिकित्सा
+                Project 03 • Medical Aid
               </span>
               <h4 className="font-extrabold text-sm sm:text-base leading-tight mt-0.5">
-                दवा व डॉक्टर सहायता
+                Doctor & Hospital Support
               </h4>
-              <p className="text-xs text-rose-200/90 mt-1 font-semibold hidden sm:block">सीधे अस्पताल पर्ची भुगतान</p>
+              <p className="text-xs text-rose-200/90 mt-1 font-semibold hidden sm:block">Direct Chemist & Bed Relief</p>
             </div>
           </div>
 
@@ -143,12 +143,12 @@ export const HeroSection: React.FC = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
               <span className="text-[10px] font-black uppercase tracking-wider text-orange-300">
-                आपदा राहत कोष
+                Project 04 • Disaster Aid
               </span>
               <h4 className="font-extrabold text-sm sm:text-base leading-tight mt-0.5">
-                बाढ़ व विपदा राहत
+                Flood & Emergency Relief
               </h4>
-              <p className="text-xs text-orange-200/90 mt-1 font-semibold hidden sm:block">तिरपाल, राशन व स्वच्छ जल</p>
+              <p className="text-xs text-orange-200/90 mt-1 font-semibold hidden sm:block">Tarpaulins, Dry Food & Clean Water</p>
             </div>
           </div>
 
@@ -161,8 +161,8 @@ export const HeroSection: React.FC = () => {
               01
             </div>
             <div>
-              <h4 className="font-extrabold text-slate-900 text-sm">100% निस्वार्थ जनसेवा</h4>
-              <p className="text-xs text-slate-500 mt-0.5">हर सहयोग सीधे भोजन, दवा व बेज़ुबान जीवों पर खर्च</p>
+              <h4 className="font-extrabold text-slate-900 text-sm">100% Grassroots Seva</h4>
+              <p className="text-xs text-slate-500 mt-0.5">Every rupee directly funds hot meals, medicines, and animal feed.</p>
             </div>
           </div>
 
@@ -171,8 +171,8 @@ export const HeroSection: React.FC = () => {
               02
             </div>
             <div>
-              <h4 className="font-extrabold text-slate-900 text-sm">प्रत्यक्ष ज़मीनी वीडियो प्रमाण</h4>
-              <p className="text-xs text-slate-500 mt-0.5">रील्स पर हर ग्राउंड सेवा का सच्चा व पारदर्शी अपडेट</p>
+              <h4 className="font-extrabold text-slate-900 text-sm">Direct Video Proof on Reels</h4>
+              <p className="text-xs text-slate-500 mt-0.5">Transparent, verifiable weekly ground updates on social media.</p>
             </div>
           </div>
 
@@ -181,8 +181,8 @@ export const HeroSection: React.FC = () => {
               03
             </div>
             <div>
-              <h4 className="font-extrabold text-slate-900 text-sm">0% बिचोलिया • सीधा उपयोग</h4>
-              <p className="text-xs text-slate-500 mt-0.5">सीधे ग्राउंड पर हाथ से ज़रूरतमंदों तक सामान वितरण</p>
+              <h4 className="font-extrabold text-slate-900 text-sm">0% Middlemen • Direct Handover</h4>
+              <p className="text-xs text-slate-500 mt-0.5">Direct hand-to-hand distribution with zero administrative cuts.</p>
             </div>
           </div>
         </div>

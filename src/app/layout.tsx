@@ -3,8 +3,8 @@ import './globals.css';
 import { SITE_CONFIG } from '@/lib/constants';
 
 export const metadata: Metadata = {
-  title: 'राम का सेवक (Ram Ka Sevak) | Ground Seva by @vipuone',
-  description: 'प्रभु श्री राम की पावन प्रेरणा से सड़क पर अन्नदान, मूक जीव व गौ सेवा, आपातकालीन चिकित्सा और प्राकृतिक आपदा राहत कोष। 100% प्रामाणिक ग्राउंड सेवा by @vipuone (ramkasevak.org).',
+  title: 'Ram Ka Sevak | Ground Seva Initiative by @vipuone',
+  description: '100% Grassroots Seva inspired by Prabhu Shri Ram. Street food relief (Annadaan), animal care, emergency hospital aid, and disaster relief fund by @vipuone (ramkasevak.org). सेवा ही भक्ति है।',
   keywords: [
     'Ram Ka Sevak',
     'vipuone',
@@ -19,11 +19,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Vipu (@vipuone)' }],
   openGraph: {
-    title: 'राम का सेवक | Har Zarooratmand Ka Sahara',
-    description: '100% Genuine Ground Seva by @vipuone. अन्नदान, गौ सेवा, अस्पताल चिकित्सा और आपदा राहत।',
+    title: 'Ram Ka Sevak | Ground Seva Initiative by @vipuone',
+    description: '100% Genuine Grassroots Seva by @vipuone. Street food relief, cow care, hospital medical aid, and emergency disaster response.',
     url: `https://${SITE_CONFIG.domain}`,
     siteName: 'Ram Ka Sevak',
-    locale: 'hi_IN',
+    locale: 'en_IN',
     type: 'website',
   },
   icons: {

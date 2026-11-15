@@ -26,10 +26,10 @@ interface SevaProjectsProps {
 export const SevaProjects: React.FC<SevaProjectsProps> = ({ onDonateClick }) => {
   const [activeTab, setActiveTab] = useState<string>('roadside-relief');
   const [selectedOptionIdx, setSelectedOptionIdx] = useState<Record<string, number>>({
-    'roadside-relief': 1, // 5 persons
-    'animal-welfare': 1,  // 1 cow
-    'medical-emergency': 0, // 500 medicine
-    'disaster-relief': 0, // 250 ration
+    'roadside-relief': 1,
+    'animal-welfare': 1,
+    'medical-emergency': 0,
+    'disaster-relief': 0,
   });
 
   const [customAmounts, setCustomAmounts] = useState<Record<string, string>>({
@@ -77,22 +77,22 @@ export const SevaProjects: React.FC<SevaProjectsProps> = ({ onDonateClick }) => 
     <section id="seva-projects" className="py-14 lg:py-20 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header with English Number 4 */}
+        {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-300 text-xs sm:text-sm font-bold text-amber-800 mb-3 shadow-xs">
             <Sparkles className="w-4 h-4 text-kesariya-600" />
-            <span>100% Direct Ground Impact • पारदर्शी सेवा</span>
+            <span>100% Direct Grassroots Impact • पारदर्शी सेवा</span>
           </div>
           
           <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
-            हमारे 4 मुख्य सेवा प्रकल्प
+            Our 4 Core Seva Projects
             <span className="block mt-1 bg-gradient-to-r from-kesariya-600 to-amber-600 bg-clip-text text-transparent">
-              कहाँ, कैसे और क्या मदद पहुंचती है
+              Where, How & What Relief is Delivered
             </span>
           </h2>
           
           <p className="mt-3 text-sm sm:text-base text-slate-600">
-            हम हर एक पैसे का स्पष्ट हिसाब रखते हैं। नीचे 4 प्रकल्पों में से चुनें और देखें कि किसको क्या सामग्री या इलाज मिलता है।
+            We maintain complete transparency for every single rupee. Choose a project below to see the exact items, medical aid, or food provided.
           </p>
         </div>
 
@@ -141,7 +141,7 @@ export const SevaProjects: React.FC<SevaProjectsProps> = ({ onDonateClick }) => 
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
                 <div className="absolute bottom-3 left-3 right-3 text-white">
                   <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-400 text-slate-950 inline-block mb-1">
-                    Project {currentCategory.tabNumber}
+                    Project {currentCategory.tabNumber} • {currentCategory.titleHindi}
                   </span>
                   <h3 className="text-lg sm:text-xl font-black leading-tight text-white">
                     {currentCategory.titleEnglish}
@@ -170,7 +170,7 @@ export const SevaProjects: React.FC<SevaProjectsProps> = ({ onDonateClick }) => 
             </div>
 
             <div className="mt-5 pt-3 border-t border-amber-100 text-[11px] text-slate-500 font-medium">
-              🚩 100% Direct Seva • No Middlemen • Ground video updates on reels
+              🚩 100% Direct Grassroots Seva • Zero Middlemen • Verified video updates on reels
             </div>
           </div>
 
@@ -179,14 +179,14 @@ export const SevaProjects: React.FC<SevaProjectsProps> = ({ onDonateClick }) => 
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
-                  Select Seva Package (सहयोग चुनें)
+                  Select Contribution Package (सहयोग चुनें)
                 </span>
                 <span className="text-xs font-bold text-kesariya-700 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
                   {currentCategory.unitName}
                 </span>
               </div>
 
-              {/* Clean, Highly Readable Options Grid (Bilingual & Crisp) */}
+              {/* Clean, Highly Readable Options Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
                 {currentCategory.options.map((opt, idx) => {
                   const isSelected = !isCustom && currentOptionIdx === idx;
@@ -224,7 +224,7 @@ export const SevaProjects: React.FC<SevaProjectsProps> = ({ onDonateClick }) => 
                 })}
               </div>
 
-              {/* Clean Custom Amount Box (English / Crisp) */}
+              {/* Clean Custom Amount Box */}
               <div className="p-4 rounded-2xl bg-amber-50/50 border border-amber-200 mb-5 flex flex-col sm:flex-row items-center gap-3">
                 <span className="text-xs font-bold text-slate-700 shrink-0">
                   Enter Custom Amount:
@@ -244,7 +244,7 @@ export const SevaProjects: React.FC<SevaProjectsProps> = ({ onDonateClick }) => 
                 </div>
               </div>
 
-              {/* Luxury Golden-Champagne Ambient Selection Card (REPLACED UGLY BLACK BOX) */}
+              {/* Luxury Golden-Champagne Ambient Selection Card */}
               <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-100/90 via-amber-50 to-kesariya-100/80 border-2 border-amber-300 shadow-sm mb-5 text-slate-900">
                 <div className="flex items-center justify-between text-xs text-amber-800 font-bold mb-1">
                   <span>Selected Seva Impact:</span>
@@ -255,7 +255,7 @@ export const SevaProjects: React.FC<SevaProjectsProps> = ({ onDonateClick }) => 
                 <div className="flex items-center justify-between gap-3">
                   <div className="text-xs sm:text-sm font-extrabold text-slate-800 leading-snug">
                     {isCustom 
-                      ? `₹${finalAmount} Custom Direct Support` 
+                      ? `₹${finalAmount} Custom Direct Contribution` 
                       : selectedOption.whatIsGiven}
                   </div>
                   <div className="text-2xl sm:text-3xl font-black text-kesariya-700 shrink-0">
@@ -277,7 +277,7 @@ export const SevaProjects: React.FC<SevaProjectsProps> = ({ onDonateClick }) => 
               className="w-full btn-divine-3d text-white font-black text-base py-4 rounded-2xl flex items-center justify-center gap-3 cursor-pointer shadow-xl hover:scale-[1.01] transition-transform"
             >
               <Heart className="w-5 h-5 fill-white" />
-              <span>सेवा संकल्प लें • Proceed</span>
+              <span>Make a Seva Contribution • Proceed</span>
               <ArrowRight className="w-5 h-5" />
             </button>
 

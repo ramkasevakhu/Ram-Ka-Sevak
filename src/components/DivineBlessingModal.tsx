@@ -116,13 +116,13 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
 
   if (!isOpen || !details) return null;
 
-  const receiptDate = new Date().toLocaleDateString('hi-IN', {
+  const receiptDate = new Date().toLocaleDateString('en-IN', {
     day: 'numeric',
-    month: 'long',
+    month: 'short',
     year: 'numeric',
   });
 
-  const shareText = `मैंने प्रभु श्री राम की प्रेरणा से ${SITE_CONFIG.domain} पर "${details.categoryName}" में ₹${details.amount} (${details.unitsText}) का पावन सहयोग दिया है। आप भी जुड़ें: https://${SITE_CONFIG.domain} (@${SITE_CONFIG.creatorUsername})`;
+  const shareText = `I made a seva contribution of ₹${details.amount} for "${details.categoryName}" (${details.unitsText}) on ${SITE_CONFIG.domain}. सेवा ही भक्ति है! Support 100% grassroots seva: https://${SITE_CONFIG.domain} (@${SITE_CONFIG.creatorUsername})`;
 
   const handleShareWhatsApp = () => {
     const url = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
@@ -157,13 +157,13 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
           </div>
 
           <h3 className="text-2xl font-black tracking-tight">
-            जय श्री राम!
+            Jai Shri Ram! (जय श्री राम)
           </h3>
           <p className="text-sm font-semibold text-amber-100 mt-1">
-            आपका पावन सेवा संकल्प स्वीकार हुआ
+            Your Sacred Seva Contribution is Received
           </p>
           <p className="text-xs text-amber-200 italic mt-0.5">
-            ॥ धर्मो रक्षति रक्षितः ॥
+            ॥ धर्मो रक्षति रक्षितः • सेवा ही भक्ति है ॥
           </p>
         </div>
 
@@ -175,7 +175,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                  डिजिटल सेवा पावती (Digital Receipt)
+                  Digital Seva Receipt (डिजिटल पावती)
                 </span>
                 <div className="text-xs font-mono font-bold text-slate-800">
                   Ref: {details.transactionRef}
@@ -183,29 +183,29 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
               </div>
 
               <div className="text-right">
-                <span className="text-[10px] text-slate-400 block">दिनांक:</span>
+                <span className="text-[10px] text-slate-400 block">Date:</span>
                 <span className="text-xs font-bold text-slate-700">{receiptDate}</span>
               </div>
             </div>
 
             <div className="space-y-2 text-xs">
               <div className="flex justify-between">
-                <span className="text-slate-500">पुण्य आत्मा (Donor):</span>
+                <span className="text-slate-500">Sevak (Donor Name):</span>
                 <span className="font-extrabold text-slate-900">{details.donorName}</span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-slate-500">सेवा कोष (Category):</span>
+                <span className="text-slate-500">Seva Project:</span>
                 <span className="font-bold text-amber-800">{details.categoryName}</span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-slate-500">सेवा इकाई (Impact Units):</span>
+                <span className="text-slate-500">Impact Units:</span>
                 <span className="font-bold text-slate-800">{details.unitsText}</span>
               </div>
 
               <div className="flex justify-between items-center pt-2 border-t border-slate-100">
-                <span className="text-sm font-bold text-slate-800">सहयोग राशि:</span>
+                <span className="text-sm font-bold text-slate-800">Contribution Amount:</span>
                 <span className="text-xl font-black text-kesariya-700">
                   ₹{details.amount.toLocaleString('en-IN')}
                 </span>
@@ -221,7 +221,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
             <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-[10px] text-slate-500">
               <span className="flex items-center gap-1 text-emerald-700 font-bold">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                प्रमाणित ग्राउंड सेवा
+                Verified Grassroots Seva
               </span>
               <span>By @{SITE_CONFIG.creatorUsername}</span>
             </div>
@@ -229,7 +229,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
           </div>
 
           <p className="text-xs text-center text-slate-600 leading-relaxed">
-            प्रभु श्री राम आपके और आपके पूरे परिवार पर सदैव अपनी कृपा बनाए रखें। यह राशि सीधे ग्राउंड पर ज़रूरतमंदों तक पहुंचाई जाएगी।
+            May Prabhu Shri Ram bless you and your family with health and prosperity. This contribution is directly deployed on the ground with zero administrative cuts.
           </p>
 
           {/* Action Buttons */}
@@ -239,7 +239,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
               className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md cursor-pointer"
             >
               <Share2 className="w-4 h-4" />
-              <span>WhatsApp पर शेयर</span>
+              <span>Share on WhatsApp</span>
             </button>
 
             <button
@@ -247,7 +247,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
               className="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-300 cursor-pointer"
             >
               <Printer className="w-4 h-4" />
-              <span>रसीद सेव / प्रिंट</span>
+              <span>Save / Print</span>
             </button>
           </div>
 
@@ -255,7 +255,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
             onClick={onClose}
             className="w-full py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs transition-colors cursor-pointer text-center"
           >
-            वापस होमपेज पर जाएं
+            Back to Homepage
           </button>
 
         </div>

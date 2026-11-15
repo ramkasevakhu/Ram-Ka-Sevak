@@ -47,25 +47,25 @@ export const Footer: React.FC = () => {
             </div>
 
             <p className="text-xs sm:text-sm text-slate-400 leading-relaxed pr-4">
-              Prabhu Shri Ram ki pavitra maryada aur seva bhav par adharit ek nishkapat ground initiative. Footpath par bhojan, mook jeev chara, apatkalin hospital sahayata aur aapadha rahat ke liye samarpit.
+              Ground humanitarian seva initiative inspired by the ideals of Prabhu Shri Ram. Dedicated to street food relief, animal welfare, emergency hospital aid, and disaster response with complete grassroots transparency.
             </p>
 
             <div className="flex items-center gap-2 text-xs text-emerald-400 font-semibold bg-slate-800/80 px-3 py-2 rounded-xl border border-slate-700 w-fit">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>100% Genuine Ground Action By @{SITE_CONFIG.creatorUsername}</span>
+              <span>100% Genuine Grassroots Seva By @{SITE_CONFIG.creatorUsername}</span>
             </div>
           </div>
 
-          {/* Seva Projects List (Dignified Title, NOT "Seva Causes") */}
+          {/* Seva Projects List (Clean English with Hindi touch) */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="text-sm font-bold uppercase tracking-wider text-white">
-              हमारे ४ मुख्य सेवा प्रकल्प
+              Our 4 Core Seva Projects
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm text-slate-400">
-              <li>• 01. अन्नदान एवं सड़क सहायता (ताज़ा भोजन)</li>
-              <li>• 02. मूक जीव एवं गौ सेवा (गौ-ग्रास व डॉग्स)</li>
-              <li>• 03. आपातकालीन चिकित्सा (अस्पताल व दवा)</li>
-              <li>• 04. प्राकृतिक आपदा राहत (बाढ़ व विपदा)</li>
+              <li>• 01. Annadaan & Street Food Seva</li>
+              <li>• 02. Animal Care & Gau Seva</li>
+              <li>• 03. Emergency Medical & Hospital Aid</li>
+              <li>• 04. Disaster & Calamity Relief</li>
             </ul>
           </div>
 

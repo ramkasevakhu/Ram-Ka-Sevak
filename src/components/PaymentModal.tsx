@@ -70,7 +70,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     e.preventDefault();
     setIsSubmitting(true);
 
-    const finalDonorName = isAnonymous ? 'गुप्त दानी (Anonymous Sevak)' : (donorName.trim() || 'प्रभु भक्त');
+    const finalDonorName = isAnonymous ? 'Anonymous Sevak (गुप्त दानी)' : (donorName.trim() || 'Devoted Donor');
 
     try {
       await fetch('/api/donate', {
@@ -80,7 +80,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           donorName: finalDonorName,
           donorPhone: donorPhone.trim(),
           categoryId: category.id,
-          categoryName: category.titleHindi,
+          categoryName: category.titleEnglish,
           quantity: 1,
           unitLabel: quantityText,
           amount,
@@ -97,7 +97,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
       setIsSubmitting(false);
       onPaymentSuccess({
         donorName: finalDonorName,
-        categoryName: category.titleHindi,
+        categoryName: category.titleEnglish,
         unitsText: quantityText,
         amount,
         transactionRef: transactionRef.trim() || `RKS-${Math.floor(100000 + Math.random() * 900000)}`,
@@ -116,10 +116,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             <span className="text-xl">🛕</span>
             <div>
               <h3 className="font-extrabold text-lg leading-tight">
-                पवित्र सेवा संकल्प (Pavitra Seva)
+                Sacred Seva Contribution (पवित्र सेवा संकल्प)
               </h3>
               <p className="text-xs text-amber-100">
-                {SITE_CONFIG.domain} • प्रभु श्री राम सेवा कोष
+                {SITE_CONFIG.domain} • Ram Ka Sevak Grassroots Relief Fund
               </p>
             </div>
           </div>
@@ -138,15 +138,15 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           <div className="flex items-center justify-between mb-1.5">
             <div>
               <span className="text-[10px] font-black text-amber-800 uppercase tracking-wider block">
-                चुना गया प्रकल्प:
+                Selected Project:
               </span>
               <div className="text-sm sm:text-base font-black text-slate-900">
-                {category.titleHindi} ({quantityText})
+                {category.titleEnglish} ({quantityText})
               </div>
             </div>
 
             <div className="text-right">
-              <span className="text-[10px] text-slate-500 block">कुल राशि:</span>
+              <span className="text-[10px] text-slate-500 block">Total Amount:</span>
               <span className="text-2xl font-black text-kesariya-700">
                 ₹{amount.toLocaleString('en-IN')}
               </span>
@@ -167,7 +167,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             <div className="flex items-center gap-2 mb-3">
               <Smartphone className="w-4 h-4 text-kesariya-600" />
               <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                मोबाइल से 1-क्लिक भुगतान (Instant UPI Apps)
+                1-Click UPI Payment (Instant Mobile Apps)
               </span>
             </div>
 
@@ -229,11 +229,11 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             <div className="text-center sm:text-left flex-1 space-y-2">
               <div className="flex items-center justify-center sm:justify-start gap-1.5 text-xs font-bold text-slate-800">
                 <QrCode className="w-4 h-4 text-kesariya-600" />
-                <span>QR कोड स्कैन करके पे करें</span>
+                <span>Scan QR Code with any UPI App</span>
               </div>
               
               <p className="text-xs text-slate-500">
-                Kisi bhi UPI app (GPay, PhonePe, Paytm, Cred) se is QR ko scan karke sidha ₹{amount} transfer karein.
+                Scan with GPay, PhonePe, Paytm, or CRED to transfer ₹{amount} directly to the Seva account.
               </p>
 
               {/* Copy UPI Box */}
@@ -267,7 +267,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                दानी का शुभ नाम (Donor Name):
+                Donor Name (आपका शुभ नाम):
               </label>
 
               <label className="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer">
@@ -277,14 +277,14 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                   onChange={(e) => setIsAnonymous(e.target.checked)}
                   className="rounded text-kesariya-600 focus:ring-kesariya-500"
                 />
-                <span className="font-medium">गुप्त दान (Keep Anonymous)</span>
+                <span className="font-medium">Keep Anonymous (गुप्त दान)</span>
               </label>
             </div>
 
             {!isAnonymous && (
               <input
                 type="text"
-                placeholder="उदा. अमित शर्मा (Amit Sharma)"
+                placeholder="e.g. Amit Sharma / Priya Rathore"
                 value={donorName}
                 onChange={(e) => setDonorName(e.target.value)}
                 className="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-kesariya-500 focus:ring-2 focus:ring-kesariya-100 transition-all text-slate-900"
@@ -294,11 +294,11 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1">
-                  मोबाइल नंबर (रसीद के लिए - Optional):
+                  WhatsApp Number (Optional - for receipt):
                 </label>
                 <input
                   type="tel"
-                  placeholder="WhatsApp नंबर"
+                  placeholder="e.g. 9876543210"
                   value={donorPhone}
                   onChange={(e) => setDonorPhone(e.target.value)}
                   className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:border-kesariya-500 text-slate-900"
@@ -307,11 +307,11 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1">
-                  UPI UTR / Ref No. (Optional):
+                  UPI UTR / Ref Number (Optional):
                 </label>
                 <input
                   type="text"
-                  placeholder="उदा. 12-अंक UTR नंबर"
+                  placeholder="12-digit UTR Number"
                   value={transactionRef}
                   onChange={(e) => setTransactionRef(e.target.value)}
                   className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:border-kesariya-500 text-slate-900"
@@ -321,11 +321,11 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
             <div>
               <label className="text-xs font-bold text-slate-700 block mb-1">
-                प्रार्थना व आशीर्वाद संदेश (Sankalp Message - Optional):
+                Prayer or Blessing Message (Optional):
               </label>
               <textarea
                 rows={2}
-                placeholder="उदा. प्रभु श्री राम की कृपा सब पर बनी रहे! 🙏"
+                placeholder="e.g. May Lord Shri Ram bless and heal everyone in need! 🙏"
                 value={sankalpMessage}
                 onChange={(e) => setSankalpMessage(e.target.value)}
                 className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:border-kesariya-500 text-slate-900 resize-none"
@@ -339,13 +339,13 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
               className="w-full btn-divine-3d text-white font-extrabold py-3.5 rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-lg disabled:opacity-50"
             >
               <Heart className="w-5 h-5 fill-white" />
-              <span>{isSubmitting ? 'संकल्प दर्ज हो रहा है...' : 'मैंने भुगतान कर दिया • रसीद प्राप्त करें'}</span>
+              <span>{isSubmitting ? 'Recording Seva Contribution...' : 'I Have Completed Payment • Get Receipt'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
             <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500 text-center">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>100% सुरक्षित • कोई अतिरिक्त चार्ज नहीं • सीधे ग्राउंड सेवा में उपयोग</span>
+              <span>100% Direct Impact • 0% Platform Commission • Verified Grassroots Delivery</span>
             </div>
 
           </form>

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Sparkles, ChevronLeft, ChevronRight, Heart, BookOpen } from 'lucide-react';
-import { UNIVERSAL_COMPASSION_STORIES, CompassionStory } from '@/lib/constants';
+import { Sparkles, ChevronLeft, ChevronRight, Heart } from 'lucide-react';
+import { UNIVERSAL_COMPASSION_STORIES } from '@/lib/constants';
 
 interface UniversalStoriesProps {
   onExploreSeva: () => void;
@@ -14,14 +14,14 @@ export const UniversalStories: React.FC<UniversalStoriesProps> = ({ onExploreSev
 
   const filters = [
     'All',
-    'सनातन (रामायण)',
-    'महाभारत',
-    'सनातन (महादेव)',
-    'सिख परंपरा',
-    'इस्लामिक शिक्षा',
-    'बौद्ध दर्शन',
-    'जैन दर्शन',
-    'ईसाई शिक्षा',
+    'Ramayana (Sanatan)',
+    'Mahabharata',
+    'Mahadev (Lord Shiva)',
+    'Sikh Tradition',
+    'Islamic Tradition',
+    'Buddhist Wisdom',
+    'Jain Philosophy',
+    'Christian Teachings',
   ];
 
   const filteredStories = selectedFilter === 'All'
@@ -43,22 +43,22 @@ export const UniversalStories: React.FC<UniversalStoriesProps> = ({ onExploreSev
         <div className="text-center max-w-3xl mx-auto mb-8">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-100/90 border border-amber-300 text-xs sm:text-sm font-black text-amber-900 mb-3 shadow-xs">
             <Sparkles className="w-4 h-4 text-kesariya-600" />
-            <span>इतिहास व धर्म ग्रंथों की 12 अमर सीख</span>
+            <span>12 Timeless Lessons from History & Faith Traditions</span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
-            सेवा ही सबसे बड़ा धर्म है:
+            Service to the Needy is the Supreme Religion:
             <span className="block mt-1 bg-gradient-to-r from-kesariya-600 to-amber-600 bg-clip-text text-transparent">
-              सभी धर्मों व महापुरुषों की पावन प्रेरणा
+              Universal Wisdom Across World Faiths
             </span>
           </h2>
 
           <p className="mt-3 text-sm sm:text-base text-slate-600">
-            रामायण, महाभारत, महादेव, गुरु नानक, इस्लाम, बुद्ध, महावीर व ईसा मसीह—हर धर्म का एक ही सार है: <strong>"भूखे को अन्न और मूक जीव पर दया से बड़ा कोई पुण्य नहीं।"</strong>
+            From the Ramayana and Mahabharata to Guru Nanak, Islam, the Buddha, Mahavira, and Jesus Christ—every spiritual tradition echoes one single truth: <strong>"Giving food to the hungry and saving helpless creatures is the highest virtue."</strong>
           </p>
         </div>
 
-        {/* Filter Pills (Scrollable horizontally) */}
+        {/* Filter Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 no-scrollbar justify-start sm:justify-center">
           {filters.map((filter) => (
             <button
@@ -71,7 +71,7 @@ export const UniversalStories: React.FC<UniversalStoriesProps> = ({ onExploreSev
                   : 'bg-slate-100 hover:bg-amber-100 text-slate-700 border border-slate-200'
               }`}
             >
-              {filter === 'All' ? `सभी कथाएं (12)` : filter}
+              {filter === 'All' ? `All Stories (12)` : filter}
             </button>
           ))}
         </div>
@@ -79,7 +79,7 @@ export const UniversalStories: React.FC<UniversalStoriesProps> = ({ onExploreSev
         {/* Slider Controls Header */}
         <div className="flex items-center justify-between mb-4 px-2">
           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-            स्वाइप या एरो से आगे-पीछे देखें ({filteredStories.length} प्रेरक प्रसंग)
+            Swipe or use arrows to explore ({filteredStories.length} Inspiring Lessons)
           </span>
 
           <div className="flex items-center gap-2">
@@ -159,10 +159,10 @@ export const UniversalStories: React.FC<UniversalStoriesProps> = ({ onExploreSev
             <span className="text-2xl">🤝</span>
             <div>
               <h4 className="font-extrabold text-slate-900 text-sm">
-                सभी धर्मों का एक ही सार: दान और सेवा से धन कभी घटता नहीं
+                The Universal Law: Giving to the Needy Never Decreases Your Wealth
               </h4>
               <p className="text-xs text-slate-600">
-                चाहे ₹50 का 1 भोजन हो या गाय को चारा, आपका हर सहयोग सीधे ज़रूरतमंद तक पहुँचता है।
+                Whether it is ₹50 to feed one person or fresh fodder for a cow, your support reaches the ground directly.
               </p>
             </div>
           </div>
@@ -172,7 +172,7 @@ export const UniversalStories: React.FC<UniversalStoriesProps> = ({ onExploreSev
             onClick={onExploreSeva}
             className="shrink-0 px-6 py-2.5 rounded-xl bg-kesariya-600 hover:bg-kesariya-700 text-white font-bold text-xs shadow-md cursor-pointer"
           >
-            सेवा प्रकल्प देखें
+            Explore 4 Projects
           </button>
         </div>
 

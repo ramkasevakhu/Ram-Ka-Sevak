@@ -36,18 +36,18 @@ export const SankalpFeed: React.FC = () => {
         {/* Header */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-300 text-xs sm:text-sm font-bold text-amber-800 mb-3 shadow-xs">
           <Sparkles className="w-4 h-4 text-kesariya-600" />
-          <span>लाइव जन-आशीर्वाद • Community Blessings</span>
+          <span>Live Community Blessings • जन-आशीर्वाद</span>
         </div>
 
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
-          दानी सज्जनों के
+          Heartfelt Prayers & Verified Seva
           <span className="bg-gradient-to-r from-kesariya-600 to-amber-600 bg-clip-text text-transparent">
-            {' '}शुभ संकल्प व प्रार्थनाएं
+            {' '}Impact Feed
           </span>
         </h2>
 
         <p className="mt-2 text-sm sm:text-base text-slate-600">
-          Jo log dil se is pavitra abhiyan me jude hain, unka aashirwaad aur ground impact (Auto-scroll feed).
+          Real blessings, prayers, and verified contributions from generous souls supporting our ground mission.
         </p>
       </div>
 
@@ -94,7 +94,7 @@ export const SankalpFeed: React.FC = () => {
                     {b.categoryName}
                   </span>
                   <div className="text-xs font-semibold text-slate-700 mt-1.5">
-                    यूनिट: <span className="text-kesariya-700 font-bold">{b.unitsText}</span>
+                    Unit: <span className="text-kesariya-700 font-bold">{b.unitsText}</span>
                   </div>
                 </div>
 
@@ -110,7 +110,7 @@ export const SankalpFeed: React.FC = () => {
               <div className="flex items-center justify-between pt-3 border-t border-amber-100 text-xs">
                 <span className="text-slate-500 font-semibold flex items-center gap-1">
                   <Heart className="w-3.5 h-3.5 fill-kesariya-500 text-kesariya-500" />
-                  पावन सहयोग
+                  Seva Contribution
                 </span>
                 <span className="font-black text-base text-slate-900">
                   ₹{b.amount.toLocaleString('en-IN')}
@@ -124,7 +124,7 @@ export const SankalpFeed: React.FC = () => {
       </div>
 
       <div className="text-center mt-6 text-xs text-slate-400 font-medium">
-        👆 कार्ड पर माउस रखने (Hover / Tap) से स्क्रॉल रुक जाएगा
+        👆 Hover or tap on any card to pause scrolling
       </div>
     </section>
   );
