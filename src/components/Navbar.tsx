@@ -21,7 +21,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-amber-200/60 shadow-[0_4px_25px_-5px_rgba(245,158,11,0.06)] transition-all">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-amber-200/60 shadow-[0_4px_25px_-5px_rgba(245,158,11,0.06)] transition-all">
       {/* Top Divine Announcement Bar */}
       <div className="bg-gradient-to-r from-kesariya-600 via-amber-500 to-kesariya-700 text-white text-xs sm:text-sm py-2 px-4 text-center font-bold tracking-wide flex items-center justify-center gap-2 shadow-xs">
         <Sparkles className="w-3.5 h-3.5 text-yellow-200 animate-pulse" />
@@ -33,7 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* Logo Brand */}
+          {/* Logo Brand: Pure RAM KA SEVAK & "सेवा ही भक्ति है" (No .ORG, No domain under title) */}
           <Link href="/" className="flex items-center gap-3.5 group">
             <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 via-kesariya-500 to-kesariya-600 flex items-center justify-center shadow-lg shadow-kesariya-500/25 border-2 border-white transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-kesariya-500/40">
               <span className="text-2xl select-none" role="img" aria-label="Ram Bow">🏹</span>
@@ -41,11 +41,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
             </div>
 
             <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 group-hover:text-kesariya-700 transition-colors">
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 group-hover:text-kesariya-700 transition-colors leading-tight">
                 RAM KA SEVAK
               </span>
-              <span className="text-[11px] text-amber-700 font-bold tracking-wider uppercase">
-                सेवा ही भक्ति है • {SITE_CONFIG.domain}
+              <span className="text-[12px] text-kesariya-700 font-black tracking-wide mt-0.5">
+                सेवा ही भक्ति है
               </span>
             </div>
           </Link>
@@ -64,7 +64,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
               className="hover:text-kesariya-600 transition-colors cursor-pointer flex items-center gap-1.5"
             >
               <Layers className="w-4 h-4 text-kesariya-600" />
-              <span>सेवा प्रकल्प (Projects)</span>
+              <span>4 Seva Projects</span>
             </button>
             <button
               onClick={() => scrollToSection('creator-trust')}
@@ -149,7 +149,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
               <Layers className="w-4 h-4" />
             </div>
             <div>
-              <span className="block text-slate-900 leading-tight">हमारे 4 मुख्य सेवा प्रकल्प</span>
+              <span className="block text-slate-900 leading-tight">4 Core Seva Projects</span>
               <span className="text-[11px] text-slate-400 font-normal">अन्नदान, मूक जीव, चिकित्सा व आपदा राहत</span>
             </div>
           </button>

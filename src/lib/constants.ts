@@ -1,16 +1,16 @@
 export interface SevaItemDetail {
   label: string;
   amount: number;
-  whatIsGiven: string; // Exact physical breakdown (e.g. 4 Roti, Sabzi, Dal-Chawal, etc.)
+  whatIsGiven: string;
   popular?: boolean;
 }
 
 export interface DetailedSevaCategory {
   id: string;
+  tabNumber: string;
   titleEnglish: string;
   titleHindi: string;
-  badgeEnglish: string;
-  badgeHindi: string;
+  shortName: string;
   shortDesc: string;
   imageUrl: string;
   imageAlt: string;
@@ -35,116 +35,116 @@ export const SITE_CONFIG = {
     facebook: 'https://facebook.com/vipuone',
   },
   defaultUpiId: process.env.NEXT_PUBLIC_UPI_ID || 'vipuone@upi',
-  defaultUpiName: process.env.NEXT_PUBLIC_UPI_NAME || 'Ram Ka Sevak (Seva Mission)',
+  defaultUpiName: process.env.NEXT_PUBLIC_UPI_NAME || 'Ram Ka Sevak',
 };
 
 export const DETAILED_SEVA_CATEGORIES: DetailedSevaCategory[] = [
   {
     id: 'roadside-relief',
+    tabNumber: '01',
+    shortName: 'Annadaan (Food Relief)',
     titleEnglish: 'Annadaan & Street Food Seva',
-    titleHindi: 'अन्नदान एवं सड़क सहायता',
-    badgeEnglish: 'Fresh Cooked Meals',
-    badgeHindi: 'ताज़ा व भरपेट भोजन',
-    shortDesc: 'Sadak kinare be-sahara buzurgo aur bachho tak garam, hygienically banaya gaya taaza bhojan.',
+    titleHindi: 'अन्नदान (भूखों को भोजन)',
+    shortDesc: 'Rozana sadak kinare be-sahara buzurgo aur bachho tak garam, hygenic aur taaza khana pahuchana.',
     imageUrl: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=80',
     imageAlt: 'Food distribution to poor and needy',
     unitCost: 50,
-    unitName: 'व्यक्ति का भोजन',
-    exactBreakdownTitle: '₹50 में हम क्या देते हैं? (Exact Food Menu)',
+    unitName: '1 Meal = ₹50',
+    exactBreakdownTitle: '₹50 में क्या मिलता है? (Exact Food Menu)',
     exactBreakdownItems: [
-      '4 ताज़ी गरम रोटियां (देसी गेहूं)',
-      'पोषक मौसमी सब्ज़ी (आलू-गोभी / मटर-पनीर / हरी सब्ज़ी)',
-      'दाल एवं शुद्ध बासमती चावल',
-      'अचार, सलाद एवं शुद्ध स्वच्छ पीने का पानी',
+      '4 Taazi Garam Rotiyan (Desi Gehun)',
+      'Poshtik Sabzi (Aloo-Gobi / Matar-Paneer / Green Veg)',
+      'Dal aur Shuddh Basmati Chawal',
+      'Achar, Salad aur Clean Drinking Water',
     ],
     options: [
-      { label: '1 व्यक्ति का भोजन', amount: 50, whatIsGiven: '1 थाली ताज़ा भरपेट भोजन (4 रोटी, सब्ज़ी, दाल-चावल, पानी)' },
-      { label: '5 व्यक्तियों का भोजन', amount: 250, whatIsGiven: '5 थाली संपूर्ण भोजन पैकेट (सड़क किनारे वितरण)', popular: true },
-      { label: '10 व्यक्तियों का भोजन', amount: 500, whatIsGiven: '10 ज़रूरतमंदों का एक वक्त का संपूर्ण भोजन' },
-      { label: '25 व्यक्तियों का लंगर', amount: 1250, whatIsGiven: '25 लोगों का फुटपाथ लंगर व जल सेवा' },
-      { label: '50 व्यक्तियों का महाभोज', amount: 2500, whatIsGiven: '50 बेसहारा लोगों को संपूर्ण सम्मानपूर्वक भोजन' },
+      { label: '1 Person Meal', amount: 50, whatIsGiven: '1 Thali Taaza Bhojan (4 Roti, Sabzi, Dal-Chawal, Water)' },
+      { label: '5 People Meals', amount: 250, whatIsGiven: '5 Complete Hot Meal Packs for roadside homeless', popular: true },
+      { label: '10 People Meals', amount: 500, whatIsGiven: '10 Hungry people full stomach fresh meal' },
+      { label: '25 People Langar', amount: 1250, whatIsGiven: '25 Destitute elders & kids street langar seva' },
+      { label: '50 People Mahabhoj', amount: 2500, whatIsGiven: '50 People large roadside food distribution' },
     ],
   },
   {
     id: 'animal-welfare',
+    tabNumber: '02',
+    shortName: 'Animals & Cow Care',
     titleEnglish: 'Jeev Daya & Animal Rescue',
     titleHindi: 'मूक जीव एवं गौ सेवा',
-    badgeEnglish: 'Stray Dogs & Cow Fodder',
-    badgeHindi: 'गौ ग्रास व डॉग फीडिंग',
-    shortDesc: 'Bhookhe street dogs aur be-sahara Gau-mata ke liye poshtik khana, chara aur emergency first aid.',
+    shortDesc: 'Street dogs ke liye rozana khana, be-sahara Gau-mata ke liye hara chara aur emergency treatment.',
     imageUrl: 'https://images.unsplash.com/photo-1546445317-29f4545e9d53?auto=format&fit=crop&w=800&q=80',
     imageAlt: 'Cow and stray dog care',
     unitCost: 50,
-    unitName: 'मूक जीव आहार',
-    exactBreakdownTitle: 'मूक जीवों को हम क्या देते हैं? (Exact Diet)',
+    unitName: '1 Animal Feed = ₹50',
+    exactBreakdownTitle: 'मूक जीवों को क्या दिया जाता है? (Exact Diet)',
     exactBreakdownItems: [
-      'Street Dogs: ताज़ा दूध, रोटी, उबले अंडे व हाई-प्रोटीन डॉग फूड',
-      'गौ माता: ताज़ा हरा चारा (बरसीम/ज्वार), चोकर, भूसा एवं मीठा गुड़',
-      'घायल जीव: एंटीसेप्टिक स्प्रे, बैंडेज, पेनकिलर व प्राथमिक उपचार',
+      'Street Dogs: Fresh Milk, Roti, Boiled Eggs & Protein Dog Food',
+      'Gau Mata: Taaza Hara Chara (Barseem), Chokar, Bhusa & Gud',
+      'Ghayal Jeev: Antiseptic Dressing, Bandage, Painkiller & Treatment',
     ],
     options: [
-      { label: '1 मूक जीव आहार', amount: 50, whatIsGiven: '1 स्ट्रीट डॉग को ताज़ा दूध, रोटी व डॉग फूड' },
-      { label: '1 गौ-माता का हरा चारा', amount: 100, whatIsGiven: '1 गाय के लिए ताज़ा हरा चारा, भूसा, चोकर व गुड़', popular: true },
-      { label: '5 स्ट्रीट डॉग्स का भोजन', amount: 250, whatIsGiven: '5 बे-ज़ुबान कुत्तों को भरपेट पौष्टिक भोजन' },
-      { label: 'गौ-शाला हरा चारा गट्ठर', amount: 500, whatIsGiven: 'बड़ी मात्रा में ताज़ा हरा चारा व पोषक आहार' },
-      { label: 'घायल जीव इलाज व फर्स्ट-एड', amount: 1000, whatIsGiven: 'डॉक्टर द्वारा ड्रेसिंग, सेप्टिक इंजेक्शन व दवा' },
+      { label: '1 Street Dog Meal', amount: 50, whatIsGiven: 'Fresh milk, roti & high-protein dog food' },
+      { label: '1 Cow Green Fodder', amount: 100, whatIsGiven: 'Taaza hara chara, bhusa, chokar & sweet gud', popular: true },
+      { label: '5 Street Dogs Feeding', amount: 250, whatIsGiven: 'Healthy diet & fresh food for 5 stray dogs' },
+      { label: 'Gau-Shala Fodder Bundle', amount: 500, whatIsGiven: 'Large green fodder grass bundle for cows' },
+      { label: 'Injured Animal Treatment', amount: 1000, whatIsGiven: 'Doctor dressing, antiseptic injection & medicines' },
     ],
   },
   {
     id: 'medical-emergency',
+    tabNumber: '03',
+    shortName: 'Medical & Hospital Aid',
     titleEnglish: 'Emergency Hospital & Patient Support',
     titleHindi: 'आपातकालीन चिकित्सा सहायता',
-    badgeEnglish: 'Direct Chemist & Doctor Bills',
-    badgeHindi: 'दवा व डॉक्टर सहायता',
-    shortDesc: 'Garib parivaaro ke marizo ke liye zaroori dawaiyo, doctor parchi aur emergency hospital charges me sidhi madad.',
+    shortDesc: 'Garib parivaaro ke marizo ke doctor consultation, zaroori dawa aur hospital charges me direct relief.',
     imageUrl: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80',
     imageAlt: 'Medical aid for poor patient',
     unitCost: 500,
-    unitName: 'दवा व चिकित्सा सहायता',
-    exactBreakdownTitle: 'मरीज़ों के इलाज में यह पैसा कहाँ लगता है? (Exact Use)',
+    unitName: 'Medical Support = ₹500',
+    exactBreakdownTitle: 'इलाज में यह पैसा कहाँ उपयोग होता है? (Exact Use)',
     exactBreakdownItems: [
-      'दवाइयां: डॉक्टर की पर्ची के अनुसार ज़रूरी एंटीबायोटिक, पेनकिलर व ग्लूकोज़ बॉटल',
-      'जांच (Tests): ब्लड टेस्ट, एक्स-रे या ईसीजी का सरकारी/प्राइवेट लैब भुगतान',
-      'अस्पताल बेड व इंजेक्शन: इमरजेंसी वार्ड व ऑपरेशन थिएटर की ज़रूरी किट',
+      'Medicines: Doctor prescription ke zaroori Antibiotics, Painkillers & Drip',
+      'Lab Tests: Blood Test, X-Ray ya ECG charges direct payment',
+      'Hospital Bed & Surgery: Emergency ward charges & life-saving support',
     ],
     options: [
-      { label: 'ज़रूरी दवाइयां सहायता', amount: 500, whatIsGiven: 'डॉक्टर की पर्ची पर लिखी ज़रूरी एंटीबायोटिक्स, पेनकिलर व ड्रिप' },
-      { label: 'डॉक्टर फीस व ब्लड टेस्ट', amount: 1100, whatIsGiven: 'स्पेशलिस्ट डॉक्टर परामर्श + ब्लड टेस्ट व एक्स-रे जांच', popular: true },
-      { label: 'अस्पताल एडमिट व इंजेक्शन', amount: 2500, whatIsGiven: 'इमरजेंसी वार्ड बेड, स्लाइन ड्रिप व ज़रूरी इंजेक्शन खर्च' },
-      { label: 'ऑपरेशन व सर्जरी सहायता', amount: 5000, whatIsGiven: 'ऑपरेशन थिएटर खर्च व जीवन रक्षक दवाइयों में प्रत्यक्ष मदद' },
-      { label: 'मेजर आईसीयू इलाज सहायता', amount: 11000, whatIsGiven: 'गंभीर बीमारी में पीड़ित परिवार को हॉस्पिटल बिल में बड़ी राहत' },
+      { label: 'Essential Medicines Support', amount: 500, whatIsGiven: 'Doctor prescribed antibiotics, painkillers & drip support' },
+      { label: 'Doctor Consultation & Lab Tests', amount: 1100, whatIsGiven: 'Specialist doctor fee + Blood & Diagnostic tests', popular: true },
+      { label: 'Hospital Emergency Bed & Drip', amount: 2500, whatIsGiven: 'Emergency ward bed charges, saline drip & injections' },
+      { label: 'Critical Surgery Contribution', amount: 5000, whatIsGiven: 'OT charges & emergency life-saving operation medicines' },
+      { label: 'Major ICU & Hospital Relief', amount: 11000, whatIsGiven: 'Critical illness family support for heavy hospital bill' },
     ],
   },
   {
     id: 'disaster-relief',
+    tabNumber: '04',
+    shortName: 'Disaster Emergency Relief',
     titleEnglish: 'Disaster & Calamity Emergency Relief',
     titleHindi: 'प्राकृतिक आपदा राहत कोष',
-    badgeEnglish: 'Flood & Earthquake Aid',
-    badgeHindi: 'बाढ़ व विपदा राहत',
-    shortDesc: 'Baadh, bhukamp ya achanak aayi aafat se prabhavit be-ghar parivaaro tak ration aur tripal sahayata.',
+    shortDesc: 'Baadh, bhukamp ya achanak aayi aafat se beghar parivaaro tak ration aur waterproof tripal sahayata.',
     imageUrl: 'https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=800&q=80',
     imageAlt: 'Disaster survival relief packs',
     unitCost: 250,
-    unitName: 'राहत किट',
-    exactBreakdownTitle: 'आपदा राहत में क्या दिया जाता है? (Emergency Survival)',
+    unitName: '1 Relief Kit = ₹250',
+    exactBreakdownTitle: 'आपदा में क्या दिया जाता है? (Emergency Survival)',
     exactBreakdownItems: [
-      'सूखा राशन: 5kg आटा, 2kg चावल, दाल, तेल, नमक, बिस्कुट व माचिस',
-      'सुरक्षा: वाटरप्रूफ तिरपाल (Tarpaulin) बारिश व धूप से छत के लिए',
-      'स्वच्छ जल: मिनरल वाटर की बोतलें व ओआरएस पैकेट',
+      'Sukha Ration: 5kg Aata, 2kg Chawal, Dal, Tel, Namak, Biscuit & Paani',
+      'Shelter: Waterproof Tarpaulin (Tripal) dhoop aur baarish se bachav ke liye',
+      'Clean Water: Packaged drinking water bottles aur ORS packets',
     ],
     options: [
-      { label: '1 परिवार सूखा राशन किट', amount: 250, whatIsGiven: '3-4 दिन का सूखा राशन (आटा, चावल, दाल, बिस्कुट, माचिस)' },
-      { label: 'तिरपाल + राशन कॉम्बो', amount: 500, whatIsGiven: 'वाटरप्रूफ तिरपाल (छत) + 1 सप्ताह का राशन पैकेट', popular: true },
-      { label: '5 परिवारों की राहत सामग्री', amount: 1250, whatIsGiven: '5 बेघर परिवारों तक संपूर्ण आपातकालीन राशन व प्राथमिक दवा' },
-      { label: 'सामुदायिक राहत कैंप', amount: 2500, whatIsGiven: 'आपदा क्षेत्र में भोजन लंगर व शुद्ध पेयजल टैंकर व्यवस्था' },
-      { label: 'पुनर्वास व घर सहायता', amount: 5000, whatIsGiven: 'टूटे घर की मरम्मत व बर्तनों/सामान की आपातकालीन मदद' },
+      { label: '1 Family Dry Ration Kit', amount: 250, whatIsGiven: '3-4 Days dry ration kit (Aata, Rice, Dal, Biscuit, Water)' },
+      { label: 'Tarpaulin + Ration Combo', amount: 500, whatIsGiven: 'Waterproof roof tarpaulin + 1 Week family ration pack', popular: true },
+      { label: '5 Families Emergency Aid', amount: 1250, whatIsGiven: 'Complete ration, water & essential aid for 5 families' },
+      { label: 'Community Relief Camp', amount: 2500, whatIsGiven: 'Food langar camp & clean drinking water tanker in flood area' },
+      { label: 'Home Rehabilitation Support', amount: 5000, whatIsGiven: 'Damaged house repair aid & essential utensils support' },
     ],
   },
 ];
 
 export interface CompassionStory {
   id: string;
-  faithCategory: string; // e.g. "सनातन (रामायण)", "महाभारत", "सिख परंपरा", "इस्लाम", "बौद्ध धर्म", "जैन धर्म", "ईसाई धर्म"
+  faithCategory: string;
   tag: string;
   title: string;
   subtitle: string;
@@ -200,7 +200,7 @@ export const UNIVERSAL_COMPASSION_STORIES: CompassionStory[] = [
     tag: 'प्रेम व संवेदना',
     title: 'श्री कृष्ण और सुदामा के तंदुल',
     subtitle: 'चार मुट्ठी चावल और तीनों लोकों का ऐश्वर्य',
-    description: 'सुदामा जब फटे हाल में श्री कृष्ण से मिलने पहुंचे, तो प्रभु ने उनके पैरों को अपने आंसुओं से धोया और उनके प्रेम पूर्वक लाए पोहे (तंदुल) खाकर उन्हें सब कुछ दे दिया। प्रभु ने सिद्ध किया कि सेवा में धन की मात्रा नहीं, भावना का मूल्य होता है।',
+    description: 'सुदामा जब फटे हाल में श्री कृष्ण से मिलने पहुंचे, तो प्रभु ने उनके पैरों को अपने आंसुओं से धोया और उनके प्रेम पूर्वक लाए पोहे खाकर उन्हें सब कुछ दे दिया। प्रभु ने सिद्ध किया कि सेवा में धन की मात्रा नहीं, भावना का मूल्य होता है।',
     coreTeaching: 'श्रद्धा से दिया गया एक कण भी ईश्वर को अनंत गुना होकर स्वीकार होता है।',
     icon: '🦚',
   },
@@ -231,7 +231,7 @@ export const UNIVERSAL_COMPASSION_STORIES: CompassionStory[] = [
     title: 'प्यासे कुत्ते को पानी पिलाने का सवाब',
     subtitle: 'एक मूक जानवर की प्यास बुझाने पर मगफिरत',
     description: 'हदीस में आता है कि एक व्यक्ति ने रेगिस्तान में एक प्यासे कुत्ते को मिट्टी चाटते देखा। उसने कुएं में उतरकर अपने जूते में पानी भरकर उस तड़पते कुत्ते को पिलाया। ईश्वर ने उसकी इस एक दया पर प्रसन्न होकर उसके समस्त पाप क्षमा कर दिए।',
-    coreTeaching: 'हर जीवित प्राणी पर दया करने में पुण्य (सवाब) है। दान से कभी धन घटता नहीं।',
+    coreTeaching: 'हर जीवित प्राणी पर दया करने में पुण्य है। दान से कभी धन घटता नहीं।',
     icon: '🌙',
   },
   {
@@ -260,7 +260,7 @@ export const UNIVERSAL_COMPASSION_STORIES: CompassionStory[] = [
     tag: 'जीव दया व अभयदान',
     title: 'भगवान महावीर का "अहिंसा परमो धर्मः"',
     subtitle: 'जीवों को अभयदान देना ही सबसे बड़ा दान है',
-    description: 'भगवान महावीर ने सिखाया कि संसार के छोटे से छोटे जीव में भी आत्मा होती है। भूखे को भोजन, प्यासे को पानी, रोगी को औषधि और भयभीत को अभय देना ही जैन धर्म के चार सर्वोच्च दान (आहार, औषधि, ज्ञान, अभय) हैं।',
+    description: 'भगवान महावीर ने सिखाया कि संसार के छोटे से छोटे जीव में भी आत्मा होती है। भूखे को भोजन, प्यासे को पानी, रोगी को औषधि और भयभीत को अभय देना ही जैन धर्म के चार सर्वोच्च दान हैं।',
     coreTeaching: 'परस्परोपग्रहो जीवानाम्: सभी जीव एक-दूसरे के उपकार के लिए बने हैं।',
     icon: '🙏',
   },
@@ -281,7 +281,7 @@ export const INITIAL_COMMUNITY_BLESSINGS = [
     id: 'b-1',
     donorName: 'Aman Sharma',
     categoryName: 'Annadaan & Street Food Seva',
-    unitsText: '10 व्यक्तियों का भोजन',
+    unitsText: '10 People Meals',
     amount: 500,
     message: 'Bhai aapki reels dekh kar bohot prerna milti hai. Prabhu Shri Ram kripa karein! 🙏',
     timeAgo: 'Just now',
@@ -291,8 +291,8 @@ export const INITIAL_COMMUNITY_BLESSINGS = [
     id: 'b-2',
     donorName: 'Priya Rathore',
     categoryName: 'Jeev Daya & Animal Rescue',
-    unitsText: '5 मूक जीवों का भोजन',
-    amount: 250,
+    unitsText: '1 Cow Green Fodder',
+    amount: 100,
     message: 'Gau mata aur be-sahara dogs ke liye meri choti si bhent. Har Har Mahadev!',
     timeAgo: '15 mins ago',
     isVerified: true,
@@ -301,7 +301,7 @@ export const INITIAL_COMMUNITY_BLESSINGS = [
     id: 'b-3',
     donorName: 'Rahul Verma',
     categoryName: 'Emergency Hospital & Patient Support',
-    unitsText: 'डॉक्टर फीस व ब्लड टेस्ट',
+    unitsText: 'Doctor Consultation & Lab Tests',
     amount: 1100,
     message: 'Kisi zarooratmand ke hospital ilaj me kaam aaye. Jai Shri Ram!',
     timeAgo: '42 mins ago',
@@ -311,9 +311,9 @@ export const INITIAL_COMMUNITY_BLESSINGS = [
     id: 'b-4',
     donorName: 'Farhan Ahmed',
     categoryName: 'Annadaan & Street Food Seva',
-    unitsText: '10 व्यक्तियों का भोजन',
+    unitsText: '10 People Meals',
     amount: 500,
-    message: 'Insaniyat sabse bada dhararm hai. Vipu bhai great ground relief! Duayein.',
+    message: 'Insaniyat sabse bada mazhab hai. Vipu bhai great ground relief! Duayein.',
     timeAgo: '1 hr ago',
     isVerified: true,
   },
@@ -321,7 +321,7 @@ export const INITIAL_COMMUNITY_BLESSINGS = [
     id: 'b-5',
     donorName: 'Vikram Joshi',
     categoryName: 'Disaster Relief',
-    unitsText: 'तिरपाल + राशन कॉम्बो',
+    unitsText: 'Tarpaulin + Ration Combo',
     amount: 500,
     message: 'Emergency fund me mera yogdan. Great ground work!',
     timeAgo: '2 hrs ago',
