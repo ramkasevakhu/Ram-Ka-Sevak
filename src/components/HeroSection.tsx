@@ -83,7 +83,7 @@ export const HeroSection: React.FC = () => {
           {/* Annadaan / Food Relief */}
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
-              src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80"
+              src="/images/annadaan-seva.jpg"
               alt="Annadaan Hot Meal Seva"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
@@ -101,7 +101,7 @@ export const HeroSection: React.FC = () => {
           {/* Desi Cow / Animal Care */}
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
-              src="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&w=600&q=80"
+              src="/images/gau-pashu-seva.jpg"
               alt="Cow & Stray Animal Care"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
@@ -119,7 +119,7 @@ export const HeroSection: React.FC = () => {
           {/* Medical Support */}
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
-              src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80"
+              src="/images/medical-seva.jpg"
               alt="Hospital Patient Support"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
@@ -137,7 +137,7 @@ export const HeroSection: React.FC = () => {
           {/* Disaster Relief Supplies */}
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
-              src="https://images.unsplash.com/photo-1605289982774-9a6fef564df8?auto=format&fit=crop&w=600&q=80"
+              src="/images/disaster-seva.jpg"
               alt="Disaster Relief Packaging"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />

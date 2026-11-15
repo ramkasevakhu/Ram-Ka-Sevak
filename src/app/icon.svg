@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Divine Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24" />
+      <stop offset="45%" stop-color="#F97316" />
+      <stop offset="100%" stop-color="#C2410C" />
+    </linearGradient>
+
+    <!-- Divine Golden Shimmer -->
+    <linearGradient id="goldGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFBEB" />
+      <stop offset="50%" stop-color="#FEF08A" />
+      <stop offset="100%" stop-color="#FFFFFF" />
+    </linearGradient>
+
+    <!-- Deep Gold Shadow -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#7C2D12" flood-opacity="0.45" />
+    </filter>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="url(#bgGrad)" />
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="none" stroke="#FEF3C7" stroke-width="8" stroke-opacity="0.5" />
+
+  <!-- Divine Aura / Sun Burst circle in background -->
+  <circle cx="256" cy="256" r="160" fill="#FFFFFF" fill-opacity="0.12" />
+  <circle cx="256" cy="256" r="110" fill="#FFFFFF" fill-opacity="0.15" />
+
+  <!-- Sacred Dhanush (Bow & Arrow) Group -->
+  <g filter="url(#glow)">
+    
+    <!-- Bow String (Pratyancha) -->
+    <line x1="126" y1="386" x2="386" y2="126" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-dasharray="none" opacity="0.95" />
+
+    <!-- Bow Stave (The curved wooden arc of Kodanda Dhanush) -->
+    <!-- Arc from top-right tip through center outward to bottom-left tip -->
+    <path d="M 386 126 
+             C 320 80, 160 80, 96 216 
+             C 50 310, 80 340, 126 386" 
+          fill="none" 
+          stroke="url(#goldGrad)" 
+          stroke-width="26" 
+          stroke-linecap="round" />
+
+    <!-- Bow Decorative Central Grip (Muthia) -->
+    <path d="M 160 178 C 145 195, 135 220, 132 244 C 145 235, 165 210, 178 195 Z" 
+          fill="#7C2D12" />
+    <circle cx="152" cy="216" r="8" fill="#FFFFFF" />
+
+    <!-- Bow Upper Tip (Nock) -->
+    <path d="M 386 126 C 396 116, 404 118, 406 128 C 404 138, 396 142, 386 138 Z" fill="#FFFFFF" />
+    <!-- Bow Lower Tip (Nock) -->
+    <path d="M 126 386 C 116 396, 118 404, 128 406 C 138 404, 142 396, 138 386 Z" fill="#FFFFFF" />
+
+    <!-- The Sacred Arrow (Baan) pointing towards top-right (NE) -->
+    <!-- Arrow Shaft -->
+    <line x1="160" y1="352" x2="390" y2="122" stroke="url(#goldGrad)" stroke-width="12" stroke-linecap="round" />
+
+    <!-- Arrowhead (Teer ka Phala) - Sharp Divine Golden Point -->
+    <path d="M 424 88 
+             L 366 122 
+             L 390 146 Z" 
+          fill="#FFFFFF" />
+    <path d="M 424 88 L 388 124" stroke="#D97706" stroke-width="4" stroke-linecap="round" />
+
+    <!-- Arrow Feathers (Pankha / Fletching) at the nock end -->
+    <path d="M 160 352 L 132 352 L 146 338 Z" fill="#FFFFFF" />
+    <path d="M 160 352 L 160 380 L 174 366 Z" fill="#FFFFFF" />
+    <path d="M 142 370 L 118 376 L 130 358 Z" fill="#FEF08A" />
+
+    <!-- Sacred Tilak / Surya bindu at the arrow center -->
+    <circle cx="275" cy="237" r="6" fill="#EA580C" stroke="#FFFFFF" stroke-width="2" />
+  </g>
+</svg>
