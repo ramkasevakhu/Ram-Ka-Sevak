@@ -31,11 +31,11 @@ export const HeroSection: React.FC = () => {
 
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100/80 border border-amber-200 text-xs font-bold text-amber-900">
             <ShieldCheck className="w-3.5 h-3.5 text-amber-700" />
-            <span>100% Direct Ground Action • Zero Middlemen</span>
+            <span>100% Direct Ground Action • Har Rupaye Ka Hisaab</span>
           </div>
         </div>
 
-        {/* Main Headline (Clean English with Divine Touch) */}
+        {/* Main Headline (25% Pure Hindi + 60% Hinglish + 15% English) */}
         <div className="text-center max-w-4xl mx-auto mb-10">
           <div className="text-amber-600 font-extrabold tracking-widest text-xs sm:text-sm uppercase mb-3.5 flex items-center justify-center gap-2">
             <span>🚩</span>
@@ -44,24 +44,24 @@ export const HeroSection: React.FC = () => {
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.14] mb-6">
-            Service to Humanity is the Highest Devotion:
+            मानव सेवा ही सबसे बड़ा धर्म है:
             <span className="block mt-2 bg-gradient-to-r from-kesariya-600 via-amber-600 to-kesariya-700 bg-clip-text text-transparent">
-              Feeding the Hungry, Healing the Sick & Rescuing Animals
+              Bhookhe ko Annadaan, Bejubaan Pashuon ki Raksha aur Free Medical Aid
             </span>
           </h1>
 
-          <p className="text-base sm:text-xl text-slate-600 font-normal leading-relaxed max-w-3xl mx-auto mb-8">
-            Every great tradition and spiritual path teaches that lifting the helpless is the truest worship of God.
-            Through verified social media reels, we take action directly on the ground—delivering warm meals, emergency medical aid, and animal rescue.
+          <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed max-w-3xl mx-auto mb-8">
+            Har dharm aur granth ka ek hi paavan sandesh hai — kisi majboor aur zarooratmand ki madad karna hi Ishwar ki sacchi pooja hai. 
+            Hum Instagram reels (@{SITE_CONFIG.creatorUsername}) ke madhyam se directly zameen par utarkar roadside beghar buzurgon ko garam thali khana, injured animals ka ilaaj aur gareeb marizon ko dawaaiyan deliver karte hain.
           </p>
 
-          {/* Humble Action CTAs */}
+          {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
             <button
               onClick={scrollToMission}
               className="px-8 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all cursor-pointer"
             >
-              <span>Explore 4 Seva Projects</span>
+              <span>4 Pavitra Seva Sankalp Dekhein</span>
               <ArrowDown className="w-4 h-4 text-amber-400" />
             </button>
 
@@ -77,10 +77,10 @@ export const HeroSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Authentic Indian Seva Photo Grid */}
+        {/* Authentic Indian Seva Photo Grid (Replacing 'Project' with 'Seva 01', etc.) */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-6 mb-14">
           
-          {/* Indian Food / Annadaan */}
+          {/* Annadaan / Food Relief */}
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
               src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80"
@@ -89,16 +89,16 @@ export const HeroSection: React.FC = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
               <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">
-                Project 01 • Food Relief
+                Seva 01 • Food Relief
               </span>
               <h4 className="font-extrabold text-sm sm:text-base leading-tight mt-0.5">
-                Annadaan & Hot Meals
+                Annadaan & Garam Thali
               </h4>
-              <p className="text-xs text-amber-200/90 mt-1 font-semibold hidden sm:block">4 Fresh Rotis, Sabzi, Dal-Rice</p>
+              <p className="text-xs text-amber-200/90 mt-1 font-semibold hidden sm:block">4 Tazi Roti, Sabzi, Dal-Chawal</p>
             </div>
           </div>
 
-          {/* Indian Desi Cow / Gau-Mata */}
+          {/* Desi Cow / Animal Care */}
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
               src="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&w=600&q=80"
@@ -107,16 +107,16 @@ export const HeroSection: React.FC = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
               <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">
-                Project 02 • Animal Care
+                Seva 02 • Animal Care
               </span>
               <h4 className="font-extrabold text-sm sm:text-base leading-tight mt-0.5">
-                Gau Seva & Stray Dogs
+                Gau Seva & Street Dogs
               </h4>
-              <p className="text-xs text-amber-200/90 mt-1 font-semibold hidden sm:block">Milk, Rotis, Fodder & First-Aid</p>
+              <p className="text-xs text-amber-200/90 mt-1 font-semibold hidden sm:block">Doodh, Roti, Chara & First-Aid</p>
             </div>
           </div>
 
-          {/* Indian Doctor / Medical Support */}
+          {/* Medical Support */}
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
               src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80"
@@ -125,7 +125,7 @@ export const HeroSection: React.FC = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
               <span className="text-[10px] font-black uppercase tracking-wider text-rose-300">
-                Project 03 • Medical Aid
+                Seva 03 • Medical Aid
               </span>
               <h4 className="font-extrabold text-sm sm:text-base leading-tight mt-0.5">
                 Doctor & Hospital Support
@@ -134,7 +134,7 @@ export const HeroSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Indian Disaster / Relief Supplies */}
+          {/* Disaster Relief Supplies */}
           <div className="group relative rounded-3xl overflow-hidden border-2 border-amber-200/90 shadow-md h-48 sm:h-64 bg-slate-100">
             <img
               src="https://images.unsplash.com/photo-1605289982774-9a6fef564df8?auto=format&fit=crop&w=600&q=80"
@@ -143,12 +143,12 @@ export const HeroSection: React.FC = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent flex flex-col justify-end p-4 text-white">
               <span className="text-[10px] font-black uppercase tracking-wider text-orange-300">
-                Project 04 • Disaster Aid
+                Seva 04 • Disaster Aid
               </span>
               <h4 className="font-extrabold text-sm sm:text-base leading-tight mt-0.5">
-                Flood & Emergency Relief
+                Aapda & Emergency Relief
               </h4>
-              <p className="text-xs text-orange-200/90 mt-1 font-semibold hidden sm:block">Tarpaulins, Dry Food & Clean Water</p>
+              <p className="text-xs text-orange-200/90 mt-1 font-semibold hidden sm:block">Tripal, Sukha Ration & Saaf Paani</p>
             </div>
           </div>
 
@@ -162,7 +162,7 @@ export const HeroSection: React.FC = () => {
             </div>
             <div>
               <h4 className="font-extrabold text-slate-900 text-sm">100% Grassroots Seva</h4>
-              <p className="text-xs text-slate-500 mt-0.5">Every rupee directly funds hot meals, medicines, and animal feed.</p>
+              <p className="text-xs text-slate-500 mt-0.5">Aapka diya har ek rupaya directly garam khana, davaai aur pashu chara me lagta hai.</p>
             </div>
           </div>
 
@@ -172,7 +172,7 @@ export const HeroSection: React.FC = () => {
             </div>
             <div>
               <h4 className="font-extrabold text-slate-900 text-sm">Direct Video Proof on Reels</h4>
-              <p className="text-xs text-slate-500 mt-0.5">Transparent, verifiable weekly ground updates on social media.</p>
+              <p className="text-xs text-slate-500 mt-0.5">Har hafte social media (@{SITE_CONFIG.creatorUsername}) par transparent ground video updates.</p>
             </div>
           </div>
 
@@ -182,7 +182,7 @@ export const HeroSection: React.FC = () => {
             </div>
             <div>
               <h4 className="font-extrabold text-slate-900 text-sm">0% Middlemen • Direct Handover</h4>
-              <p className="text-xs text-slate-500 mt-0.5">Direct hand-to-hand distribution with zero administrative cuts.</p>
+              <p className="text-xs text-slate-500 mt-0.5">Seedha zarooratmand ke haathon me madad, zero commission ya cut.</p>
             </div>
           </div>
         </div>

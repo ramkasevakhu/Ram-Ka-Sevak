@@ -47,7 +47,7 @@ export const Footer: React.FC = () => {
             </div>
 
             <p className="text-xs sm:text-sm text-slate-400 leading-relaxed pr-4">
-              Ground humanitarian seva initiative inspired by the ideals of Prabhu Shri Ram. Dedicated to street food relief, animal welfare, emergency hospital aid, and disaster response with complete grassroots transparency.
+              Prabhu Shri Ram ki paavan prerna se chalaayi jaa rahi zameeni seva initiative. Roadside beghar buzurgon ko garam bhojan, bejubaan pashuon ki dekhbhaal, emergency hospital ilaj aur aafat rahat me 100% imaandaari aur zero middlemen commission.
             </p>
 
             <div className="flex items-center gap-2 text-xs text-emerald-400 font-semibold bg-slate-800/80 px-3 py-2 rounded-xl border border-slate-700 w-fit">
@@ -56,16 +56,16 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Seva Projects List (Clean English with Hindi touch) */}
+          {/* Seva Sankalp List */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="text-sm font-bold uppercase tracking-wider text-white">
-              Our 4 Core Seva Projects
+              हमारे 4 पवित्र सेवा संकल्प
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm text-slate-400">
               <li>• 01. Annadaan & Street Food Seva</li>
-              <li>• 02. Animal Care & Gau Seva</li>
+              <li>• 02. Gau Mata & Stray Animal Care</li>
               <li>• 03. Emergency Medical & Hospital Aid</li>
-              <li>• 04. Disaster & Calamity Relief</li>
+              <li>• 04. Disaster & Calamity Emergency Relief</li>
             </ul>
           </div>
 

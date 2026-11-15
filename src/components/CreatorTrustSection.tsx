@@ -26,15 +26,15 @@ export const CreatorTrustSection: React.FC = () => {
           </div>
 
           <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
-            From Social Media Reels to Ground Reality
+            Social Media Reels Se Zameeni Haqeeqat Tak
             <span className="block mt-1 bg-gradient-to-r from-kesariya-600 to-amber-600 bg-clip-text text-transparent">
-              Direct Action, Pure Intent
+              Direct Ground Action, Bina Kisi Commission Ke
             </span>
           </h2>
 
-          <p className="mt-3 text-sm sm:text-base text-slate-600">
-            You have followed our ground distribution work on Instagram reels. 
-            <strong> {SITE_CONFIG.domain} </strong> is our official seva platform ensuring your support directly reaches the needy without any administrative middlemen.
+          <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
+            Aapne Instagram reels par humara ground distribution work dekha hai. 
+            <strong> {SITE_CONFIG.domain} </strong> humara official seva platform hai jahan aapka ek-ek rupaya seedha zarooratmand tak pahunchta hai bina kisi middleman ya NGO cut ke.
           </p>
         </div>
 
@@ -72,8 +72,8 @@ export const CreatorTrustSection: React.FC = () => {
                 सेवा ही भक्ति है • Ground Action by {SITE_CONFIG.creatorName} (@{SITE_CONFIG.creatorUsername})
               </p>
 
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed italic bg-amber-50/60 p-4 rounded-2xl border border-amber-200/80">
-                "Our mission is simple and unwavering: no one should sleep hungry on the roadside, no injured animal should suffer without medical care, and no poor family member should be deprived of hospital treatment due to lack of funds. Every contribution is treated as a sacred blessing and delivered directly on the ground."
+              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic bg-amber-50/70 p-4 rounded-2xl border border-amber-200/80">
+                "Humara sankalp bilkul spasht hai: na koi sadak par bhookha soye, na koi bejubaan pashu bina dawaai ke tadpe, aur na kisi gareeb parivar ka hospital ilaaj paise ki kami se ruke. Har ek yogdan ko hum Prabhu ka aashirwad maankar seedha zameen par pahunchate hain."
               </p>
             </div>
           </div>
@@ -86,7 +86,7 @@ export const CreatorTrustSection: React.FC = () => {
               </span>
               <span className="text-xs font-bold text-emerald-700 flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5" />
-                Live Ground Updates
+                Live Ground Updates Dekhein
               </span>
             </div>
 
@@ -183,7 +183,7 @@ export const CreatorTrustSection: React.FC = () => {
               </div>
               <div>
                 <h5 className="font-extrabold text-slate-900 text-sm">Watch Weekly Ground Seva Reels</h5>
-                <p className="text-xs text-slate-600">See real-time video documentation of food distribution, cow care, and hospital aid.</p>
+                <p className="text-xs text-slate-600">Food distribution, Gau Mata seva aur hospital patient relief ki live video documentation dekhein.</p>
               </div>
             </div>
 

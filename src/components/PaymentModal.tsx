@@ -116,7 +116,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             <span className="text-xl">🛕</span>
             <div>
               <h3 className="font-extrabold text-lg leading-tight">
-                Sacred Seva Contribution (पवित्र सेवा संकल्प)
+                पवित्र सेवा संकल्प (Seva Contribution)
               </h3>
               <p className="text-xs text-amber-100">
                 {SITE_CONFIG.domain} • Ram Ka Sevak Grassroots Relief Fund
@@ -138,7 +138,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           <div className="flex items-center justify-between mb-1.5">
             <div>
               <span className="text-[10px] font-black text-amber-800 uppercase tracking-wider block">
-                Selected Project:
+                Chuna Gaya Seva Sankalp:
               </span>
               <div className="text-sm sm:text-base font-black text-slate-900">
                 {category.titleEnglish} ({quantityText})
@@ -146,7 +146,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             </div>
 
             <div className="text-right">
-              <span className="text-[10px] text-slate-500 block">Total Amount:</span>
+              <span className="text-[10px] text-slate-500 block">Daan Rashi:</span>
               <span className="text-2xl font-black text-kesariya-700">
                 ₹{amount.toLocaleString('en-IN')}
               </span>
@@ -167,7 +167,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             <div className="flex items-center gap-2 mb-3">
               <Smartphone className="w-4 h-4 text-kesariya-600" />
               <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                1-Click UPI Payment (Instant Mobile Apps)
+                1-Click UPI Payment (Direct Mobile Apps)
               </span>
             </div>
 
@@ -209,7 +209,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                 <span className="text-xs font-bold text-kesariya-600 group-hover:scale-105 transition-transform">
                   BHIM / Any
                 </span>
-                <span className="text-[10px] text-slate-400">Any UPI</span>
+                <span className="text-[10px] text-slate-400">Any App</span>
               </a>
             </div>
           </div>
@@ -229,11 +229,11 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             <div className="text-center sm:text-left flex-1 space-y-2">
               <div className="flex items-center justify-center sm:justify-start gap-1.5 text-xs font-bold text-slate-800">
                 <QrCode className="w-4 h-4 text-kesariya-600" />
-                <span>Scan QR Code with any UPI App</span>
+                <span>Kisi bhi UPI App se QR Scan Karein</span>
               </div>
               
               <p className="text-xs text-slate-500">
-                Scan with GPay, PhonePe, Paytm, or CRED to transfer ₹{amount} directly to the Seva account.
+                GPay, PhonePe, Paytm ya CRED se scan karke ₹{amount} seedha seva account me transfer karein.
               </p>
 
               {/* Copy UPI Box */}
@@ -267,7 +267,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                Donor Name (आपका शुभ नाम):
+                Aapka Shubh Naam (Donor Name):
               </label>
 
               <label className="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer">
@@ -277,7 +277,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                   onChange={(e) => setIsAnonymous(e.target.checked)}
                   className="rounded text-kesariya-600 focus:ring-kesariya-500"
                 />
-                <span className="font-medium">Keep Anonymous (गुप्त दान)</span>
+                <span className="font-medium">Gupt Daan (गुप्त दान)</span>
               </label>
             </div>
 
@@ -294,7 +294,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1">
-                  WhatsApp Number (Optional - for receipt):
+                  WhatsApp Number (Video proof & receipt pane ke liye):
                 </label>
                 <input
                   type="tel"
@@ -321,11 +321,11 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
             <div>
               <label className="text-xs font-bold text-slate-700 block mb-1">
-                Prayer or Blessing Message (Optional):
+                Koi Prarthana ya Dua Sandesh (Optional):
               </label>
               <textarea
                 rows={2}
-                placeholder="e.g. May Lord Shri Ram bless and heal everyone in need! 🙏"
+                placeholder="e.g. Prabhu Shri Ram sabhi ka kalyan karein aur sabko swasth rakhein! 🙏"
                 value={sankalpMessage}
                 onChange={(e) => setSankalpMessage(e.target.value)}
                 className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:border-kesariya-500 text-slate-900 resize-none"
@@ -339,13 +339,13 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
               className="w-full btn-divine-3d text-white font-extrabold py-3.5 rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-lg disabled:opacity-50"
             >
               <Heart className="w-5 h-5 fill-white" />
-              <span>{isSubmitting ? 'Recording Seva Contribution...' : 'I Have Completed Payment • Get Receipt'}</span>
+              <span>{isSubmitting ? 'Sankalp Darj Ho Raha Hai...' : 'Payment Complete Kiya • Digital Receipt Payein'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
             <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500 text-center">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>100% Direct Impact • 0% Platform Commission • Verified Grassroots Delivery</span>
+              <span>100% Direct Impact • 0% Middlemen Commission • Direct Grassroots Delivery</span>
             </div>
 
           </form>

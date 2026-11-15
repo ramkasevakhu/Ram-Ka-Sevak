@@ -122,7 +122,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
     year: 'numeric',
   });
 
-  const shareText = `I made a seva contribution of ₹${details.amount} for "${details.categoryName}" (${details.unitsText}) on ${SITE_CONFIG.domain}. सेवा ही भक्ति है! Support 100% grassroots seva: https://${SITE_CONFIG.domain} (@${SITE_CONFIG.creatorUsername})`;
+  const shareText = `Maine ${SITE_CONFIG.domain} par "${details.categoryName}" ke liye ₹${details.amount} ka seva sahyog kiya. सेवा ही भक्ति है! Support 100% genuine grassroots seva: https://${SITE_CONFIG.domain} (@${SITE_CONFIG.creatorUsername})`;
 
   const handleShareWhatsApp = () => {
     const url = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
@@ -147,7 +147,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
         <div className="bg-gradient-to-r from-kesariya-600 via-amber-500 to-kesariya-700 px-6 py-6 text-white text-center relative overflow-hidden">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
+            className="absolute top-4 right-4 p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -160,7 +160,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
             Jai Shri Ram! (जय श्री राम)
           </h3>
           <p className="text-sm font-semibold text-amber-100 mt-1">
-            Your Sacred Seva Contribution is Received
+            Aapka Pavitra Seva Sankalp Prapt Hua
           </p>
           <p className="text-xs text-amber-200 italic mt-0.5">
             ॥ धर्मो रक्षति रक्षितः • सेवा ही भक्ति है ॥
@@ -175,7 +175,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                  Digital Seva Receipt (डिजिटल पावती)
+                  Digital Seva Receipt (डिजिटल सेवा पावती)
                 </span>
                 <div className="text-xs font-mono font-bold text-slate-800">
                   Ref: {details.transactionRef}
@@ -195,7 +195,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
               </div>
 
               <div className="flex justify-between">
-                <span className="text-slate-500">Seva Project:</span>
+                <span className="text-slate-500">Seva Sankalp:</span>
                 <span className="font-bold text-amber-800">{details.categoryName}</span>
               </div>
 
@@ -205,7 +205,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
               </div>
 
               <div className="flex justify-between items-center pt-2 border-t border-slate-100">
-                <span className="text-sm font-bold text-slate-800">Contribution Amount:</span>
+                <span className="text-sm font-bold text-slate-800">Daan Rashi:</span>
                 <span className="text-xl font-black text-kesariya-700">
                   ₹{details.amount.toLocaleString('en-IN')}
                 </span>
@@ -229,7 +229,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
           </div>
 
           <p className="text-xs text-center text-slate-600 leading-relaxed">
-            May Prabhu Shri Ram bless you and your family with health and prosperity. This contribution is directly deployed on the ground with zero administrative cuts.
+            Prabhu Shri Ram aapko aur aapke parivar ko sada sukhi aur swasth rakhein. Aapka sahyog seedha zameen par pahunchakar video update reels par share kiya jayega.
           </p>
 
           {/* Action Buttons */}
@@ -239,7 +239,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
               className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md cursor-pointer"
             >
               <Share2 className="w-4 h-4" />
-              <span>Share on WhatsApp</span>
+              <span>WhatsApp Par Share</span>
             </button>
 
             <button
@@ -255,7 +255,7 @@ export const DivineBlessingModal: React.FC<DivineBlessingModalProps> = ({
             onClick={onClose}
             className="w-full py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs transition-colors cursor-pointer text-center"
           >
-            Back to Homepage
+            Homepage Par Wapas Jayein
           </button>
 
         </div>

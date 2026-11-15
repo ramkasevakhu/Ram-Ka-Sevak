@@ -16,8 +16,8 @@ import { Heart, ArrowRight } from 'lucide-react';
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<DetailedSevaCategory | null>(DETAILED_SEVA_CATEGORIES[0]);
   const [selectedAmount, setSelectedAmount] = useState<number>(250);
-  const [selectedQuantityText, setSelectedQuantityText] = useState<string>('5 People Meals');
-  const [selectedExactBreakdown, setSelectedExactBreakdown] = useState<string>('5 Complete Hot Meal Packs distributed to roadside homeless');
+  const [selectedQuantityText, setSelectedQuantityText] = useState<string>('5 Logon ka Khana');
+  const [selectedExactBreakdown, setSelectedExactBreakdown] = useState<string>('5 Complete Hot Meal Packs sadak par beghar buzurgon ko direct handover');
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isBlessingModalOpen, setIsBlessingModalOpen] = useState(false);
@@ -66,13 +66,13 @@ export default function Home() {
       {/* 1. Navigation */}
       <Navbar onOpenDonateModal={() => setIsPaymentModalOpen(true)} />
 
-      {/* 2. Hero Section (Humble, Trust-Building, No Aggressive CTAs) */}
+      {/* 2. Hero Section (25% Pure Hindi + 60% Hinglish + 15% English) */}
       <HeroSection />
 
-      {/* 3. 12 Universal Compassion Stories Carousel (Horizontal Slider across all faiths) */}
+      {/* 3. 12 Universal Compassion Stories Carousel (Floating side arrows on carousel cards) */}
       <UniversalStories onExploreSeva={handleScrollToProjects} />
 
-      {/* 4. 4 Sacred Seva Projects (Side-by-side horizontal layout with exact food & medicine breakdown) */}
+      {/* 4. 4 Sacred Seva Sankalp (Fixed overflow, donation terminology, clear breakdown) */}
       <SevaProjects onDonateClick={handleOpenDonate} />
 
       {/* 5. Creator Trust & 100% Genuine Ground Verification (@vipuone) */}
@@ -102,7 +102,7 @@ export default function Home() {
         details={blessingDetails}
       />
 
-      {/* 10. Sleek Floating Mobile Donate Bar */}
+      {/* 10. Floating Mobile Donate Bar */}
       <div className="fixed bottom-4 left-4 right-4 z-40 lg:hidden">
         <button
           onClick={() => {
@@ -110,7 +110,7 @@ export default function Home() {
             handleOpenDonate(
               cat, 
               cat.options[1]?.amount || 250, 
-              cat.options[1]?.label || '5 People Meals',
+              cat.options[1]?.label || '5 Logon ka Khana',
               cat.options[1]?.whatIsGiven || '5 Complete Hot Meal Packs'
             );
           }}
@@ -132,7 +132,7 @@ export default function Home() {
 
           <div className="flex items-center gap-1.5 text-xs font-bold bg-white text-kesariya-700 px-3.5 py-1.5 rounded-xl shadow-sm">
             <Heart className="w-3.5 h-3.5 fill-kesariya-600" />
-            <span>Donate Now</span>
+            <span>Daan Karein</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </div>
         </button>

@@ -26,7 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
       <div className="bg-gradient-to-r from-kesariya-600 via-amber-500 to-kesariya-700 text-white text-xs sm:text-sm py-2 px-4 text-center font-bold tracking-wide flex items-center justify-center gap-2 shadow-xs">
         <Sparkles className="w-3.5 h-3.5 text-yellow-200 animate-pulse" />
         <span>
-          🚩 <strong className="tracking-wider">सेवा ही भक्ति है</strong> • Inspired by Prabhu Shri Ram | 100% Grassroots Humanitarian Seva
+          🚩 <strong className="tracking-wider">सेवा ही भक्ति है</strong> • Prabhu Shri Ram ki prerna se 100% Direct Ground Seva (Zero Middlemen)
         </span>
       </div>
 
@@ -50,28 +50,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
             </div>
           </Link>
 
-          {/* Desktop Navigation Links (Clean English with Hindi Touches) */}
+          {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-8 text-sm font-bold text-slate-700">
             <button
               onClick={() => scrollToSection('universal-stories')}
               className="hover:text-kesariya-600 transition-colors cursor-pointer flex items-center gap-1.5"
             >
               <BookOpen className="w-4 h-4 text-amber-600" />
-              <span>12 Divine Stories</span>
+              <span>12 Pavitra Kathayein</span>
             </button>
             <button
               onClick={() => scrollToSection('seva-projects')}
               className="hover:text-kesariya-600 transition-colors cursor-pointer flex items-center gap-1.5"
             >
               <Layers className="w-4 h-4 text-kesariya-600" />
-              <span>4 Seva Projects</span>
+              <span>4 Seva Sankalp</span>
             </button>
             <button
               onClick={() => scrollToSection('creator-trust')}
               className="hover:text-kesariya-600 transition-colors cursor-pointer flex items-center gap-1.5"
             >
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>Ground Proof</span>
+              <span>Ground Proof (Reels)</span>
             </button>
             <button
               onClick={() => scrollToSection('sankalp-wall')}
@@ -95,7 +95,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
               className="btn-divine-3d text-white font-black text-sm px-7 py-3 rounded-2xl flex items-center gap-2 cursor-pointer shadow-lg hover:shadow-xl transition-all"
             >
               <Heart className="w-4 h-4 fill-white text-white animate-pulse" />
-              <span>Support Now (सहयोग करें)</span>
+              <span>Daan Karein (सहयोग करें)</span>
             </button>
           </div>
 
@@ -106,7 +106,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
               className="bg-gradient-to-r from-kesariya-600 to-amber-600 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-md shadow-kesariya-600/25 active:scale-95 transition-transform"
             >
               <Heart className="w-3.5 h-3.5 fill-white" />
-              <span>Donate</span>
+              <span>Daan Karein</span>
             </button>
             
             <button
@@ -121,7 +121,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
         </div>
       </div>
 
-      {/* Ultra-Premium Mobile Drawer Menu */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white/98 backdrop-blur-2xl border-b-2 border-amber-300 px-5 pt-4 pb-8 space-y-3 shadow-2xl animate-in slide-in-from-top-4 duration-200">
           <div className="text-[11px] font-black uppercase tracking-widest text-slate-400 px-3 pt-1">
@@ -136,8 +136,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
               <BookOpen className="w-4 h-4" />
             </div>
             <div>
-              <span className="block text-slate-900 leading-tight font-extrabold">12 Divine Stories of Compassion</span>
-              <span className="text-[11px] text-slate-400 font-normal">Lessons from Ramayana, Mahabharata, Nanak, Islam, Buddha & Christ</span>
+              <span className="block text-slate-900 leading-tight font-extrabold">12 Pavitra Kathayein</span>
+              <span className="text-[11px] text-slate-400 font-normal">Ramayana, Mahabharata, Nanak, Islam, Buddha & Jesus ki seekh</span>
             </div>
           </button>
 
@@ -149,8 +149,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
               <Layers className="w-4 h-4" />
             </div>
             <div>
-              <span className="block text-slate-900 leading-tight font-extrabold">4 Core Seva Projects</span>
-              <span className="text-[11px] text-slate-400 font-normal">Food Relief, Animal Care, Medical Aid & Disaster Response</span>
+              <span className="block text-slate-900 leading-tight font-extrabold">4 Pavitra Seva Sankalp</span>
+              <span className="text-[11px] text-slate-400 font-normal">Annadaan, Gau Seva, Medical Aid aur Disaster Relief</span>
             </div>
           </button>
 
@@ -163,7 +163,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
             </div>
             <div>
               <span className="block text-slate-900 leading-tight font-extrabold">Ground Proof & Reels</span>
-              <span className="text-[11px] text-slate-400 font-normal">Direct video evidence by @{SITE_CONFIG.creatorUsername}</span>
+              <span className="text-[11px] text-slate-400 font-normal">Direct video proof by @{SITE_CONFIG.creatorUsername}</span>
             </div>
           </button>
 
@@ -176,7 +176,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
             </div>
             <div>
               <span className="block text-slate-900 leading-tight font-extrabold">Blessings & Impact Wall</span>
-              <span className="text-[11px] text-slate-400 font-normal">Community prayers & verified contributions</span>
+              <span className="text-[11px] text-slate-400 font-normal">Logon ki duaayein aur verified contributions</span>
             </div>
           </button>
 
@@ -188,7 +188,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
               <Mail className="w-4 h-4" />
             </div>
             <div>
-              <span className="block text-slate-900 leading-tight font-extrabold">Contact & Support</span>
+              <span className="block text-slate-900 leading-tight font-extrabold">Contact & Sahyog</span>
               <span className="text-[11px] text-slate-400 font-normal">{SITE_CONFIG.officialEmail}</span>
             </div>
           </button>
@@ -203,7 +203,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
               className="w-full btn-divine-3d text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2.5 shadow-xl text-base cursor-pointer"
             >
               <Heart className="w-5 h-5 fill-white" />
-              <span>Make a Seva Contribution (दान करें)</span>
+              <span>Daan Karein (सहयोग करें)</span>
             </button>
           </div>
         </div>

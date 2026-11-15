@@ -40,14 +40,14 @@ export const SankalpFeed: React.FC = () => {
         </div>
 
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
-          Heartfelt Prayers & Verified Seva
+          दुआएं, प्रार्थनाएं व जन-सहयोग
           <span className="bg-gradient-to-r from-kesariya-600 to-amber-600 bg-clip-text text-transparent">
             {' '}Impact Feed
           </span>
         </h2>
 
         <p className="mt-2 text-sm sm:text-base text-slate-600">
-          Real blessings, prayers, and verified contributions from generous souls supporting our ground mission.
+          Humari is pavitra zameeni seva me sahyog karne wale bhaai-behno ka aashirwad, duaayein aur verified contributions.
         </p>
       </div>
 
@@ -124,7 +124,7 @@ export const SankalpFeed: React.FC = () => {
       </div>
 
       <div className="text-center mt-6 text-xs text-slate-400 font-medium">
-        👆 Hover or tap on any card to pause scrolling
+        👆 Tap ya hover karke scrolling pause karein
       </div>
     </section>
   );
