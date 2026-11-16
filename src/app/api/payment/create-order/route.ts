@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ramkasevak.org';
     const webhookUrl = `${appUrl}/api/payment/webhook`;
 
-    // Call ZapUPI create-order API with switch=220 (routes specifically to ramkasevak webhook)
+    // 1. Call ZapUPI create-order API with switch=220 (routes specifically to ramkasevak webhook)
     const zapPayload = {
       zap_key: ZAP_KEY,
       order_id: orderId,
@@ -50,7 +50,41 @@ export async function POST(request: Request) {
       );
     }
 
-    // Safely record in database (non-blocking)
+    const paymentUrl = zapData.payment_url;
+    let upiPayload = '';
+    let upiId = '';
+    let txnId = zapData.txn_id || '';
+
+    // 2. Extract real UPI payload so we can render QR & UPI buttons inside Ram Ka Sevak Saffron theme
+    if (paymentUrl) {
+      try {
+        const htmlRes = await fetch(paymentUrl);
+        const html = await htmlRes.text();
+        const match = html.match(/const\s+serverData\s*=\s*(\{.+?\});/);
+        if (match) {
+          const serverData = JSON.parse(match[1]);
+          const inp = serverData.data;
+          if (inp && inp.upi_id) {
+            upiId = inp.upi_id;
+            txnId = inp.txnId || txnId;
+            const autoKey = inp.autoCode || 'tr';
+            const autoVal = inp.txnRef || '';
+            const amountFormatted = parseFloat(inp.pay_amount || numericAmount).toFixed(2);
+
+            upiPayload = `upi://pay?pa=${encodeURIComponent(inp.upi_id)}&pn=${encodeURIComponent('Ram Ka Sevak')}&cu=INR&am=${encodeURIComponent(amountFormatted)}&tn=${encodeURIComponent(txnId)}&${encodeURIComponent(autoKey)}=${encodeURIComponent(autoVal)}`;
+          }
+        }
+      } catch (extractErr) {
+        console.warn('Could not extract direct UPI payload, fallback to payment_url:', extractErr);
+      }
+    }
+
+    // Dynamic QR image for desktop scanning in Ram theme
+    const qrImageUrl = upiPayload
+      ? `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=8&data=${encodeURIComponent(upiPayload)}`
+      : null;
+
+    // 3. Safely record in database (non-blocking)
     if (supabase) {
       try {
         await supabase.from('donations').insert([
@@ -78,11 +112,11 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       order_id: orderId,
-      payment_url: zapData.payment_url,
-      txn_id: zapData.txn_id,
-      pay_id: zapData.pay_id || null,
-      upi_button: zapData.upi_button || null,
-      payment_image_url: zapData.payment_image_url || null,
+      payment_url: paymentUrl,
+      upi_payload: upiPayload,
+      qr_image_url: qrImageUrl,
+      upi_id: upiId,
+      txn_id: txnId,
     });
   } catch (error: any) {
     console.error('Create order error:', error);
