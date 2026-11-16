@@ -9,9 +9,8 @@ import {
   ShieldCheck, 
   Clock, 
   ExternalLink,
-  QrCode,
-  CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  QrCode
 } from 'lucide-react';
 import { DetailedSevaCategory } from '@/lib/constants';
 
@@ -55,7 +54,6 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
   const [upiPayload, setUpiPayload] = useState<string | null>(null);
   const [qrImageUrl, setQrImageUrl] = useState<string | null>(null);
-  const [upiId, setUpiId] = useState<string | null>(null);
   const [countdown, setCountdown] = useState<number>(300); // 5 minutes
 
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -153,7 +151,6 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
       setPaymentUrl(data.payment_url);
       setUpiPayload(data.upi_payload);
       setQrImageUrl(data.qr_image_url);
-      setUpiId(data.upi_id);
       setStep('paying');
 
       // 2. Start polling for REAL bank verification (every 2.5 seconds)
@@ -256,58 +253,63 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm overflow-y-auto">
-      <div className="relative w-full max-w-lg my-8 rounded-3xl bg-white border-2 border-amber-300 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-sm overflow-hidden">
+      <div className="relative w-full max-w-md max-h-[92vh] flex flex-col rounded-2xl sm:rounded-3xl bg-white border-2 border-amber-300 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
-        {/* Top Header - Saffron Theme */}
-        <div className="bg-gradient-to-r from-kesariya-600 via-amber-600 to-kesariya-700 px-6 py-4 text-white flex items-center justify-between shadow-sm">
-          <div className="flex items-center gap-2.5">
-            <span className="text-2xl drop-shadow-sm">🚩</span>
+        {/* COMPACT TOP HEADER - Fits perfectly on all screens */}
+        <div className="shrink-0 bg-gradient-to-r from-kesariya-600 via-amber-600 to-kesariya-700 px-4 py-2.5 text-white flex items-center justify-between shadow-sm">
+          <div className="flex items-center gap-2">
+            <span className="text-xl drop-shadow-sm">🚩</span>
             <div>
-              <h3 className="text-base font-black leading-tight tracking-wide">
-                Seva Contribution • Ram Ka Sevak
+              <h3 className="text-xs sm:text-sm font-black tracking-wide leading-tight">
+                Ram Ka Sevak • Seva Daan
               </h3>
-              <p className="text-[11px] text-amber-100 font-medium">
-                {category.titleEnglish || category.titleHindi}
+              <p className="text-[10px] sm:text-[11px] text-amber-100 font-medium">
+                {category.titleHindi || category.titleEnglish}
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors cursor-pointer"
+            className="p-1 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors cursor-pointer"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Selected Package Banner */}
-        <div className="bg-amber-50/90 px-6 py-3 border-b border-amber-200/80 flex items-center justify-between">
-          <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
-              Selected Seva:
-            </span>
-            <span className="text-xs sm:text-sm font-bold text-slate-900">
-              {quantityText}
-            </span>
+        {/* SELECTED SEVA CARD - Prominent, clean styling for package & amount */}
+        <div className="shrink-0 bg-gradient-to-r from-amber-50 to-orange-50 px-4 py-2 border-b border-amber-200/90 flex items-center justify-between">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-base shrink-0">🍛</span>
+            <div className="truncate">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800/80 block leading-none mb-0.5">
+                Selected Seva
+              </span>
+              <span className="text-xs sm:text-sm font-extrabold text-slate-900 truncate block">
+                {quantityText}
+              </span>
+            </div>
           </div>
-          <div className="text-right">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">Amount:</span>
-            <span className="text-lg font-black text-kesariya-700">
+          <div className="text-right shrink-0 pl-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800/80 block leading-none mb-0.5">
+              Amount
+            </span>
+            <span className="text-base sm:text-lg font-black text-kesariya-700">
               ₹{amount.toLocaleString('en-IN')}
             </span>
           </div>
         </div>
 
-        {/* Modal Body */}
-        <div className="p-6">
+        {/* SCROLLABLE MODAL BODY - Never gets pushed off-screen */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5">
           {step === 'form' ? (
             /* STEP 1: Donor Details Form */
-            <form onSubmit={handleStartPayment} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <form onSubmit={handleStartPayment} className="space-y-3 sm:space-y-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-[11px] sm:text-xs font-bold text-slate-700 block mb-1">
                     Full Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -316,12 +318,12 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                     placeholder={isAnonymous ? 'Anonymous Donor' : 'e.g. Rahul Sharma'}
                     value={donorName}
                     onChange={(e) => setDonorName(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:border-kesariya-500 bg-white"
+                    className="w-full text-xs p-2 rounded-xl border border-slate-200 focus:border-kesariya-500 bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-[11px] sm:text-xs font-bold text-slate-700 block mb-1">
                     Mobile Number (10 Digits) <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -332,13 +334,13 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                     placeholder="10-digit mobile number"
                     value={donorPhone}
                     onChange={handlePhoneChange}
-                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:border-kesariya-500 bg-white"
+                    className="w-full text-xs p-2 rounded-xl border border-slate-200 focus:border-kesariya-500 bg-white"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
+                <label className="text-[11px] sm:text-xs font-bold text-slate-700 block mb-1">
                   Email Address (Optional, for receipt)
                 </label>
                 <input
@@ -346,12 +348,12 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                   placeholder="name@example.com"
                   value={donorEmail}
                   onChange={(e) => setDonorEmail(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:border-kesariya-500 bg-white"
+                  className="w-full text-xs p-2 rounded-xl border border-slate-200 focus:border-kesariya-500 bg-white"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
+                <label className="text-[11px] sm:text-xs font-bold text-slate-700 block mb-1">
                   Message / Prayer (Optional)
                 </label>
                 <textarea
@@ -359,43 +361,46 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                   placeholder="Write a prayer, dedication, or seva note..."
                   value={sankalpMessage}
                   onChange={(e) => setSankalpMessage(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:border-kesariya-500 bg-white"
+                  className="w-full text-xs p-2 rounded-xl border border-slate-200 focus:border-kesariya-500 bg-white"
                 />
               </div>
 
-              <div className="pt-1">
-                <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-600 select-none">
+              <div>
+                <label className="flex items-center gap-2 cursor-pointer text-[11px] sm:text-xs text-slate-600 select-none">
                   <input
                     type="checkbox"
                     checked={isAnonymous}
                     onChange={(e) => setIsAnonymous(e.target.checked)}
-                    className="rounded text-kesariya-600 focus:ring-kesariya-500"
+                    className="rounded text-kesariya-600 focus:ring-kesariya-500 w-3.5 h-3.5"
                   />
-                  <span>Donate anonymously (hide my name on public records)</span>
+                  <span>Donate anonymously (hide my name on public lists)</span>
                 </label>
               </div>
 
               {errorMsg && (
-                <div className="text-xs text-red-600 bg-red-50 p-2.5 rounded-xl border border-red-200 flex items-center gap-2">
+                <div className="text-xs text-red-600 bg-red-50 p-2 rounded-xl border border-red-200 flex items-center gap-1.5">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{errorMsg}</span>
                 </div>
               )}
 
-              <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200 text-[11px] text-slate-600 flex items-start gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <div className="p-2 sm:p-2.5 rounded-xl bg-amber-50/70 border border-amber-200 text-[10px] sm:text-[11px] text-slate-600 flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>
-                  <strong>100% Secure Payment:</strong> Direct transfer via PhonePe, Google Pay, Paytm, BHIM or any UPI app. Instant bank verification.
+                  <strong>100% Secure Payment:</strong> Direct UPI via PhonePe, GPay, Paytm, BHIM.
                 </span>
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full btn-divine-3d text-white font-black py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm disabled:opacity-50 shadow-md cursor-pointer"
+                className="w-full btn-divine-3d text-white font-black py-3 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm disabled:opacity-50 shadow-md cursor-pointer mt-1"
               >
                 {isSubmitting ? (
-                  <span>Generating Payment Details...</span>
+                  <span className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 animate-spin" />
+                    <span>Loading QR Code...</span>
+                  </span>
                 ) : (
                   <>
                     <Heart className="w-4 h-4 fill-white" />
@@ -406,120 +411,120 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
               </button>
             </form>
           ) : (
-            /* STEP 2: In-App Saffron/Ram Themed Payment Screen */
-            <div className="space-y-4 py-1 animate-in fade-in duration-200">
+            /* STEP 2: Mobile-Optimized Saffron/Ram Themed Payment Screen */
+            <div className="space-y-3 py-1">
               
-              {/* Header Badge */}
-              <div className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-2xl px-4 py-2.5">
-                <div className="flex items-center gap-2 text-xs font-bold text-amber-900">
-                  <Clock className="w-4 h-4 text-kesariya-600 animate-spin" />
+              {/* Header Live Timer Badge */}
+              <div className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-3 py-1.5">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900">
+                  <Clock className="w-3.5 h-3.5 text-kesariya-600 animate-spin" />
                   <span>Time Remaining:</span>
-                  <span className="font-mono text-kesariya-700 bg-amber-200/60 px-2 py-0.5 rounded-md">
+                  <span className="font-mono text-kesariya-700 bg-amber-200/60 px-1.5 py-0.5 rounded text-xs font-bold">
                     {formatTime(countdown)}
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                   <span>Live Gateway</span>
                 </div>
               </div>
 
-              {/* QR Code Container (Ram Ka Sevak Saffron Theme) */}
-              <div className="bg-gradient-to-b from-amber-50/60 via-orange-50/40 to-amber-50/60 border-2 border-amber-300 rounded-3xl p-5 text-center shadow-inner">
-                {qrImageUrl ? (
-                  <div className="relative inline-block mx-auto p-3 bg-white rounded-2xl shadow-md border-2 border-amber-400">
-                    <img 
-                      src={qrImageUrl} 
-                      alt="UPI QR Code" 
-                      className="w-48 h-48 sm:w-52 sm:h-52 mx-auto rounded-lg"
-                    />
-                    {/* Center Saffron Badge */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-kesariya-600 to-amber-500 border-2 border-white shadow-lg flex items-center justify-center text-sm">
-                        🚩
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="w-48 h-48 mx-auto flex items-center justify-center bg-white rounded-2xl border border-amber-200">
-                    <Clock className="w-8 h-8 text-amber-500 animate-spin" />
-                  </div>
-                )}
-
-                <div className="mt-3">
-                  <p className="text-xs font-bold text-slate-800">
-                    Scan with any UPI App
-                  </p>
-                  <p className="text-[11px] text-slate-500">
-                    Google Pay • PhonePe • Paytm • BHIM • Cred
-                  </p>
-                </div>
-              </div>
-
-              {/* Mobile UPI App Direct Pay Buttons */}
-              <div className="space-y-2.5">
+              {/* Mobile UPI App Direct Pay Buttons (Most Important for Mobile Users) */}
+              <div className="space-y-2">
                 <button
                   type="button"
                   onClick={() => handleOpenUpiApp()}
-                  className="w-full btn-divine-3d text-white font-black py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm shadow-md cursor-pointer"
+                  className="w-full btn-divine-3d text-white font-black py-3 px-3 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm shadow-md cursor-pointer"
                 >
                   <Smartphone className="w-4 h-4" />
                   <span>Open in UPI App (Pay ₹{amount.toLocaleString('en-IN')})</span>
                 </button>
 
                 {/* Quick App Badges */}
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-1.5">
                   <button
                     type="button"
                     onClick={() => handleOpenUpiApp('gpay')}
-                    className="py-2 px-1 text-[11px] font-bold rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center gap-1 transition-all cursor-pointer shadow-xs"
+                    className="py-1.5 px-1 text-[10px] sm:text-[11px] font-bold rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
                   >
                     <span>Google Pay</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => handleOpenUpiApp('phonepe')}
-                    className="py-2 px-1 text-[11px] font-bold rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center gap-1 transition-all cursor-pointer shadow-xs"
+                    className="py-1.5 px-1 text-[10px] sm:text-[11px] font-bold rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
                   >
                     <span>PhonePe</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => handleOpenUpiApp('paytm')}
-                    className="py-2 px-1 text-[11px] font-bold rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center gap-1 transition-all cursor-pointer shadow-xs"
+                    className="py-1.5 px-1 text-[10px] sm:text-[11px] font-bold rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
                   >
                     <span>Paytm</span>
                   </button>
                 </div>
               </div>
 
-              {/* Live Status Note */}
-              <div className="flex items-center justify-center gap-2 text-xs text-amber-900 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200">
-                <Clock className="w-4 h-4 text-kesariya-600 animate-spin shrink-0" />
+              {/* Compact Saffron QR Code Card */}
+              <div className="bg-gradient-to-b from-amber-50/50 via-orange-50/30 to-amber-50/50 border border-amber-300 rounded-2xl p-3 text-center shadow-inner">
+                {qrImageUrl ? (
+                  <div className="relative inline-block mx-auto p-2 bg-white rounded-xl shadow-md border border-amber-300">
+                    <img 
+                      src={qrImageUrl} 
+                      alt="UPI QR Code" 
+                      className="w-36 h-36 sm:w-44 sm:h-44 mx-auto rounded"
+                    />
+                    {/* Center Flag Badge */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-kesariya-600 to-amber-500 border-2 border-white shadow-md flex items-center justify-center text-xs">
+                        🚩
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-36 h-36 mx-auto flex items-center justify-center bg-white rounded-xl border border-amber-200">
+                    <Clock className="w-6 h-6 text-amber-500 animate-spin" />
+                  </div>
+                )}
+
+                <div className="mt-1.5">
+                  <p className="text-[11px] font-bold text-slate-800">
+                    Scan with any UPI App
+                  </p>
+                  <p className="text-[10px] text-slate-500">
+                    Google Pay • PhonePe • Paytm • BHIM • Cred
+                  </p>
+                </div>
+              </div>
+
+              {/* Waiting Status Note */}
+              <div className="flex items-center justify-center gap-1.5 text-[11px] text-amber-900 bg-amber-50/80 p-2 rounded-xl border border-amber-200">
+                <Clock className="w-3.5 h-3.5 text-kesariya-600 animate-spin shrink-0" />
                 <span>
-                  Waiting for bank confirmation... This page automatically updates once you complete the payment.
+                  Waiting for bank confirmation... Auto-verifies after payment.
                 </span>
               </div>
 
-              {/* Manual Bank Status Check Button */}
+              {/* Manual Bank Check Button */}
               <button
                 type="button"
                 onClick={handleManualCheck}
                 disabled={isSubmitting}
-                className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-300 transition-colors cursor-pointer"
+                className="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-300 transition-colors cursor-pointer"
               >
                 {isSubmitting ? 'Verifying with Bank...' : 'I Have Paid (Verify Bank Status)'}
               </button>
 
               {errorMsg && (
-                <div className="text-xs text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0 text-amber-700" />
+                <div className="text-xs text-amber-900 bg-amber-50 p-2 rounded-xl border border-amber-200 flex items-center gap-1.5">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0 text-amber-700" />
                   <span>{errorMsg}</span>
                 </div>
               )}
 
               {/* Footer Links */}
-              <div className="pt-1 flex items-center justify-between text-[11px] text-slate-500">
+              <div className="pt-0.5 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-500">
                 <button
                   type="button"
                   onClick={() => {
@@ -539,8 +544,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                     rel="noopener noreferrer"
                     className="hover:text-kesariya-700 flex items-center gap-1 underline cursor-pointer"
                   >
-                    <span>Trouble paying? Open Hosted Cashier</span>
-                    <ExternalLink className="w-3 h-3" />
+                    <span>Trouble? Open Hosted Cashier</span>
+                    <ExternalLink className="w-2.5 h-2.5" />
                   </a>
                 )}
               </div>

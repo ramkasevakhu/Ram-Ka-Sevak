@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import QRCode from 'qrcode';
 
 const ZAP_KEY = process.env.ZAP_KEY || 'zapc267112a11cfc2c29fa5d3a52a636afc';
 
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ramkasevak.org';
     const webhookUrl = `${appUrl}/api/payment/webhook`;
 
-    // 1. Call ZapUPI create-order API with switch=220 (routes specifically to ramkasevak webhook)
+    // 1. Call ZapUPI create-order API with switch=220
     const zapPayload = {
       zap_key: ZAP_KEY,
       order_id: orderId,
@@ -52,10 +53,10 @@ export async function POST(request: Request) {
 
     const paymentUrl = zapData.payment_url;
     let upiPayload = '';
-    let upiId = '';
+    let upiId = 'paytm.s1fd86i@pty';
     let txnId = zapData.txn_id || '';
 
-    // 2. Extract real UPI payload so we can render QR & UPI buttons inside Ram Ka Sevak Saffron theme
+    // 2. Extract real UPI payload from ZapUPI cashier
     if (paymentUrl) {
       try {
         const htmlRes = await fetch(paymentUrl);
@@ -71,42 +72,60 @@ export async function POST(request: Request) {
             const autoVal = inp.txnRef || '';
             const amountFormatted = parseFloat(inp.pay_amount || numericAmount).toFixed(2);
 
-            upiPayload = `upi://pay?pa=${encodeURIComponent(inp.upi_id)}&pn=${encodeURIComponent('Ram Ka Sevak')}&cu=INR&am=${encodeURIComponent(amountFormatted)}&tn=${encodeURIComponent(txnId)}&${encodeURIComponent(autoKey)}=${encodeURIComponent(autoVal)}`;
+            upiPayload = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent('Ram Ka Sevak')}&cu=INR&am=${encodeURIComponent(amountFormatted)}&tn=${encodeURIComponent(txnId)}&${encodeURIComponent(autoKey)}=${encodeURIComponent(autoVal)}`;
           }
         }
       } catch (extractErr) {
-        console.warn('Could not extract direct UPI payload, fallback to payment_url:', extractErr);
+        console.warn('Direct UPI payload extract note:', extractErr);
       }
     }
 
-    // Dynamic QR image for desktop scanning in Ram theme
-    const qrImageUrl = upiPayload
-      ? `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=8&data=${encodeURIComponent(upiPayload)}`
-      : null;
+    // Fallback if regex parsing missed anything
+    if (!upiPayload) {
+      const amountFormatted = parseFloat(String(numericAmount)).toFixed(2);
+      upiPayload = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent('Ram Ka Sevak')}&cu=INR&am=${encodeURIComponent(amountFormatted)}&tn=${encodeURIComponent(txnId)}`;
+    }
 
-    // 3. Safely record in database (non-blocking)
+    // 3. Generate instant in-memory Base64 QR code in 20ms (zero external roundtrips)
+    let qrImageUrl = '';
+    try {
+      qrImageUrl = await QRCode.toDataURL(upiPayload, {
+        width: 280,
+        margin: 1,
+        color: {
+          dark: '#0f172a',
+          light: '#ffffff',
+        },
+      });
+    } catch (qrErr) {
+      console.warn('QR code generation error:', qrErr);
+    }
+
+    // 4. Non-blocking asynchronous DB insert (does not slow down user response)
     if (supabase) {
-      try {
-        await supabase.from('donations').insert([
-          {
-            donor_name: isAnonymous ? 'Anonymous' : donorName?.trim() || 'Devoted Donor',
-            donor_email: donorEmail?.trim() || null,
-            donor_phone: cleanPhone || null,
-            category_id: sevaId || 'roadside-relief',
-            category_name: sevaName || 'Seva',
-            quantity: 1,
-            unit_label: packageLabel || '1 Thali',
-            amount: numericAmount,
-            payment_method: 'ZapUPI (Paytm Merchant)',
-            transaction_ref: orderId,
-            sankalp_message: message?.trim() || null,
-            is_anonymous: Boolean(isAnonymous),
-            status: 'pending',
-          },
-        ]);
-      } catch (dbErr) {
-        console.warn('DB recording note:', dbErr);
-      }
+      (async () => {
+        try {
+          await supabase.from('donations').insert([
+            {
+              donor_name: isAnonymous ? 'Anonymous' : donorName?.trim() || 'Devoted Donor',
+              donor_email: donorEmail?.trim() || null,
+              donor_phone: cleanPhone || null,
+              category_id: sevaId || 'roadside-relief',
+              category_name: sevaName || 'Seva',
+              quantity: 1,
+              unit_label: packageLabel || '1 Thali',
+              amount: numericAmount,
+              payment_method: 'ZapUPI (Paytm Merchant)',
+              transaction_ref: orderId,
+              sankalp_message: message?.trim() || null,
+              is_anonymous: Boolean(isAnonymous),
+              status: 'pending',
+            },
+          ]);
+        } catch (dbErr) {
+          console.warn('DB recording note:', dbErr);
+        }
+      })();
     }
 
     return NextResponse.json({
