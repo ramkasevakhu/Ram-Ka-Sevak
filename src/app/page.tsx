@@ -6,7 +6,6 @@ import { HeroSection } from '@/components/HeroSection';
 import { UniversalStories } from '@/components/UniversalStories';
 import { SevaProjects } from '@/components/SevaProjects';
 import { CreatorTrustSection } from '@/components/CreatorTrustSection';
-import { SankalpFeed } from '@/components/SankalpFeed';
 import { Footer } from '@/components/Footer';
 import { PaymentModal } from '@/components/PaymentModal';
 import { DivineBlessingModal } from '@/components/DivineBlessingModal';
@@ -78,10 +77,7 @@ export default function Home() {
       {/* 5. Creator Trust & 100% Genuine Ground Verification (@vipuone) */}
       <CreatorTrustSection />
 
-      {/* 6. Community Sankalp Wall (Horizontal Auto-Scrolling Carousel) */}
-      <SankalpFeed />
-
-      {/* 7. Footer */}
+      {/* 6. Footer */}
       <Footer />
 
       {/* 8. Payment & UPI Modal */}

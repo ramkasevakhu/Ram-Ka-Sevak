@@ -57,7 +57,7 @@ export const CreatorTrustSection: React.FC = () => {
             <div className="flex-1">
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-1.5">
                 <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-200">
-                  Ground Seva Lead
+                  Individual Seva Lead • 5-Member Ground Team
                 </span>
                 <span className="text-xs font-bold text-kesariya-700">
                   @{SITE_CONFIG.creatorUsername}
@@ -69,12 +69,38 @@ export const CreatorTrustSection: React.FC = () => {
               </h3>
               
               <p className="text-xs sm:text-sm text-kesariya-700 font-bold mt-0.5 mb-3">
-                सेवा ही भक्ति है • Ground Action by {SITE_CONFIG.creatorName} (@{SITE_CONFIG.creatorUsername})
+                सेवा ही भक्ति है • Ground Action by {SITE_CONFIG.creatorName} (@{SITE_CONFIG.creatorUsername}) & 5-Member Team
               </p>
 
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed italic bg-amber-50/70 p-4 rounded-2xl border border-amber-200/80">
-                "Humara sankalp bilkul spasht hai: na koi sadak par bhookha soye, na koi bejubaan pashu bina dawaai ke tadpe, aur na kisi gareeb parivar ka hospital ilaaj paise ki kami se ruke. Har ek yogdan ko hum Prabhu ka aashirwad maankar seedha zameen par pahunchate hain."
+                &ldquo;हमारा संकल्प बिल्कुल स्पष्ट है: न कोई सड़क पर भूखा सोए, न कोई बेज़ुबान पशु बिना दवाई के तड़पे, और न किसी गरीब परिवार का अस्पताल इलाज रुके। हर एक सहयोग को हम प्रभु का आशीर्वाद मानकर सीधे ज़मीन पर ज़रूरतमंद तक पहुँचाते हैं।&rdquo;
               </p>
+
+              {/* Payment Gateway & Compliance Explanation (Why Individual, Not Trust/NGO) */}
+              <div className="mt-4 p-4 rounded-2xl bg-white border-2 border-amber-300/80 shadow-2xs space-y-2.5 text-left">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                  <h4 className="text-xs sm:text-sm font-black text-slate-900">
+                    पहल की संरचना व वैधानिक स्थिति (About Team & Legal Status)
+                  </h4>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] sm:text-xs text-slate-700 leading-relaxed">
+                  <div className="p-3 rounded-xl bg-amber-50/60 border border-amber-200/80">
+                    <strong className="text-amber-950 block mb-1">
+                      1. व्यक्तिगत व 5 लोगों की ऑन-ग्राउंड टीम:
+                    </strong>
+                    यह कोई औपचारिक पंजीकृत NGO या कॉर्पोरेट ट्रस्ट नहीं है। इसे <strong>विपु (@vipuone) और हमारी 5 समर्पित युवाओं की टीम</strong> व्यक्तिगत रूप से ज़मीन पर संचालित करती है, ताकि 100% सहयोग बिना किसी प्रशासनिक कटौती या मध्यस्थ के सीधे राशन और सेवा में लगे।
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-emerald-50/60 border border-emerald-200/80">
+                    <strong className="text-emerald-950 block mb-1">
+                      2. पेमेंट गेटवे व वित्तीय स्पष्टता (No 80G Claim):
+                    </strong>
+                    यहाँ दिया जाने वाला प्रत्येक सहयोग धर्मार्थ व स्वैच्छिक है। व्यक्तिगत सेवा पहल होने के कारण इस पर 80G या टैक्स छूट उपलब्ध नहीं है। प्रत्येक कार्य की वीडियो रिकॉर्डिंग और दैनिक हिसाब सोशल मीडिया रील्स पर सार्वजनिक रहता है।
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

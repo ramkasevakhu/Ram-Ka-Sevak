@@ -47,12 +47,17 @@ export const Footer: React.FC = () => {
             </div>
 
             <p className="text-xs sm:text-sm text-slate-400 leading-relaxed pr-4">
-              Prabhu Shri Ram ki paavan prerna se chalaayi jaa rahi zameeni seva initiative. Roadside beghar buzurgon ko garam bhojan, bejubaan pashuon ki dekhbhaal, emergency hospital ilaj aur aafat rahat me 100% imaandaari aur zero middlemen commission.
+              Prabhu Shri Ram ki paavan prerna se chalaayi jaa rahi zameeni seva initiative. Roadside beghar buzurgon ko garam bhojan, bejubaan pashuon ki dekhbhaal, emergency hospital ilaj aur aafat rahat me imaandaari aur zero middlemen commission.
             </p>
 
-            <div className="flex items-center gap-2 text-xs text-emerald-400 font-semibold bg-slate-800/80 px-3 py-2 rounded-xl border border-slate-700 w-fit">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>100% Genuine Grassroots Seva By @{SITE_CONFIG.creatorUsername}</span>
+            {/* Legal Status Notice for Payment Gateways & Donors */}
+            <div className="p-3.5 rounded-xl bg-slate-800/90 border border-slate-700 text-xs text-amber-200/95 leading-relaxed space-y-1">
+              <div>
+                <strong>वैधानिक स्थिति (Legal Status):</strong> यह <strong>विपु (@vipuone) और 5 युवाओं की समर्पित टीम</strong> द्वारा संचालित एक व्यक्तिगत ज़मीनी सेवा पहल है (पंजीकृत NGO/Trust नहीं है)।
+              </div>
+              <div className="text-[11px] text-slate-400">
+                दान पर कोई 80G या आयकर छूट (Tax Exemption) उपलब्ध नहीं है। प्रत्येक सहयोग सीधे सड़क पर भोजन, चारा और दवाओं की खरीद में लगाया जाता है।
+              </div>
             </div>
           </div>
 

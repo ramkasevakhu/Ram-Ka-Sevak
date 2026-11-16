@@ -1,18 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, 
-  Copy, 
-  Check, 
   Heart, 
-  ShieldCheck, 
   Smartphone, 
-  QrCode,
-  ArrowRight,
-  CheckCircle2
+  ArrowRight, 
+  ShieldCheck, 
+  Clock, 
+  ExternalLink 
 } from 'lucide-react';
-import { SITE_CONFIG, DetailedSevaCategory } from '@/lib/constants';
+import { DetailedSevaCategory } from '@/lib/constants';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -43,88 +41,176 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   const [donorName, setDonorName] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [donorPhone, setDonorPhone] = useState('');
-  const [transactionRef, setTransactionRef] = useState('');
+  const [donorEmail, setDonorEmail] = useState('');
   const [sankalpMessage, setSankalpMessage] = useState('');
-  const [copiedUpi, setCopiedUpi] = useState(false);
+  
+  // Payment states
+  const [step, setStep] = useState<'form' | 'paying'>('form');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [activeOrderId, setActiveOrderId] = useState<string | null>(null);
+  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clear polling on unmount or close
+  useEffect(() => {
+    return () => {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+      }
+    };
+  }, []);
 
   if (!isOpen || !category) return null;
 
-  const upiId = SITE_CONFIG.defaultUpiId;
-  const upiName = SITE_CONFIG.defaultUpiName;
-  const note = `Ram Ka Sevak - ${category.titleEnglish}`;
-
-  // Standard UPI deep link specification
-  const upiDeepLink = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
-
-  // QuickChart QR Code API for high quality sharp QR
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=${encodeURIComponent(upiDeepLink)}`;
-
-  const handleCopyUpi = () => {
-    navigator.clipboard.writeText(upiId);
-    setCopiedUpi(true);
-    setTimeout(() => setCopiedUpi(false), 2500);
+  // Handle strictly 10 digits phone input
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onlyDigits = e.target.value.replace(/\D/g, '').slice(0, 10);
+    setDonorPhone(onlyDigits);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleStartPayment = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    setErrorMsg('');
 
-    const finalDonorName = isAnonymous ? 'Anonymous Sevak (गुप्त दानी)' : (donorName.trim() || 'Devoted Donor');
+    // Validations
+    if (!isAnonymous && !donorName.trim()) {
+      setErrorMsg('Please enter your full name.');
+      return;
+    }
+
+    if (!donorPhone || donorPhone.length !== 10) {
+      setErrorMsg('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    const finalDonorName = isAnonymous ? 'Anonymous Donor' : (donorName.trim() || 'Supporter');
 
     try {
-      await fetch('/api/donate', {
+      // 1. Create order via ZapUPI backend API
+      const res = await fetch('/api/payment/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          amount,
+          sevaId: category.id,
+          sevaName: category.titleEnglish || category.titleHindi,
+          packageLabel: quantityText,
           donorName: finalDonorName,
           donorPhone: donorPhone.trim(),
-          categoryId: category.id,
-          categoryName: category.titleEnglish,
-          quantity: 1,
-          unitLabel: quantityText,
-          amount,
-          paymentMethod: 'UPI',
-          transactionRef: transactionRef.trim() || 'UPI-DIRECT',
-          sankalpMessage: sankalpMessage.trim(),
+          donorEmail: donorEmail.trim(),
+          message: sankalpMessage.trim(),
           isAnonymous,
-          status: 'verified',
         }),
       });
-    } catch (err) {
-      console.warn('Database save note:', err);
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success || !data.order_id) {
+        throw new Error(data.error || 'Failed to initiate payment. Please try again.');
+      }
+
+      const orderId = data.order_id;
+      setActiveOrderId(orderId);
+      setPaymentUrl(data.payment_url);
+      setStep('paying');
+
+      // If on mobile device, open payment cashier link
+      if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && data.payment_url) {
+        window.open(data.payment_url, '_blank');
+      }
+
+      // 2. Start polling for real bank verification (Every 3 seconds)
+      // Guarantees real bank verification - no fake payments pass
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+
+      pollIntervalRef.current = setInterval(async () => {
+        try {
+          const statusRes = await fetch('/api/payment/check-status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ order_id: orderId }),
+          });
+          const statusData = await statusRes.json();
+
+          if (statusData.verified) {
+            if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+
+            // Payment Verified from Bank! Show Blessing Modal
+            onPaymentSuccess({
+              donorName: finalDonorName,
+              categoryName: category.titleEnglish || category.titleHindi,
+              unitsText: quantityText,
+              amount,
+              transactionRef: statusData.utr || orderId,
+              message: sankalpMessage.trim(),
+            });
+          }
+        } catch (pollErr) {
+          console.log('Status polling...', pollErr);
+        }
+      }, 3000);
+
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Error connecting to payment gateway.');
     } finally {
       setIsSubmitting(false);
-      onPaymentSuccess({
-        donorName: finalDonorName,
-        categoryName: category.titleEnglish,
-        unitsText: quantityText,
-        amount,
-        transactionRef: transactionRef.trim() || `RKS-${Math.floor(100000 + Math.random() * 900000)}`,
-        message: sankalpMessage.trim(),
+    }
+  };
+
+  const handleManualCheck = async () => {
+    if (!activeOrderId) return;
+    setIsSubmitting(true);
+    try {
+      const statusRes = await fetch('/api/payment/check-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: activeOrderId }),
       });
+      const statusData = await statusRes.json();
+
+      if (statusData.verified) {
+        if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+        const finalDonorName = isAnonymous ? 'Anonymous Donor' : (donorName.trim() || 'Supporter');
+        onPaymentSuccess({
+          donorName: finalDonorName,
+          categoryName: category.titleEnglish || category.titleHindi,
+          unitsText: quantityText,
+          amount,
+          transactionRef: statusData.utr || activeOrderId,
+          message: sankalpMessage.trim(),
+        });
+      } else {
+        setErrorMsg('Payment not verified by your bank yet. If you have already paid, please wait 10-15 seconds and try again.');
+      }
+    } catch (err) {
+      setErrorMsg('Error verifying status. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border-2 border-amber-300 overflow-hidden my-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm overflow-y-auto">
+      <div className="relative w-full max-w-lg my-8 rounded-3xl bg-white border-2 border-amber-300 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
-        {/* Modal Top Header */}
-        <div className="bg-gradient-to-r from-kesariya-600 via-amber-500 to-kesariya-700 px-6 py-5 text-white flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🛕</span>
+        {/* Top Header */}
+        <div className="bg-gradient-to-r from-kesariya-600 to-amber-600 px-6 py-4 text-white flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <span className="text-xl">🚩</span>
             <div>
-              <h3 className="font-extrabold text-lg leading-tight">
-                पवित्र सेवा संकल्प (Seva Contribution)
+              <h3 className="text-base font-black leading-tight tracking-wide">
+                Seva Contribution (Seva Daan)
               </h3>
-              <p className="text-xs text-amber-100">
-                {SITE_CONFIG.domain} • Ram Ka Sevak Grassroots Relief Fund
+              <p className="text-[11px] text-amber-100 font-medium">
+                {category.titleEnglish || category.titleHindi}
               </p>
             </div>
           </div>
-
           <button
+            type="button"
             onClick={onClose}
             className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors cursor-pointer"
             aria-label="Close"
@@ -133,223 +219,193 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           </button>
         </div>
 
-        {/* Selected Category & Amount Summary Banner */}
-        <div className="bg-amber-50/90 px-6 py-4 border-b border-amber-200">
-          <div className="flex items-center justify-between mb-1.5">
-            <div>
-              <span className="text-[10px] font-black text-amber-800 uppercase tracking-wider block">
-                Chuna Gaya Seva Sankalp:
-              </span>
-              <div className="text-sm sm:text-base font-black text-slate-900">
-                {category.titleEnglish} ({quantityText})
-              </div>
-            </div>
-
-            <div className="text-right">
-              <span className="text-[10px] text-slate-500 block">Daan Rashi:</span>
-              <span className="text-2xl font-black text-kesariya-700">
-                ₹{amount.toLocaleString('en-IN')}
-              </span>
-            </div>
+        {/* Selected Package Banner */}
+        <div className="bg-amber-50/80 px-6 py-3 border-b border-amber-200 flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-bold uppercase text-slate-500 block">
+              Selected Seva:
+            </span>
+            <span className="text-xs sm:text-sm font-bold text-slate-900">
+              {quantityText}
+            </span>
           </div>
-
-          <div className="flex items-center gap-2 text-xs font-semibold text-emerald-800 bg-white/80 p-2 rounded-xl border border-emerald-200">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span className="truncate">{exactWhatIsGiven}</span>
+          <div className="text-right">
+            <span className="text-[11px] font-bold uppercase text-slate-500 block">Amount:</span>
+            <span className="text-lg font-black text-kesariya-700">
+              ₹{amount.toLocaleString('en-IN')}
+            </span>
           </div>
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 max-h-[75vh] overflow-y-auto space-y-6">
-          
-          {/* 1. Mobile 1-Click UPI Intent Apps */}
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Smartphone className="w-4 h-4 text-kesariya-600" />
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                1-Click UPI Payment (Direct Mobile Apps)
-              </span>
-            </div>
+        <div className="p-6">
+          {step === 'form' ? (
+            /* STEP 1: Donor Details Form */
+            <form onSubmit={handleStartPayment} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    Full Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    disabled={isAnonymous}
+                    placeholder={isAnonymous ? 'Anonymous Donor' : 'e.g. Rahul Sharma'}
+                    value={donorName}
+                    onChange={(e) => setDonorName(e.target.value)}
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:border-kesariya-500 bg-white"
+                  />
+                </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <a
-                href={upiDeepLink}
-                className="p-2.5 rounded-xl border border-slate-200 hover:border-purple-500 bg-slate-50 hover:bg-purple-50 flex flex-col items-center justify-center text-center transition-all group"
-              >
-                <span className="text-xs font-bold text-purple-700 group-hover:scale-105 transition-transform">
-                  PhonePe
-                </span>
-                <span className="text-[10px] text-slate-400">Direct Pay</span>
-              </a>
-
-              <a
-                href={upiDeepLink}
-                className="p-2.5 rounded-xl border border-slate-200 hover:border-blue-500 bg-slate-50 hover:bg-blue-50 flex flex-col items-center justify-center text-center transition-all group"
-              >
-                <span className="text-xs font-bold text-blue-600 group-hover:scale-105 transition-transform">
-                  Google Pay
-                </span>
-                <span className="text-[10px] text-slate-400">Direct Pay</span>
-              </a>
-
-              <a
-                href={upiDeepLink}
-                className="p-2.5 rounded-xl border border-slate-200 hover:border-cyan-500 bg-slate-50 hover:bg-cyan-50 flex flex-col items-center justify-center text-center transition-all group"
-              >
-                <span className="text-xs font-bold text-cyan-700 group-hover:scale-105 transition-transform">
-                  Paytm UPI
-                </span>
-                <span className="text-[10px] text-slate-400">Direct Pay</span>
-              </a>
-
-              <a
-                href={upiDeepLink}
-                className="p-2.5 rounded-xl border border-slate-200 hover:border-kesariya-500 bg-slate-50 hover:bg-amber-50 flex flex-col items-center justify-center text-center transition-all group"
-              >
-                <span className="text-xs font-bold text-kesariya-600 group-hover:scale-105 transition-transform">
-                  BHIM / Any
-                </span>
-                <span className="text-[10px] text-slate-400">Any App</span>
-              </a>
-            </div>
-          </div>
-
-          {/* 2. QR Code & Direct UPI ID */}
-          <div className="bg-amber-50/60 p-4 rounded-2xl border border-amber-200 flex flex-col sm:flex-row items-center gap-4">
-            
-            <div className="w-36 h-36 bg-white p-2 rounded-xl border-2 border-amber-300 shadow-sm shrink-0 flex items-center justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={qrCodeUrl}
-                alt="Scan to Pay via UPI"
-                className="w-full h-full object-contain"
-              />
-            </div>
-
-            <div className="text-center sm:text-left flex-1 space-y-2">
-              <div className="flex items-center justify-center sm:justify-start gap-1.5 text-xs font-bold text-slate-800">
-                <QrCode className="w-4 h-4 text-kesariya-600" />
-                <span>Kisi bhi UPI App se QR Scan Karein</span>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    Mobile Number (10 Digits) <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    maxLength={10}
+                    pattern="[0-9]{10}"
+                    placeholder="10-digit mobile number"
+                    value={donorPhone}
+                    onChange={handlePhoneChange}
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:border-kesariya-500 bg-white"
+                  />
+                </div>
               </div>
-              
-              <p className="text-xs text-slate-500">
-                GPay, PhonePe, Paytm ya CRED se scan karke ₹{amount} seedha seva account me transfer karein.
-              </p>
 
-              {/* Copy UPI Box */}
-              <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-amber-300 text-xs font-mono font-bold text-slate-800">
-                <span className="truncate flex-1">{upiId}</span>
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Email Address (Optional, for receipt)
+                </label>
+                <input
+                  type="email"
+                  placeholder="name@example.com"
+                  value={donorEmail}
+                  onChange={(e) => setDonorEmail(e.target.value)}
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:border-kesariya-500 bg-white"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Message / Prayer (Optional)
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="Write a prayer, dedication, or seva note..."
+                  value={sankalpMessage}
+                  onChange={(e) => setSankalpMessage(e.target.value)}
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:border-kesariya-500 bg-white"
+                />
+              </div>
+
+              <div className="pt-1">
+                <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-600">
+                  <input
+                    type="checkbox"
+                    checked={isAnonymous}
+                    onChange={(e) => setIsAnonymous(e.target.checked)}
+                    className="rounded text-kesariya-600 focus:ring-kesariya-500"
+                  />
+                  <span>Donate anonymously (hide my name on public lists)</span>
+                </label>
+              </div>
+
+              {errorMsg && (
+                <p className="text-xs text-red-600 bg-red-50 p-2.5 rounded-xl border border-red-200">
+                  {errorMsg}
+                </p>
+              )}
+
+              <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200 text-[11px] text-slate-600 flex items-start gap-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span>
+                  <strong>100% Secure Payment:</strong> Direct transfer via PhonePe, Google Pay, Paytm, BHIM or any UPI app. Instant bank verification.
+                </span>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full btn-divine-3d text-white font-black py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm disabled:opacity-50 shadow-md cursor-pointer"
+              >
+                {isSubmitting ? (
+                  <span>Connecting to UPI Gateway...</span>
+                ) : (
+                  <>
+                    <Heart className="w-4 h-4 fill-white" />
+                    <span>Pay via UPI (₹{amount.toLocaleString('en-IN')})</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </form>
+          ) : (
+            /* STEP 2: Live Payment Cashier & Status Waiting */
+            <div className="text-center py-4 space-y-5">
+              <div className="w-16 h-16 mx-auto rounded-3xl bg-amber-100 flex items-center justify-center text-3xl">
+                💳
+              </div>
+
+              <div>
+                <h4 className="text-lg font-bold text-slate-900 mb-1">
+                  Waiting for Payment Confirmation...
+                </h4>
+                <p className="text-xs text-slate-600 max-w-sm mx-auto">
+                  Click the button below to complete the payment via PhonePe, Google Pay, Paytm or any UPI app.
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-3 max-w-sm mx-auto">
+                {paymentUrl && (
+                  <a
+                    href={paymentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full btn-divine-3d text-white font-black py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm shadow-md cursor-pointer"
+                  >
+                    <Smartphone className="w-4 h-4" />
+                    <span>Open in UPI App / Paytm Cashier ↗</span>
+                  </a>
+                )}
+
+                <div className="flex items-center justify-center gap-2 text-xs text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+                  <Clock className="w-4 h-4 animate-spin text-amber-600" />
+                  <span>This page will automatically confirm once your payment is received by the bank.</span>
+                </div>
+
                 <button
                   type="button"
-                  onClick={handleCopyUpi}
-                  className="p-1 rounded-md text-kesariya-600 hover:bg-amber-50 flex items-center gap-1 cursor-pointer"
-                  title="Copy UPI ID"
+                  onClick={handleManualCheck}
+                  disabled={isSubmitting}
+                  className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-300 transition-colors cursor-pointer"
                 >
-                  {copiedUpi ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-emerald-600" />
-                      <span className="text-[10px] text-emerald-600">Copied!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5" />
-                      <span className="text-[10px]">Copy</span>
-                    </>
-                  )}
+                  {isSubmitting ? 'Verifying with bank...' : 'I have completed payment (Verify Now)'}
+                </button>
+              </div>
+
+              {errorMsg && (
+                <p className="text-xs text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200 max-w-sm mx-auto">
+                  {errorMsg}
+                </p>
+              )}
+
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+                    setStep('form');
+                  }}
+                  className="text-xs text-slate-400 hover:text-slate-600 underline cursor-pointer"
+                >
+                  ← Go back or edit details
                 </button>
               </div>
             </div>
-
-          </div>
-
-          {/* 3. Donor Details Form */}
-          <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-            
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                Aapka Shubh Naam (Donor Name):
-              </label>
-
-              <label className="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={isAnonymous}
-                  onChange={(e) => setIsAnonymous(e.target.checked)}
-                  className="rounded text-kesariya-600 focus:ring-kesariya-500"
-                />
-                <span className="font-medium">Gupt Daan (गुप्त दान)</span>
-              </label>
-            </div>
-
-            {!isAnonymous && (
-              <input
-                type="text"
-                placeholder="e.g. Amit Sharma / Priya Rathore"
-                value={donorName}
-                onChange={(e) => setDonorName(e.target.value)}
-                className="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-kesariya-500 focus:ring-2 focus:ring-kesariya-100 transition-all text-slate-900"
-              />
-            )}
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
-                  WhatsApp Number (Video proof & receipt pane ke liye):
-                </label>
-                <input
-                  type="tel"
-                  placeholder="e.g. 9876543210"
-                  value={donorPhone}
-                  onChange={(e) => setDonorPhone(e.target.value)}
-                  className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:border-kesariya-500 text-slate-900"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
-                  UPI UTR / Ref Number (Optional):
-                </label>
-                <input
-                  type="text"
-                  placeholder="12-digit UTR Number"
-                  value={transactionRef}
-                  onChange={(e) => setTransactionRef(e.target.value)}
-                  className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:border-kesariya-500 text-slate-900"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">
-                Koi Prarthana ya Dua Sandesh (Optional):
-              </label>
-              <textarea
-                rows={2}
-                placeholder="e.g. Prabhu Shri Ram sabhi ka kalyan karein aur sabko swasth rakhein! 🙏"
-                value={sankalpMessage}
-                onChange={(e) => setSankalpMessage(e.target.value)}
-                className="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:border-kesariya-500 text-slate-900 resize-none"
-              />
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full btn-divine-3d text-white font-extrabold py-3.5 rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-lg disabled:opacity-50"
-            >
-              <Heart className="w-5 h-5 fill-white" />
-              <span>{isSubmitting ? 'Sankalp Darj Ho Raha Hai...' : 'Payment Complete Kiya • Digital Receipt Payein'}</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-
-            <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500 text-center">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>100% Direct Impact • 0% Middlemen Commission • Direct Grassroots Delivery</span>
-            </div>
-
-          </form>
-
+          )}
         </div>
 
       </div>

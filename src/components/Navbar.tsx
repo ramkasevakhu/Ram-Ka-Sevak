@@ -74,12 +74,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
               <span>Ground Proof (Reels)</span>
             </button>
             <button
-              onClick={() => scrollToSection('sankalp-wall')}
-              className="hover:text-kesariya-600 transition-colors cursor-pointer"
-            >
-              Blessings Wall
-            </button>
-            <button
               onClick={() => scrollToSection('contact-transparency')}
               className="hover:text-kesariya-600 transition-colors cursor-pointer flex items-center gap-1.5"
             >
@@ -164,19 +158,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
             <div>
               <span className="block text-slate-900 leading-tight font-extrabold">Ground Proof & Reels</span>
               <span className="text-[11px] text-slate-400 font-normal">Direct video proof by @{SITE_CONFIG.creatorUsername}</span>
-            </div>
-          </button>
-
-          <button
-            onClick={() => scrollToSection('sankalp-wall')}
-            className="flex items-center gap-3 w-full text-left py-3 px-3.5 rounded-2xl text-sm font-bold text-slate-800 hover:bg-amber-50/80 transition-colors border border-transparent hover:border-amber-200"
-          >
-            <div className="w-9 h-9 rounded-xl bg-orange-100 text-orange-700 flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <div>
-              <span className="block text-slate-900 leading-tight font-extrabold">Blessings & Impact Wall</span>
-              <span className="text-[11px] text-slate-400 font-normal">Logon ki duaayein aur verified contributions</span>
             </div>
           </button>
 
