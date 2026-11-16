@@ -9,8 +9,7 @@ import {
   ShieldCheck, 
   Clock, 
   ExternalLink,
-  AlertCircle,
-  QrCode
+  AlertCircle
 } from 'lucide-react';
 import { DetailedSevaCategory } from '@/lib/constants';
 
@@ -35,18 +34,24 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   isOpen,
   onClose,
   category,
-  amount,
-  quantityText,
+  amount: initialAmount,
+  quantityText: initialQuantityText,
   exactWhatIsGiven,
   onPaymentSuccess,
 }) => {
+  // Amount & Custom Amount states
+  const [currentAmount, setCurrentAmount] = useState<number>(initialAmount || 250);
+  const [customAmountStr, setCustomAmountStr] = useState<string>(String(initialAmount || 250));
+  const [isCustom, setIsCustom] = useState<boolean>(false);
+
+  // Donor form states
   const [donorName, setDonorName] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [donorPhone, setDonorPhone] = useState('');
   const [donorEmail, setDonorEmail] = useState('');
   const [sankalpMessage, setSankalpMessage] = useState('');
   
-  // Payment states
+  // Payment gateway states
   const [step, setStep] = useState<'form' | 'paying'>('form');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -58,6 +63,16 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Reset when modal opens or initial amount changes
+  useEffect(() => {
+    const startAmt = initialAmount > 0 ? initialAmount : 250;
+    setCurrentAmount(startAmt);
+    setCustomAmountStr(String(startAmt));
+    setIsCustom(false);
+    setErrorMsg('');
+    setStep('form');
+  }, [initialAmount, isOpen]);
 
   // Clear timers on unmount or close
   useEffect(() => {
@@ -91,6 +106,87 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
   if (!isOpen || !category) return null;
 
+  // Smart dynamic label calculation based on amount and category
+  const calculateDynamicLabel = (cat: DetailedSevaCategory, amt: number) => {
+    // If exact preset match exists in category options
+    const exactMatch = cat.options.find((opt) => opt.amount === amt);
+    if (exactMatch) {
+      return exactMatch.label;
+    }
+
+    // Annadaan Seva (₹50 = 1 Thali Bhojan)
+    if (
+      cat.id === 'roadside-relief' || 
+      cat.titleHindi?.includes('अन्नदान') || 
+      cat.titleEnglish?.toLowerCase().includes('food')
+    ) {
+      const thaliCount = Math.floor(amt / 50);
+      if (thaliCount <= 0) {
+        return `भोजन सेवा सहयोग (₹${amt})`;
+      }
+      if (thaliCount === 1) {
+        return `1 Vyakti ka Khana (1 Thali)`;
+      }
+      return `${thaliCount} Logon ka Khana (${thaliCount} Thali Bhojan)`;
+    }
+
+    // Gau & Animal Seva (₹150 = 1 day care)
+    if (
+      cat.id === 'animal-care' || 
+      cat.titleHindi?.includes('गौ') || 
+      cat.titleEnglish?.toLowerCase().includes('animal')
+    ) {
+      const days = Math.floor(amt / 150);
+      if (days >= 1) {
+        return `${days} Din ka Chara & Pashu Seva`;
+      }
+      return `Gau & Pashu Seva Sahyog`;
+    }
+
+    // Medical Relief
+    if (
+      cat.id === 'medical-cases' || 
+      cat.titleHindi?.includes('इलाज') || 
+      cat.titleEnglish?.toLowerCase().includes('medical')
+    ) {
+      return `Emergency Medical Relief (दवा व इलाज)`;
+    }
+
+    // Disaster Relief
+    if (
+      cat.id === 'disaster-fund' || 
+      cat.titleHindi?.includes('आपदा') || 
+      cat.titleEnglish?.toLowerCase().includes('disaster')
+    ) {
+      return `Aapatkaleen Rahat Sahyog (आपदा राहत)`;
+    }
+
+    return `₹${amt.toLocaleString('en-IN')} Seva Sankalp`;
+  };
+
+  const currentQuantityText = calculateDynamicLabel(category, currentAmount);
+
+  // Handle Preset Chip Click
+  const handleSelectPreset = (presetAmt: number) => {
+    setIsCustom(false);
+    setCurrentAmount(presetAmt);
+    setCustomAmountStr(String(presetAmt));
+    setErrorMsg('');
+  };
+
+  // Handle Custom Amount Input Change
+  const handleCustomAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const valStr = e.target.value.replace(/\D/g, ''); // numbers only
+    setCustomAmountStr(valStr);
+    setIsCustom(true);
+
+    const valNum = Number(valStr);
+    if (valNum > 0) {
+      setCurrentAmount(valNum);
+      setErrorMsg('');
+    }
+  };
+
   // Format seconds to mm:ss
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60);
@@ -109,6 +205,11 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     setErrorMsg('');
 
     // Validations
+    if (!currentAmount || currentAmount < 10) {
+      setErrorMsg('कृपया कम से कम ₹10 की राशि दर्ज करें। (Minimum ₹10 required)');
+      return;
+    }
+
     if (!isAnonymous && !donorName.trim()) {
       setErrorMsg('Please enter your full name.');
       return;
@@ -128,10 +229,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount,
+          amount: currentAmount,
           sevaId: category.id,
           sevaName: category.titleEnglish || category.titleHindi,
-          packageLabel: quantityText,
+          packageLabel: currentQuantityText,
           donorName: finalDonorName,
           donorPhone: donorPhone.trim(),
           donorEmail: donorEmail.trim(),
@@ -154,7 +255,6 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
       setStep('paying');
 
       // 2. Start polling for REAL bank verification (every 2.5 seconds)
-      // Only passes when bank confirms payment and provides UTR
       if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
 
       pollIntervalRef.current = setInterval(async () => {
@@ -175,8 +275,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             onPaymentSuccess({
               donorName: finalDonorName,
               categoryName: category.titleEnglish || category.titleHindi,
-              unitsText: quantityText,
-              amount,
+              unitsText: currentQuantityText,
+              amount: currentAmount,
               transactionRef: statusData.utr,
               message: sankalpMessage.trim(),
             });
@@ -212,8 +312,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
         onPaymentSuccess({
           donorName: finalDonorName,
           categoryName: category.titleEnglish || category.titleHindi,
-          unitsText: quantityText,
-          amount,
+          unitsText: currentQuantityText,
+          amount: currentAmount,
           transactionRef: statusData.utr,
           message: sankalpMessage.trim(),
         });
@@ -254,9 +354,9 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-sm overflow-hidden">
-      <div className="relative w-full max-w-md max-h-[92vh] flex flex-col rounded-2xl sm:rounded-3xl bg-white border-2 border-amber-300 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-md max-h-[94vh] flex flex-col rounded-2xl sm:rounded-3xl bg-white border-2 border-amber-300 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
-        {/* COMPACT TOP HEADER - Fits perfectly on all screens */}
+        {/* COMPACT TOP HEADER */}
         <div className="shrink-0 bg-gradient-to-r from-kesariya-600 via-amber-600 to-kesariya-700 px-4 py-2.5 text-white flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-2">
             <span className="text-xl drop-shadow-sm">🚩</span>
@@ -279,34 +379,84 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           </button>
         </div>
 
-        {/* SELECTED SEVA CARD - Prominent, clean styling for package & amount */}
-        <div className="shrink-0 bg-gradient-to-r from-amber-50 to-orange-50 px-4 py-2 border-b border-amber-200/90 flex items-center justify-between">
+        {/* SELECTED SEVA CARD - Prominent Package & Dynamic Amount Banner */}
+        <div className="shrink-0 bg-gradient-to-r from-amber-50 to-orange-50 px-4 py-2.5 border-b border-amber-200/90 flex items-center justify-between">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-base shrink-0">🍛</span>
+            <span className="text-lg shrink-0">🍛</span>
             <div className="truncate">
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800/80 block leading-none mb-0.5">
-                Selected Seva
+                Seva Sankalp:
               </span>
               <span className="text-xs sm:text-sm font-extrabold text-slate-900 truncate block">
-                {quantityText}
+                {currentQuantityText}
               </span>
             </div>
           </div>
           <div className="text-right shrink-0 pl-2">
             <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800/80 block leading-none mb-0.5">
-              Amount
+              Total Amount
             </span>
             <span className="text-base sm:text-lg font-black text-kesariya-700">
-              ₹{amount.toLocaleString('en-IN')}
+              ₹{currentAmount.toLocaleString('en-IN')}
             </span>
           </div>
         </div>
 
-        {/* SCROLLABLE MODAL BODY - Never gets pushed off-screen */}
+        {/* SCROLLABLE MODAL BODY */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-5">
           {step === 'form' ? (
-            /* STEP 1: Donor Details Form */
+            /* STEP 1: Donor Details & Amount Selection Form */
             <form onSubmit={handleStartPayment} className="space-y-3 sm:space-y-3.5">
+              
+              {/* AMOUNT SELECTOR & CUSTOM AMOUNT BOX */}
+              <div className="bg-amber-50/60 p-2.5 rounded-2xl border border-amber-200">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-[11px] sm:text-xs font-bold text-slate-800">
+                    सहयोग राशि चुनें (Select or Enter Amount):
+                  </label>
+                  <span className="text-[10px] font-bold text-kesariya-700 bg-amber-200/60 px-2 py-0.5 rounded-full">
+                    ₹50 = 1 Thali
+                  </span>
+                </div>
+
+                {/* Preset Chips */}
+                <div className="grid grid-cols-4 sm:grid-cols-6 gap-1.5 mb-2">
+                  {[50, 250, 500, 1100, 2100, 5100].map((amt) => {
+                    const isSelected = !isCustom && currentAmount === amt;
+                    return (
+                      <button
+                        key={amt}
+                        type="button"
+                        onClick={() => handleSelectPreset(amt)}
+                        className={`py-1.5 px-1 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${
+                          isSelected
+                            ? 'bg-kesariya-600 text-white border-kesariya-600 shadow-xs scale-102'
+                            : 'bg-white text-slate-700 border-slate-200 hover:border-amber-400 hover:bg-amber-50'
+                        }`}
+                      >
+                        ₹{amt >= 1000 ? `${amt / 1000}k` : amt}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Custom Amount Input Box */}
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-black text-kesariya-700">
+                    ₹
+                  </span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="मनचाही राशि दर्ज करें (Enter any custom amount)..."
+                    value={customAmountStr}
+                    onChange={handleCustomAmountChange}
+                    className="w-full text-xs font-bold pl-7 pr-3 py-2 rounded-xl border border-slate-200 focus:border-kesariya-500 bg-white"
+                  />
+                </div>
+              </div>
+
+              {/* Donor Name & Mobile Number */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
                   <label className="text-[11px] sm:text-xs font-bold text-slate-700 block mb-1">
@@ -404,7 +554,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                 ) : (
                   <>
                     <Heart className="w-4 h-4 fill-white" />
-                    <span>Proceed to Pay ₹{amount.toLocaleString('en-IN')}</span>
+                    <span>Proceed to Pay ₹{currentAmount.toLocaleString('en-IN')}</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -429,7 +579,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                 </div>
               </div>
 
-              {/* Mobile UPI App Direct Pay Buttons (Most Important for Mobile Users) */}
+              {/* Mobile UPI App Direct Pay Buttons */}
               <div className="space-y-2">
                 <button
                   type="button"
@@ -437,7 +587,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                   className="w-full btn-divine-3d text-white font-black py-3 px-3 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm shadow-md cursor-pointer"
                 >
                   <Smartphone className="w-4 h-4" />
-                  <span>Open in UPI App (Pay ₹{amount.toLocaleString('en-IN')})</span>
+                  <span>Open in UPI App (Pay ₹{currentAmount.toLocaleString('en-IN')})</span>
                 </button>
 
                 {/* Quick App Badges */}
