@@ -23,10 +23,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenDonateModal }) => {
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-amber-200/60 shadow-[0_4px_25px_-5px_rgba(245,158,11,0.06)] transition-all">
       {/* Top Divine Announcement Bar */}
-      <div className="bg-gradient-to-r from-kesariya-600 via-amber-500 to-kesariya-700 text-white text-xs sm:text-sm py-2 px-4 text-center font-bold tracking-wide flex items-center justify-center gap-2 shadow-xs">
-        <Sparkles className="w-3.5 h-3.5 text-yellow-200 animate-pulse" />
-        <span>
-          🚩 <strong className="tracking-wider">सेवा ही भक्ति है</strong> • Prabhu Shri Ram ki prerna se 100% Direct Ground Seva (Zero Middlemen)
+      <div className="bg-gradient-to-r from-kesariya-600 via-amber-500 to-kesariya-700 text-white text-[11px] sm:text-xs py-1.5 px-3 text-center font-bold tracking-wide flex items-center justify-center gap-1.5 shadow-xs">
+        <Sparkles className="w-3 h-3 text-yellow-200 animate-pulse shrink-0" />
+        <span className="truncate">
+          🚩 <strong className="tracking-wider">सेवा ही भक्ति है</strong> • प्रभु श्री राम की प्रेरणा से निस्वार्थ ग्राउंड सेवा
         </span>
       </div>
 
