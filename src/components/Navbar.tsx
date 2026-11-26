@@ -43,11 +43,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick }) => {
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-amber-400 via-kesariya-500 to-kesariya-600 flex items-center justify-center shadow-sm border border-white shrink-0">
               <span className="text-lg sm:text-xl select-none" role="img" aria-label="धनुष">🏹</span>
             </div>
-            <div className="min-w-0">
-              <span className="text-base sm:text-lg font-black tracking-tight text-[#3B1F0A] block leading-none truncate">
+            <div className="min-w-0 py-0.5">
+              <span className="text-base sm:text-lg font-black tracking-tight text-[#3B1F0A] block leading-snug whitespace-nowrap">
                 राम का सेवक
               </span>
-              <span className="text-[11px] text-kesariya-700 font-bold block mt-0.5 truncate">
+              <span className="text-[11px] text-kesariya-700 font-bold block leading-tight whitespace-nowrap">
                 {SITE_CONFIG.tagline}
               </span>
             </div>
