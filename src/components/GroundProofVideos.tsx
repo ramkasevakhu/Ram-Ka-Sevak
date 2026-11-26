@@ -4,14 +4,16 @@ import React, { useState, useRef } from 'react';
 import {
   Play,
   ExternalLink,
-  Film,
   Volume2,
   VolumeX,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
+  CheckCircle2,
 } from 'lucide-react';
 import { VideoItem } from '@/lib/types';
 import { parseVideoUrl } from '@/lib/videoUtils';
+import { SITE_CONFIG } from '@/lib/constants';
 
 interface GroundProofVideosProps {
   videos: VideoItem[];
@@ -30,9 +32,9 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
   }
 
   const platformBadge = (platform: string) => {
-    if (platform === 'youtube') return 'YouTube';
+    if (platform === 'youtube') return 'YouTube Shorts';
     if (platform === 'instagram') return 'Instagram Reel';
-    return 'Facebook';
+    return 'Facebook Video';
   };
 
   const handleSlide = (dir: 'prev' | 'next') => {
@@ -62,29 +64,37 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
   };
 
   return (
-    <section id="ground-proof" className="py-10 sm:py-14 px-4 bg-white border-y border-amber-200/70">
+    <section
+      id="ground-proof"
+      className="py-12 sm:py-16 px-4 bg-gradient-to-b from-[#FFFDF9] via-[#FFF6E5] to-[#FFFDF9] border-y border-amber-200/80"
+    >
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-end justify-between gap-4 mb-6">
-          <div className="text-center sm:text-left flex-1">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-extrabold mb-2">
-              <Film className="w-3.5 h-3.5 text-kesariya-700" />
-              <span>हमारे ज़मीनी वीडियो</span>
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-[#3B1F0A]">
+        {/* Premium Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7">
+          <div className="text-center sm:text-left">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-amber-300 shadow-xs text-xs font-extrabold text-amber-900 mb-2.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>ज़मीनी सेवा का जीवंत प्रमाण</span>
+              <span className="px-1.5 py-0.5 rounded-md bg-amber-100 text-kesariya-800">
+                {videos.length} रील्स
+              </span>
+            </div>
+
+            <h2 className="text-2xl sm:text-4xl font-black text-[#3B1F0A] tracking-tight">
               सेवा का सीधा प्रमाण
             </h2>
             <p className="text-sm sm:text-base text-[#6B5E55] mt-1">
-              स्लाइड करके अगली सेवा रील यहीं देखें
+              @{SITE_CONFIG.creatorUsername} की ज़मीनी मदद के असली वीडियो यहीं देखें
             </p>
           </div>
 
-          {/* Slide Navigation Arrows */}
-          <div className="flex items-center gap-2 shrink-0">
+          {/* Desktop & Tablet Slide Controls */}
+          <div className="hidden sm:flex items-center gap-2.5 shrink-0">
             <button
               type="button"
               onClick={() => handleSlide('prev')}
               aria-label="पिछली रील"
-              className="w-10 h-10 rounded-full border border-amber-300 bg-amber-50 hover:bg-kesariya-600 hover:text-white text-[#3B1F0A] flex items-center justify-center transition-colors cursor-pointer"
+              className="w-11 h-11 rounded-full border-2 border-amber-300 bg-white hover:bg-kesariya-600 hover:text-white hover:border-kesariya-600 text-[#3B1F0A] flex items-center justify-center shadow-xs transition-all cursor-pointer"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -92,17 +102,17 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
               type="button"
               onClick={() => handleSlide('next')}
               aria-label="अगली रील"
-              className="w-10 h-10 rounded-full border border-amber-300 bg-amber-50 hover:bg-kesariya-600 hover:text-white text-[#3B1F0A] flex items-center justify-center transition-colors cursor-pointer"
+              className="w-11 h-11 rounded-full border-2 border-amber-300 bg-white hover:bg-kesariya-600 hover:text-white hover:border-kesariya-600 text-[#3B1F0A] flex items-center justify-center shadow-xs transition-all cursor-pointer"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* Swipeable Reels Track on Mobile / 3-4 Grid on Desktop */}
+        {/* Reels Carousel (Mobile) / Grid (Desktop) */}
         <div
           ref={trackRef}
-          className="flex lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-x-auto lg:overflow-visible pb-3 snap-x snap-mandatory no-scrollbar"
+          className="flex lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 overflow-x-auto lg:overflow-visible pb-4 pt-1 snap-x snap-mandatory no-scrollbar"
         >
           {videos.map((video) => {
             const parsed = parseVideoUrl(video.url);
@@ -114,57 +124,70 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
                 : null;
 
             return (
-              <div
+              <article
                 key={video.id}
-                className="w-[78vw] max-w-[300px] lg:w-full lg:max-w-none shrink-0 snap-center bg-[#FFFDF9] rounded-3xl border border-amber-200 overflow-hidden shadow-sm flex flex-col"
+                className={`w-[78vw] max-w-[300px] lg:w-full lg:max-w-none shrink-0 snap-center rounded-[28px] overflow-hidden transition-all duration-300 flex flex-col bg-slate-950 ${
+                  isPlaying
+                    ? 'ring-4 ring-kesariya-500 shadow-[0_22px_45px_-12px_rgba(234,88,12,0.4)] scale-[1.01]'
+                    : 'ring-1 ring-amber-300/80 shadow-[0_16px_35px_-14px_rgba(124,45,18,0.22)] hover:-translate-y-1'
+                }`}
               >
-                {/* 9:16 Vertical Reel Frame */}
+                {/* 9:16 Phone-Bezel Reel Viewport */}
                 <div className="relative aspect-[9/16] w-full bg-slate-950 overflow-hidden">
-                  {isPlaying && parsed.valid && parsed.embedUrl && !hasFailed ? (
-                    <>
-                      <iframe
-                        ref={(el) => {
-                          iframeRefs.current[video.id] = el;
-                        }}
-                        src={
-                          video.platform === 'youtube'
-                            ? `${parsed.embedUrl}&autoplay=1&mute=${isMuted ? 1 : 0}&enablejsapi=1`
-                            : parsed.embedUrl
-                        }
-                        title={video.title}
-                        className="w-full h-full border-0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                        loading="lazy"
-                        onError={() =>
-                          setFailedEmbeds((prev) => ({ ...prev, [video.id]: true }))
-                        }
-                      />
+                  {/* Top Glassmorphism Info Bar */}
+                  <div className="absolute top-3 left-3 right-3 z-20 flex items-center justify-between gap-2 pointer-events-none">
+                    <span className="px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/15 text-[11px] font-extrabold text-amber-200 truncate">
+                      {video.category}
+                    </span>
 
-                      {/* Mute / Unmute Floating Button for YouTube Reels */}
-                      {video.platform === 'youtube' && (
+                    <div className="flex items-center gap-1.5 pointer-events-auto">
+                      {isPlaying && video.platform === 'youtube' && (
                         <button
                           type="button"
                           onClick={() => toggleMute(video.id)}
                           aria-label={isMuted ? 'आवाज़ चालू करें' : 'म्यूट करें'}
-                          className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-black/65 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-sm border border-white/25 cursor-pointer"
+                          className="w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md border border-white/20 cursor-pointer"
                         >
                           {isMuted ? (
-                            <VolumeX className="w-5 h-5" />
+                            <VolumeX className="w-4 h-4" />
                           ) : (
-                            <Volume2 className="w-5 h-5" />
+                            <Volume2 className="w-4 h-4" />
                           )}
                         </button>
                       )}
-                    </>
+                      <span className="px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/15 text-[10px] font-bold text-white/90">
+                        {platformBadge(video.platform)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {isPlaying && parsed.valid && parsed.embedUrl && !hasFailed ? (
+                    <iframe
+                      ref={(el) => {
+                        iframeRefs.current[video.id] = el;
+                      }}
+                      src={
+                        video.platform === 'youtube'
+                          ? `${parsed.embedUrl}&autoplay=1&mute=${isMuted ? 1 : 0}&enablejsapi=1`
+                          : parsed.embedUrl
+                      }
+                      title={video.title}
+                      className="w-full h-full border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      loading="lazy"
+                      onError={() =>
+                        setFailedEmbeds((prev) => ({ ...prev, [video.id]: true }))
+                      }
+                    />
                   ) : hasFailed ? (
-                    <div className="w-full h-full flex flex-col items-center justify-center p-5 text-center text-white bg-gradient-to-b from-slate-800 to-slate-950">
-                      <p className="text-sm font-bold mb-3">{video.title}</p>
+                    <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-white bg-gradient-to-b from-slate-800 to-slate-950">
+                      <p className="text-sm font-bold mb-4 leading-snug">{video.title}</p>
                       <a
                         href={video.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="min-h-[44px] px-4 rounded-xl bg-kesariya-600 text-white text-sm font-extrabold inline-flex items-center gap-1.5"
+                        className="min-h-[44px] px-5 rounded-2xl bg-gradient-to-r from-kesariya-600 to-amber-500 text-white text-sm font-extrabold inline-flex items-center gap-1.5 shadow-lg"
                       >
                         <span>{platformBadge(video.platform)} पर देखें</span>
                         <ExternalLink className="w-4 h-4" />
@@ -175,55 +198,98 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
                       type="button"
                       onClick={() => setActiveVideoId(video.id)}
                       aria-label={`वीडियो चलाएँ: ${video.title}`}
-                      className="w-full h-full relative flex flex-col items-center justify-center text-white bg-gradient-to-br from-[#3B1F0A] via-amber-900 to-kesariya-800 cursor-pointer group"
+                      className="w-full h-full relative flex flex-col items-center justify-center text-white bg-gradient-to-br from-[#3B1F0A] via-amber-900 to-kesariya-800 cursor-pointer group text-left"
                     >
                       {ytThumb && (
                         <img
                           src={ytThumb}
                           alt={video.title}
                           loading="lazy"
-                          className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-300"
+                          className="absolute inset-0 w-full h-full object-cover opacity-85 group-hover:scale-105 transition-transform duration-500"
                         />
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/20" />
-                      <div className="relative z-10 w-14 h-14 rounded-full bg-white/95 text-kesariya-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform mb-2.5">
-                        <Play className="w-6 h-6 fill-current ml-0.5" />
+
+                      {/* Rich Cinematic Vignette */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/45" />
+
+                      {/* Glowing Saffron Center Play Button */}
+                      <div className="relative z-10 w-16 h-16 rounded-full bg-gradient-to-tr from-kesariya-600 to-amber-400 text-white flex items-center justify-center shadow-[0_0_30px_rgba(249,115,22,0.6)] ring-4 ring-white/30 group-hover:scale-110 transition-transform duration-300">
+                        <Play className="w-7 h-7 fill-white ml-0.5" />
                       </div>
-                      <span className="relative z-10 px-3 py-1 rounded-full bg-black/55 text-xs font-bold">
-                        {platformBadge(video.platform)} • यहीं चलाएँ
-                      </span>
+
+                      {/* Bottom Reel Overlay Caption (Instagram/Shorts Style) */}
+                      <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10 space-y-1.5">
+                        <div className="flex items-center gap-1.5 text-xs font-extrabold text-amber-200">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>@{SITE_CONFIG.creatorUsername}</span>
+                          <span className="text-white/60">• {video.video_date}</span>
+                        </div>
+                        <h3 className="text-sm sm:text-base font-black text-white leading-snug line-clamp-2 drop-shadow-sm">
+                          {video.title}
+                        </h3>
+                      </div>
                     </button>
                   )}
                 </div>
 
-                <div className="p-3.5 flex-1 flex flex-col justify-between gap-2">
-                  <div>
-                    <div className="flex items-center justify-between gap-2 text-[11px] font-bold text-kesariya-700 mb-1">
-                      <span className="px-2 py-0.5 rounded-md bg-amber-100">
-                        {video.category}
-                      </span>
-                      <span className="text-[#6B5E55]">{video.video_date}</span>
-                    </div>
-                    <h3 className="text-sm sm:text-base font-black text-[#3B1F0A] leading-snug line-clamp-2">
-                      {video.title}
-                    </h3>
-                  </div>
+                {/* Bottom Action Strip */}
+                <div className="px-3.5 py-2.5 bg-[#FFFDF9] border-t border-amber-200/80 flex items-center justify-between gap-2 text-xs">
+                  {isPlaying ? (
+                    <span className="font-extrabold text-emerald-700 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>यहीं चल रहा है</span>
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setActiveVideoId(video.id)}
+                      className="font-extrabold text-kesariya-700 hover:text-kesariya-800 cursor-pointer flex items-center gap-1"
+                    >
+                      <Play className="w-3.5 h-3.5 fill-current" />
+                      <span>रील चलाएँ</span>
+                    </button>
+                  )}
 
-                  {video.platform === 'instagram' && (
+                  {video.platform === 'instagram' ? (
                     <a
                       href={video.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs font-bold text-kesariya-700 hover:underline inline-flex items-center gap-1"
+                      className="font-bold text-[#6B5E55] hover:text-kesariya-700 inline-flex items-center gap-1"
                     >
-                      <span>Instagram पर देखें</span>
+                      <span>Instagram</span>
                       <ExternalLink className="w-3 h-3" />
                     </a>
+                  ) : (
+                    <span className="font-bold text-[#6B5E55]">{video.video_date}</span>
                   )}
                 </div>
-              </div>
+              </article>
             );
           })}
+        </div>
+
+        {/* Mobile Swipe Hint & Quick Arrows */}
+        <div className="flex sm:hidden items-center justify-center gap-3 mt-2">
+          <button
+            type="button"
+            onClick={() => handleSlide('prev')}
+            aria-label="पिछली रील"
+            className="w-10 h-10 rounded-full border border-amber-300 bg-white text-[#3B1F0A] flex items-center justify-center shadow-xs cursor-pointer"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <span className="text-xs font-extrabold text-[#6B5E55]">
+            स्वाइप करके अगली रील देखें
+          </span>
+          <button
+            type="button"
+            onClick={() => handleSlide('next')}
+            aria-label="अगली रील"
+            className="w-10 h-10 rounded-full border border-amber-300 bg-white text-[#3B1F0A] flex items-center justify-center shadow-xs cursor-pointer"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
         </div>
       </div>
     </section>
