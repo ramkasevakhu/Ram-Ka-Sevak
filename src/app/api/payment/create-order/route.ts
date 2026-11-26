@@ -49,16 +49,23 @@ export async function POST(request: Request) {
           ? `${appUrl}/api/payment/webhook?token=${encodeURIComponent(webhookSecret)}`
           : `${appUrl}/api/payment/webhook`;
 
+        // ZapUPI requires ASCII-only remark (Hindi Unicode or '|' causes "Invalid Remark")
+        const safeRemark = `Ram Ka Sevak ${sevaId || 'Seva'}`
+          .replace(/[^a-zA-Z0-9 ]/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .slice(0, 40);
+
         const zapRes = await fetch('https://pay.zapupi.com/api/create-order?switch=220', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          signal: AbortSignal.timeout(3500),
+          signal: AbortSignal.timeout(5000),
           body: JSON.stringify({
             zap_key: zapKey,
             order_id: orderId,
-            amount: numericAmount.toFixed(2),
+            amount: String(Math.round(numericAmount)),
             customer_mobile: cleanPhone.length === 10 ? cleanPhone : '9999999999',
-            remark: `Ram Ka Sevak | ${packageLabel || sevaName || 'Seva'}`,
+            remark: safeRemark || 'Ram Ka Sevak Seva',
             success_url: `${appUrl}/?payment_status=success&order_id=${orderId}`,
             failed_url: `${appUrl}/?payment_status=failed&order_id=${orderId}`,
             timeout_url: `${appUrl}/?payment_status=timeout&order_id=${orderId}`,
