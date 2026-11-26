@@ -11,7 +11,6 @@ import {
   AlertCircle,
   ArrowRight,
   RefreshCw,
-  ExternalLink,
 } from 'lucide-react';
 import { DETAILED_SEVA_CATEGORIES, DetailedSevaCategory, SITE_CONFIG } from '@/lib/constants';
 
@@ -504,133 +503,188 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
               </button>
             </form>
           ) : (
-            /* STEP 4: Live ZapUPI QR + Intent Buttons + Auto Polling */
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-black text-[#3B1F0A]">
-                  4. UPI द्वारा भुगतान करें (₹{selectedAmount.toLocaleString('en-IN')})
-                </span>
-                <span className="text-xs font-mono font-bold bg-amber-100 text-amber-900 px-2.5 py-1 rounded-lg">
-                  {formatTimer(countdown)}
-                </span>
-              </div>
+            /* STEP 4: Ram Ka Sevak Branded ZapUPI-Style Checkout Card */
+            <div className="rounded-3xl border-2 border-amber-300 overflow-hidden shadow-lg bg-[#FFFDF9]">
+              {/* Top Saffron Branded Header */}
+              <div className="bg-gradient-to-br from-[#9a3412] via-kesariya-600 to-amber-600 text-white p-4 sm:p-5 relative">
+                <div className="flex items-center justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-xl bg-white/95 text-kesariya-700 flex items-center justify-center text-xl shadow-sm shrink-0">
+                      🏹
+                    </div>
+                    <div>
+                      <div className="text-base font-black leading-tight">राम का सेवक</div>
+                      <div className="text-xs text-amber-100 font-bold">
+                        विप्लव कुमार (@{SITE_CONFIG.creatorUsername})
+                      </div>
+                    </div>
+                  </div>
 
-              {fallbackNotice && (
-                <div className="p-3 rounded-xl bg-amber-50 border border-amber-300 text-sm font-bold text-amber-900">
-                  {fallbackNotice}
-                </div>
-              )}
-
-              <div className="grid grid-cols-3 gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => handleOpenUpiApp('gpay')}
-                  className="min-h-[48px] rounded-xl border-2 border-slate-200 hover:border-kesariya-500 bg-white font-extrabold text-sm sm:text-base text-[#3B1F0A] cursor-pointer"
-                >
-                  GPay
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleOpenUpiApp('phonepe')}
-                  className="min-h-[48px] rounded-xl border-2 border-slate-200 hover:border-kesariya-500 bg-white font-extrabold text-sm sm:text-base text-[#3B1F0A] cursor-pointer"
-                >
-                  PhonePe
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleOpenUpiApp('paytm')}
-                  className="min-h-[48px] rounded-xl border-2 border-slate-200 hover:border-kesariya-500 bg-white font-extrabold text-sm sm:text-base text-[#3B1F0A] cursor-pointer"
-                >
-                  Paytm
-                </button>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => handleOpenUpiApp('any')}
-                className="w-full min-h-[48px] rounded-xl bg-amber-100 hover:bg-amber-200 text-[#3B1F0A] font-extrabold text-base flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Smartphone className="w-5 h-5 text-kesariya-700" />
-                <span>किसी भी UPI ऐप से भुगतान करें</span>
-              </button>
-
-              {qrImageUrl && (
-                <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 text-center">
-                  <img
-                    src={qrImageUrl}
-                    alt="UPI भुगतान QR कोड"
-                    width={200}
-                    height={200}
-                    className="w-44 h-44 mx-auto rounded-xl bg-white p-2 border border-amber-200"
-                  />
-                  {gatewayMode === 'zapupi' ? (
-                    <p className="text-xs font-bold text-emerald-700 mt-2 flex items-center justify-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5 animate-spin" />
-                      <span>भुगतान करते ही रसीद अपने आप खुल जाएगी...</span>
-                    </p>
-                  ) : (
-                    <p className="text-xs font-bold text-[#5C4E44] mt-2">
-                      UPI ID: <span className="font-mono text-[#3B1F0A]">{upiId}</span>
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {paymentStatusMsg === 'pending' && (
-                <div className="p-3 rounded-xl bg-amber-50 border border-amber-300 text-sm font-bold text-amber-900">
-                  बैंक से पुष्टि अभी प्रतीक्षारत है। यदि आपने भुगतान कर दिया है, तो 5 सेकंड बाद पुनः जाँचें।
-                </div>
-              )}
-
-              {paymentStatusMsg === 'failed' && (
-                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-sm font-bold text-red-700 flex items-center justify-between gap-2">
-                  <span>भुगतान विफल रहा।</span>
                   <button
                     type="button"
                     onClick={handleRetry}
-                    className="min-h-[40px] px-3 rounded-lg bg-red-600 text-white text-xs font-bold flex items-center gap-1 cursor-pointer"
+                    aria-label="वापस जाएँ"
+                    className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-sm font-bold cursor-pointer"
                   >
-                    <RefreshCw className="w-3.5 h-3.5" />
-                    <span>दोबारा प्रयास करें</span>
+                    ✕
                   </button>
                 </div>
-              )}
 
-              <div className="flex flex-col sm:flex-row gap-2.5">
-                <button
-                  type="button"
-                  onClick={handleManualCheckOrConfirm}
-                  disabled={isSubmitting}
-                  className="flex-1 min-h-[50px] rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-base cursor-pointer disabled:opacity-60"
-                >
-                  {isSubmitting
-                    ? 'जाँच हो रही है...'
-                    : gatewayMode === 'zapupi'
-                    ? 'मैंने भुगतान कर दिया है (जाँचें) ✓'
-                    : 'मैंने भुगतान कर दिया है ✓'}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleRetry}
-                  className="min-h-[50px] px-4 rounded-2xl border border-slate-300 text-sm font-bold text-slate-700 cursor-pointer"
-                >
-                  ← वापस जाएँ
-                </button>
+                <div className="text-center py-1">
+                  <div className="text-[11px] font-extrabold uppercase tracking-wider text-amber-100">
+                    सहयोग राशि (AMOUNT TO PAY)
+                  </div>
+                  <div className="text-3xl sm:text-4xl font-black tracking-tight mt-0.5">
+                    ₹{selectedAmount.toLocaleString('en-IN')}.00
+                  </div>
+                  <div className="text-[11px] font-mono text-amber-100/90 mt-1 truncate">
+                    TXN #{orderId}
+                  </div>
+                </div>
               </div>
 
-              {paymentUrl && (
-                <div className="text-center">
-                  <a
-                    href={paymentUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-bold text-kesariya-700 underline inline-flex items-center gap-1"
+              {/* Ticket Body */}
+              <div className="p-4 sm:p-5 space-y-4 border-t-2 border-dashed border-amber-300">
+                {fallbackNotice && (
+                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-300 text-xs sm:text-sm font-bold text-amber-900">
+                    {fallbackNotice}
+                  </div>
+                )}
+
+                {/* QR Card */}
+                {qrImageUrl && (
+                  <div className="bg-white rounded-2xl border border-amber-200 p-4 text-center shadow-xs">
+                    <div className="relative inline-block p-2 rounded-xl border border-amber-200 bg-white">
+                      <img
+                        src={qrImageUrl}
+                        alt="राम का सेवक UPI QR कोड"
+                        width={200}
+                        height={200}
+                        className="w-48 h-48 mx-auto rounded-lg"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="w-8 h-8 rounded-full bg-kesariya-600 border-2 border-white shadow-md flex items-center justify-center text-sm">
+                          🏹
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 flex justify-center">
+                      <a
+                        href={qrImageUrl}
+                        download={`ramkasevak-qr-${selectedAmount}.png`}
+                        className="min-h-[40px] px-4 rounded-xl border-2 border-kesariya-500 text-kesariya-700 hover:bg-amber-50 font-extrabold text-xs sm:text-sm inline-flex items-center gap-1.5"
+                      >
+                        <span>↓ QR डाउनलोड करें</span>
+                      </a>
+                    </div>
+
+                    <p className="text-xs font-bold text-[#6B5E55] mt-2">
+                      किसी भी UPI ऐप से स्कैन करें • 0 शुल्क
+                    </p>
+                  </div>
+                )}
+
+                {/* Quick UPI App Buttons */}
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenUpiApp('gpay')}
+                    className="min-h-[48px] rounded-xl border-2 border-slate-200 hover:border-kesariya-500 bg-white font-extrabold text-sm text-[#3B1F0A] cursor-pointer"
                   >
-                    <span>ZapUPI पेमेंट पेज खोलें</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
+                    GPay
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleOpenUpiApp('phonepe')}
+                    className="min-h-[48px] rounded-xl border-2 border-slate-200 hover:border-kesariya-500 bg-white font-extrabold text-sm text-[#3B1F0A] cursor-pointer"
+                  >
+                    PhonePe
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleOpenUpiApp('paytm')}
+                    className="min-h-[48px] rounded-xl border-2 border-slate-200 hover:border-kesariya-500 bg-white font-extrabold text-sm text-[#3B1F0A] cursor-pointer"
+                  >
+                    Paytm
+                  </button>
                 </div>
-              )}
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenUpiApp('any')}
+                  className="w-full min-h-[48px] rounded-xl bg-amber-100 hover:bg-amber-200 text-[#3B1F0A] font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Smartphone className="w-5 h-5 text-kesariya-700" />
+                  <span>अपने फ़ोन के UPI ऐप से भुगतान करें</span>
+                </button>
+
+                {/* Live Timer & Auto-Verify Strip */}
+                <div className="flex items-center justify-between gap-2 bg-white border border-amber-200 rounded-xl px-3.5 py-2.5 text-xs">
+                  <div>
+                    <span className="text-[10px] font-bold text-[#6B5E55] uppercase block">
+                      EXPIRES IN
+                    </span>
+                    <span className="font-mono font-black text-base text-[#3B1F0A]">
+                      {formatTimer(countdown)}
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    {gatewayMode === 'zapupi' ? (
+                      <span className="inline-flex items-center gap-1.5 font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span>ऑटो-पुष्टि चालू</span>
+                      </span>
+                    ) : (
+                      <span className="font-mono text-[11px] font-bold text-[#5C4E44]">
+                        {upiId}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {paymentStatusMsg === 'pending' && (
+                  <div className="p-3 rounded-xl bg-amber-50 border border-amber-300 text-sm font-bold text-amber-900">
+                    बैंक से पुष्टि अभी प्रतीक्षारत है। यदि आपने भुगतान कर दिया है, तो 5 सेकंड बाद पुनः जाँचें।
+                  </div>
+                )}
+
+                {paymentStatusMsg === 'failed' && (
+                  <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-sm font-bold text-red-700 flex items-center justify-between gap-2">
+                    <span>भुगतान विफल रहा।</span>
+                    <button
+                      type="button"
+                      onClick={handleRetry}
+                      className="min-h-[40px] px-3 rounded-lg bg-red-600 text-white text-xs font-bold flex items-center gap-1 cursor-pointer"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      <span>दोबारा प्रयास करें</span>
+                    </button>
+                  </div>
+                )}
+
+                <div className="flex flex-col sm:flex-row gap-2.5">
+                  <button
+                    type="button"
+                    onClick={handleManualCheckOrConfirm}
+                    disabled={isSubmitting}
+                    className="flex-1 min-h-[50px] rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-base cursor-pointer disabled:opacity-60"
+                  >
+                    {isSubmitting
+                      ? 'जाँच हो रही है...'
+                      : gatewayMode === 'zapupi'
+                      ? 'मैंने भुगतान कर दिया है (जाँचें) ✓'
+                      : 'मैंने भुगतान कर दिया है ✓'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRetry}
+                    className="min-h-[50px] px-4 rounded-2xl border border-slate-300 text-sm font-bold text-slate-700 cursor-pointer"
+                  >
+                    ← वापस जाएँ
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 

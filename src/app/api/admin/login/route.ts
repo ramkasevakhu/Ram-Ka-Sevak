@@ -27,8 +27,8 @@ export async function POST(request: Request) {
 
   try {
     const { username, password } = await request.json();
-    const expectedUsername = process.env.ADMIN_USERNAME;
-    const expectedHash = process.env.ADMIN_PASSWORD_HASH;
+    const expectedUsername = process.env.ADMIN_USERNAME?.trim();
+    const expectedHash = process.env.ADMIN_PASSWORD_HASH?.trim();
 
     if (!expectedUsername || !expectedHash) {
       return NextResponse.json(
