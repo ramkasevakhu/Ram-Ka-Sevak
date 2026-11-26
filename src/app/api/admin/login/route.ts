@@ -37,7 +37,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const isUserValid = typeof username === 'string' && username.trim() === expectedUsername;
+    const isUserValid =
+      typeof username === 'string' &&
+      username.trim().toLowerCase() === expectedUsername.toLowerCase();
     const isPassValid = typeof password === 'string' && verifyPassword(password, expectedHash);
 
     if (!isUserValid || !isPassValid) {
