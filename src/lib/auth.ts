@@ -58,7 +58,9 @@ function getJwtSecret(): string {
 
 /**
  * Verifies password against ADMIN_PASSWORD_HASH stored in .env
- * Format supported: "scrypt$<saltHex>$<derivedHex>"
+ * Formats supported:
+ *  - "scrypt$<saltHex>$<derivedHex>"
+ *  - "pbkdf2$<saltHex>$<derivedHex>" (PBKDF2-HMAC-SHA256, 100k iterations)
  */
 export function verifyPassword(password: string, storedHash: string): boolean {
   if (!password || !storedHash) return false;
@@ -68,6 +70,15 @@ export function verifyPassword(password: string, storedHash: string): boolean {
     const salt = parts[1];
     const expectedHex = parts[2];
     const derived = crypto.scryptSync(password, salt, 64);
+    const expected = Buffer.from(expectedHex, 'hex');
+    if (derived.length !== expected.length) return false;
+    return crypto.timingSafeEqual(derived, expected);
+  }
+
+  if (parts.length === 3 && parts[0] === 'pbkdf2') {
+    const salt = parts[1];
+    const expectedHex = parts[2];
+    const derived = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha256');
     const expected = Buffer.from(expectedHex, 'hex');
     if (derived.length !== expected.length) return false;
     return crypto.timingSafeEqual(derived, expected);
