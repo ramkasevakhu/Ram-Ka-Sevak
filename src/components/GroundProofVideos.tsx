@@ -94,24 +94,11 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
                       <span className="px-3 py-1 rounded-full bg-black/40 text-xs font-bold">
                         {platformBadge(video.platform)} • यहीं देखें
                       </span>
-
-                      {video.platform === 'instagram' && (
-                        <a
-                          href={video.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-black/50 text-[11px] font-bold text-amber-200 hover:underline flex items-center gap-1"
-                        >
-                          <span>Instagram पर देखें</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      )}
                     </button>
                   )}
                 </div>
 
-                <div className="p-3.5 flex-1 flex flex-col justify-between">
+                <div className="p-3.5 flex-1 flex flex-col justify-between gap-2">
                   <div>
                     <div className="flex items-center justify-between gap-2 text-[11px] font-bold text-kesariya-700 mb-1">
                       <span className="px-2 py-0.5 rounded-md bg-amber-100">
@@ -123,6 +110,18 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
                       {video.title}
                     </h3>
                   </div>
+
+                  {video.platform === 'instagram' && (
+                    <a
+                      href={video.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-bold text-kesariya-700 hover:underline inline-flex items-center gap-1"
+                    >
+                      <span>Instagram पर देखें</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
                 </div>
               </div>
             );

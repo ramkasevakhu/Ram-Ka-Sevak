@@ -35,9 +35,9 @@ export async function POST(request: Request) {
     const fallbackUpiName = process.env.NEXT_PUBLIC_UPI_NAME || 'Ram Ka Sevak';
 
     let paymentUrl: string | null = null;
-    let payId: string | null = null;
     let upiPayload = '';
     let upiId = fallbackUpiId;
+    let txnId = orderId;
     let gatewayMode: 'zapupi' | 'direct_upi_fallback' = 'direct_upi_fallback';
     let fallbackReason = '';
 
@@ -47,15 +47,15 @@ export async function POST(request: Request) {
           ? `${appUrl}/api/payment/webhook?token=${encodeURIComponent(webhookSecret)}`
           : `${appUrl}/api/payment/webhook`;
 
-        // Official ZapUPI Create Order API: POST https://pay.zapupi.com/api/create-order
-        const zapRes = await fetch('https://pay.zapupi.com/api/create-order', {
+        // ZapUPI Create Order with switch=220 (configured for ramkasevak.org in ZapUPI dashboard)
+        const zapRes = await fetch('https://pay.zapupi.com/api/create-order?switch=220', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             zap_key: zapKey,
             order_id: orderId,
             amount: numericAmount.toFixed(2),
-            ...(cleanPhone.length === 10 ? { customer_mobile: cleanPhone } : {}),
+            customer_mobile: cleanPhone.length === 10 ? cleanPhone : '9999999999',
             remark: `Ram Ka Sevak | ${packageLabel || sevaName || 'Seva'}`,
             success_url: `${appUrl}/?payment_status=success&order_id=${orderId}`,
             failed_url: `${appUrl}/?payment_status=failed&order_id=${orderId}`,
@@ -69,7 +69,28 @@ export async function POST(request: Request) {
         if (zapRes.ok && zapData.status === 'success' && zapData.payment_url) {
           gatewayMode = 'zapupi';
           paymentUrl = zapData.payment_url;
-          payId = zapData.pay_id || null;
+          txnId = zapData.txn_id || orderId;
+
+          // Extract live UPI intent from ZapUPI Cashier page so QR & UPI buttons work right on our page
+          try {
+            const htmlRes = await fetch(zapData.payment_url);
+            const html = await htmlRes.text();
+            const match = html.match(/const\s+serverData\s*=\s*(\{.+?\});/);
+            if (match) {
+              const serverData = JSON.parse(match[1]);
+              const inp = serverData.data;
+              if (inp && inp.upi_id) {
+                upiId = inp.upi_id;
+                txnId = inp.txnId || txnId;
+                const autoKey = inp.autoCode || 'tr';
+                const autoVal = inp.txnRef || '';
+                const amountFormatted = parseFloat(inp.pay_amount || numericAmount).toFixed(2);
+                upiPayload = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(fallbackUpiName)}&cu=INR&am=${encodeURIComponent(amountFormatted)}&tn=${encodeURIComponent(txnId)}&${encodeURIComponent(autoKey)}=${encodeURIComponent(autoVal)}`;
+              }
+            }
+          } catch {
+            // If cashier HTML extraction fails, user still has payment_url
+          }
         } else {
           fallbackReason = zapData.message || 'ZapUPI भुगतान गेटवे अभी उपलब्ध नहीं है।';
         }
@@ -77,11 +98,12 @@ export async function POST(request: Request) {
         fallbackReason = err?.message || 'ZapUPI से कनेक्ट करने में त्रुटि हुई।';
       }
     } else {
-      fallbackReason = 'ZapUPI कुंजी कॉन्फ़िगर नहीं है।';
+      fallbackReason = 'ZAP_KEY सर्वर पर कॉन्फ़िगर नहीं है।';
     }
 
-    // Build fallback direct UPI intent & QR so donor is never blocked if ZapUPI fails
-    upiPayload = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(fallbackUpiName)}&cu=INR&am=${encodeURIComponent(numericAmount.toFixed(2))}&tn=${encodeURIComponent(orderId)}`;
+    if (!upiPayload) {
+      upiPayload = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(fallbackUpiName)}&cu=INR&am=${encodeURIComponent(numericAmount.toFixed(2))}&tn=${encodeURIComponent(orderId)}`;
+    }
 
     let qrImageUrl = '';
     try {
@@ -94,7 +116,6 @@ export async function POST(request: Request) {
       console.warn('QR generation error:', qrErr);
     }
 
-    // Record pending donation in Supabase
     const db = getServiceSupabase();
     if (db) {
       await db.from('donations').insert([
@@ -123,10 +144,10 @@ export async function POST(request: Request) {
       fallback_reason: fallbackReason || undefined,
       order_id: orderId,
       payment_url: paymentUrl,
-      pay_id: payId,
       upi_payload: upiPayload,
       qr_image_url: qrImageUrl,
       upi_id: upiId,
+      txn_id: txnId,
     });
   } catch (error: any) {
     console.error('Create order error:', error);
