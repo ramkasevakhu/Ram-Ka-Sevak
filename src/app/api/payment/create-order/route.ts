@@ -51,6 +51,7 @@ export async function POST(request: Request) {
         const zapRes = await fetch('https://pay.zapupi.com/api/create-order?switch=220', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          signal: AbortSignal.timeout(5000),
           body: JSON.stringify({
             zap_key: zapKey,
             order_id: orderId,
@@ -71,9 +72,11 @@ export async function POST(request: Request) {
           paymentUrl = zapData.payment_url;
           txnId = zapData.txn_id || orderId;
 
-          // Extract live UPI intent from ZapUPI Cashier page so QR & UPI buttons work right on our page
+          // Extract live UPI intent from ZapUPI Cashier page (max 3.5s timeout so UI stays fast)
           try {
-            const htmlRes = await fetch(zapData.payment_url);
+            const htmlRes = await fetch(zapData.payment_url, {
+              signal: AbortSignal.timeout(3500),
+            });
             const html = await htmlRes.text();
             const match = html.match(/const\s+serverData\s*=\s*(\{.+?\});/);
             if (match) {

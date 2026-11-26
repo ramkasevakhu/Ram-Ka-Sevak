@@ -329,14 +329,6 @@ export default function AdminPage() {
     setContentMsg(res.ok ? 'सामग्री सफलतापूर्वक अपडेट हुई।' : 'अपडेट करने में त्रुटि हुई।');
   };
 
-  if (!authChecked) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FFFDF9] text-[#3B1F0A] font-bold">
-        लोड हो रहा है...
-      </div>
-    );
-  }
-
   if (!authenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FFF7EA] px-4">
