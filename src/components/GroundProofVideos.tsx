@@ -26,10 +26,36 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
   const trackRef = useRef<HTMLDivElement | null>(null);
   const iframeRefs = useRef<Record<string, HTMLIFrameElement | null>>({});
 
-  // If no videos in database, hide section completely
-  if (!videos || videos.length === 0) {
-    return null;
-  }
+  const RECENT_SEVA_REELS = [
+    {
+      title: 'ऋषिकेश में ज़रूरतमंदों को गरम भोजन वितरण',
+      tag: 'अन्नदान रील्स',
+      image: '/images/annadaan-seva.jpg',
+      alt: 'ऋषिकेश में सड़क पर भोजन वितरण सेवा',
+      href: SITE_CONFIG.socialLinks.instagram,
+    },
+    {
+      title: 'गौ माता व बेज़ुबान पशुओं की देखभाल',
+      tag: 'गौ व पशु सेवा',
+      image: '/images/gau-pashu-seva.jpg',
+      alt: 'गौ माता को हरा चारा व पशु सेवा',
+      href: SITE_CONFIG.socialLinks.instagram,
+    },
+    {
+      title: 'असहाय मरीज़ों के लिए दवा व इलाज सहायता',
+      tag: 'चिकित्सा सेवा',
+      image: '/images/medical-seva.jpg',
+      alt: 'ज़रूरतमंद मरीज़ों को दवा सहायता',
+      href: SITE_CONFIG.socialLinks.instagram,
+    },
+    {
+      title: 'संकट प्रभावित परिवारों को राशन व राहत',
+      tag: 'आपदा राहत',
+      image: '/images/disaster-seva.jpg',
+      alt: 'आपदा प्रभावित परिवारों को राहत सामग्री',
+      href: SITE_CONFIG.socialLinks.instagram,
+    },
+  ];
 
   const platformBadge = (platform: string) => {
     if (platform === 'youtube') return 'YouTube Shorts';
@@ -84,32 +110,87 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
               सेवा का सीधा प्रमाण
             </h2>
             <p className="text-sm sm:text-base text-[#6B5E55] mt-1">
-              @{SITE_CONFIG.creatorUsername} की ज़मीनी मदद के असली वीडियो यहीं देखें
+              @{SITE_CONFIG.creatorUsername} की ज़मीनी मदद के असली वीडियो और रील्स यहीं देखें
             </p>
           </div>
 
           {/* Desktop & Tablet Slide Controls */}
-          <div className="hidden sm:flex items-center gap-2.5 shrink-0">
-            <button
-              type="button"
-              onClick={() => handleSlide('prev')}
-              aria-label="पिछली रील"
-              className="w-11 h-11 rounded-full border-2 border-amber-300 bg-white hover:bg-kesariya-600 hover:text-white hover:border-kesariya-600 text-[#3B1F0A] flex items-center justify-center shadow-xs transition-all cursor-pointer"
+          {videos.length > 0 && (
+            <div className="hidden sm:flex items-center gap-2.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => handleSlide('prev')}
+                aria-label="पिछली रील"
+                className="w-11 h-11 rounded-full border-2 border-amber-300 bg-white hover:bg-kesariya-600 hover:text-white hover:border-kesariya-600 text-[#3B1F0A] flex items-center justify-center shadow-xs transition-all cursor-pointer"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSlide('next')}
+                aria-label="अगली रील"
+                className="w-11 h-11 rounded-full border-2 border-amber-300 bg-white hover:bg-kesariya-600 hover:text-white hover:border-kesariya-600 text-[#3B1F0A] flex items-center justify-center shadow-xs transition-all cursor-pointer"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Recent Seva Row (Always visible, links to Instagram Reels) */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <h3 className="text-base sm:text-lg font-black text-[#3B1F0A]">
+              हाल की सेवा (Instagram Reels)
+            </h3>
+            <a
+              href={SITE_CONFIG.socialLinks.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs sm:text-sm font-extrabold text-kesariya-700 hover:text-kesariya-800 inline-flex items-center gap-1"
             >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSlide('next')}
-              aria-label="अगली रील"
-              className="w-11 h-11 rounded-full border-2 border-amber-300 bg-white hover:bg-kesariya-600 hover:text-white hover:border-kesariya-600 text-[#3B1F0A] flex items-center justify-center shadow-xs transition-all cursor-pointer"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
+              <span>सभी रील्स देखें</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            {RECENT_SEVA_REELS.map((reel) => (
+              <a
+                key={reel.tag}
+                href={reel.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative aspect-[4/3] rounded-2xl overflow-hidden border border-amber-200 bg-amber-100 shadow-xs block"
+              >
+                <img
+                  src={reel.image}
+                  alt={reel.alt}
+                  width={1024}
+                  height={768}
+                  loading="lazy"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/60 text-white text-[11px] font-bold">
+                  {reel.tag}
+                </span>
+                <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-end justify-between gap-2 text-white">
+                  <span className="text-xs sm:text-sm font-extrabold leading-snug line-clamp-2">
+                    {reel.title}
+                  </span>
+                  <span className="w-8 h-8 rounded-full bg-kesariya-600 flex items-center justify-center shrink-0 shadow-sm">
+                    <Play className="w-3.5 h-3.5 fill-white ml-0.5" />
+                  </span>
+                </div>
+              </a>
+            ))}
           </div>
         </div>
 
-        {/* Reels Carousel (Mobile) / Grid (Desktop) */}
+        {/* Reels Carousel (Mobile) / Grid (Desktop) when DB videos exist */}
+        {videos.length > 0 && (
+        <>
         <div
           ref={trackRef}
           className="flex lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 overflow-x-auto lg:overflow-visible pb-4 pt-1 snap-x snap-mandatory no-scrollbar"
@@ -291,6 +372,8 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
             <ChevronRight className="w-5 h-5" />
           </button>
         </div>
+        </>
+        )}
       </div>
     </section>
   );

@@ -29,8 +29,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: '/images/annadaan-seva.jpg',
-        width: 1200,
-        height: 630,
+        width: 1024,
+        height: 768,
         alt: 'ऋषिकेश में राम का सेवक अन्नदान सेवा',
       },
     ],

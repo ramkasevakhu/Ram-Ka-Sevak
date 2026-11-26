@@ -4,22 +4,20 @@ import React, { useEffect, useState } from 'react';
 import { ArrowRight, Heart, AlertCircle, RefreshCw } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
-import { ImpactCounters } from '@/components/ImpactCounters';
 import { DaanSection } from '@/components/DaanSection';
 import { GroundProofVideos } from '@/components/GroundProofVideos';
 import { SevaProjects } from '@/components/SevaProjects';
 import { TransparencySection } from '@/components/TransparencySection';
 import { CreatorTrustSection } from '@/components/CreatorTrustSection';
 import { UniversalStories } from '@/components/UniversalStories';
+import { FAQSection } from '@/components/FAQSection';
 import { Footer } from '@/components/Footer';
 import { DivineBlessingModal } from '@/components/DivineBlessingModal';
 import {
-  DEFAULT_IMPACT_COUNTERS,
   DEFAULT_TRANSPARENCY,
   INITIAL_COMMUNITY_BLESSINGS,
 } from '@/lib/constants';
 import {
-  ImpactCounters as ImpactCountersType,
   PublicSupporter,
   TransparencyData,
   VideoItem,
@@ -30,7 +28,6 @@ export default function Home() {
   const [selectedAmount, setSelectedAmount] = useState<number>(250);
 
   const [videos, setVideos] = useState<VideoItem[]>([]);
-  const [impactCounters, setImpactCounters] = useState<ImpactCountersType>(DEFAULT_IMPACT_COUNTERS);
   const [transparency, setTransparency] = useState<TransparencyData>(DEFAULT_TRANSPARENCY);
   const [supporters, setSupporters] = useState<PublicSupporter[]>(INITIAL_COMMUNITY_BLESSINGS);
 
@@ -54,7 +51,6 @@ export default function Home() {
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data.videos)) setVideos(data.videos);
-        if (data.impactCounters) setImpactCounters(data.impactCounters);
         if (data.transparency) setTransparency(data.transparency);
         if (Array.isArray(data.recentSupporters)) setSupporters(data.recentSupporters);
       })
@@ -207,16 +203,10 @@ export default function Home() {
       )}
 
       <main className="flex-1">
-        {/* 2. Hero */}
-        <HeroSection
-          onDonateClick={scrollToDaan}
-          onWatchVideosClick={scrollToVideos}
-        />
+        {/* 1. Hero */}
+        <HeroSection onDonateClick={scrollToDaan} />
 
-        {/* 3. Impact Counters */}
-        <ImpactCounters counters={impactCounters} />
-
-        {/* 4. Daan Karein (4-step mobile-first + ZapUPI) */}
+        {/* 2. Donation Section (4-step mobile-first + ZapUPI) */}
         <DaanSection
           selectedCategoryId={selectedCategoryId}
           onSelectCategoryId={setSelectedCategoryId}
@@ -225,23 +215,24 @@ export default function Home() {
           onPaymentSuccess={(details) => setBlessingDetails(details)}
         />
 
-        {/* 5. Ground Proof (Embedded Videos — auto-hidden if empty) */}
-        <GroundProofVideos videos={videos} />
-
-        {/* 6. 4 Seva Sankalp Cards */}
+        {/* 3. 4 Seva Sankalp (with real images & amount cards) */}
         <SevaProjects onSelectSeva={handleSelectSeva} />
 
-        {/* 7. Transparency + Recent Supporters */}
+        {/* 4. Ground Proof (Recent Seva Reels + DB Videos) */}
+        <GroundProofVideos videos={videos} />
+
+        {/* 5. About Vipu & Team + Transparency */}
+        <CreatorTrustSection onWatchVideosClick={scrollToVideos} />
         <TransparencySection transparency={transparency} supporters={supporters} />
 
-        {/* 8. About + Legal Status (once) */}
-        <CreatorTrustSection onWatchVideosClick={scrollToVideos} />
-
-        {/* 9. 12 Kathayein (default 3, collapsible) */}
+        {/* 6. Inspirational Stories (Compact Carousel) */}
         <UniversalStories />
+
+        {/* 7. FAQ */}
+        <FAQSection />
       </main>
 
-      {/* 10. Contact + Footer */}
+      {/* 8. Footer */}
       <Footer onWatchVideosClick={scrollToVideos} />
 
       {/* Thank-you Screen */}
@@ -261,7 +252,7 @@ export default function Home() {
         >
           <span className="flex items-center gap-2">
             <Heart className="w-4 h-4 fill-white shrink-0" />
-            <span>₹{selectedAmount.toLocaleString('en-IN')} • सहयोग करें</span>
+            <span>दान करें • ₹{selectedAmount.toLocaleString('en-IN')}</span>
           </span>
           <ArrowRight className="w-5 h-5 shrink-0" />
         </button>

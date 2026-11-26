@@ -54,20 +54,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick }) => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-bold text-slate-700">
+          <nav className="hidden lg:flex items-center gap-5 text-sm font-bold text-slate-700">
             <button
               type="button"
               onClick={() => scrollToSection('daan-section')}
               className="hover:text-kesariya-600 transition-colors cursor-pointer"
             >
               दान करें
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToSection('ground-proof')}
-              className="hover:text-kesariya-600 transition-colors cursor-pointer"
-            >
-              सेवा वीडियो
             </button>
             <button
               type="button"
@@ -78,24 +71,31 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick }) => {
             </button>
             <button
               type="button"
-              onClick={() => scrollToSection('transparency')}
+              onClick={() => scrollToSection('ground-proof')}
               className="hover:text-kesariya-600 transition-colors cursor-pointer"
             >
-              हिसाब व पारदर्शिता
+              सेवा वीडियो
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection('about-legal')}
+              className="hover:text-kesariya-600 transition-colors cursor-pointer"
+            >
+              पारदर्शिता
             </button>
             <button
               type="button"
               onClick={() => scrollToSection('kathayein')}
               className="hover:text-kesariya-600 transition-colors cursor-pointer"
             >
-              12 कथाएँ
+              प्रेरक कथाएँ
             </button>
             <button
               type="button"
-              onClick={() => scrollToSection('contact-footer')}
+              onClick={() => scrollToSection('faq')}
               className="hover:text-kesariya-600 transition-colors cursor-pointer"
             >
-              संपर्क
+              सवाल-जवाब
             </button>
           </nav>
 
@@ -131,11 +131,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick }) => {
         >
           {[
             { id: 'daan-section', label: 'दान करें (4 आसान चरण)' },
+            { id: 'seva-sankalp', label: '4 सेवा संकल्प' },
             { id: 'ground-proof', label: 'ज़मीनी प्रमाण (सेवा वीडियो)' },
-            { id: 'seva-sankalp', label: 'हमारे 4 सेवा संकल्प' },
+            { id: 'about-legal', label: 'हमारे बारे में व पारदर्शिता' },
             { id: 'transparency', label: 'मासिक हिसाब व सहयोगी' },
-            { id: 'about-legal', label: 'हमारे बारे में व वैधानिक स्थिति' },
-            { id: 'kathayein', label: '12 पावन सेवा कथाएँ' },
+            { id: 'kathayein', label: 'प्रेरक कथाएँ' },
+            { id: 'faq', label: 'अक्सर पूछे जाने वाले सवाल' },
             { id: 'contact-footer', label: 'संपर्क करें' },
           ].map((item) => (
             <button
