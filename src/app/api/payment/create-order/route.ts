@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import QRCode from 'qrcode';
 
+export const preferredRegion = 'bom1';
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -47,11 +49,10 @@ export async function POST(request: Request) {
           ? `${appUrl}/api/payment/webhook?token=${encodeURIComponent(webhookSecret)}`
           : `${appUrl}/api/payment/webhook`;
 
-        // ZapUPI Create Order with switch=220 (configured for ramkasevak.org in ZapUPI dashboard)
         const zapRes = await fetch('https://pay.zapupi.com/api/create-order?switch=220', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          signal: AbortSignal.timeout(5000),
+          signal: AbortSignal.timeout(3500),
           body: JSON.stringify({
             zap_key: zapKey,
             order_id: orderId,
@@ -71,29 +72,6 @@ export async function POST(request: Request) {
           gatewayMode = 'zapupi';
           paymentUrl = zapData.payment_url;
           txnId = zapData.txn_id || orderId;
-
-          // Extract live UPI intent from ZapUPI Cashier page (max 3.5s timeout so UI stays fast)
-          try {
-            const htmlRes = await fetch(zapData.payment_url, {
-              signal: AbortSignal.timeout(3500),
-            });
-            const html = await htmlRes.text();
-            const match = html.match(/const\s+serverData\s*=\s*(\{.+?\});/);
-            if (match) {
-              const serverData = JSON.parse(match[1]);
-              const inp = serverData.data;
-              if (inp && inp.upi_id) {
-                upiId = inp.upi_id;
-                txnId = inp.txnId || txnId;
-                const autoKey = inp.autoCode || 'tr';
-                const autoVal = inp.txnRef || '';
-                const amountFormatted = parseFloat(inp.pay_amount || numericAmount).toFixed(2);
-                upiPayload = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(fallbackUpiName)}&cu=INR&am=${encodeURIComponent(amountFormatted)}&tn=${encodeURIComponent(txnId)}&${encodeURIComponent(autoKey)}=${encodeURIComponent(autoVal)}`;
-              }
-            }
-          } catch {
-            // If cashier HTML extraction fails, user still has payment_url
-          }
         } else {
           fallbackReason = zapData.message || 'ZapUPI भुगतान गेटवे अभी उपलब्ध नहीं है।';
         }
@@ -104,6 +82,61 @@ export async function POST(request: Request) {
       fallbackReason = 'ZAP_KEY सर्वर पर कॉन्फ़िगर नहीं है।';
     }
 
+    // Run cashier HTML extraction AND Supabase DB insert in parallel to cut latency in half
+    const db = getServiceSupabase();
+
+    const extractTask = async () => {
+      if (!paymentUrl) return;
+      try {
+        const htmlRes = await fetch(paymentUrl, {
+          signal: AbortSignal.timeout(2200),
+        });
+        const html = await htmlRes.text();
+        const match = html.match(/const\s+serverData\s*=\s*(\{.+?\});/);
+        if (match) {
+          const serverData = JSON.parse(match[1]);
+          const inp = serverData.data;
+          if (inp && inp.upi_id) {
+            upiId = inp.upi_id;
+            txnId = inp.txnId || txnId;
+            const autoKey = inp.autoCode || 'tr';
+            const autoVal = inp.txnRef || '';
+            const amountFormatted = parseFloat(inp.pay_amount || numericAmount).toFixed(2);
+            upiPayload = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(fallbackUpiName)}&cu=INR&am=${encodeURIComponent(amountFormatted)}&tn=${encodeURIComponent(txnId)}&${encodeURIComponent(autoKey)}=${encodeURIComponent(autoVal)}`;
+          }
+        }
+      } catch {
+        // Fallback below
+      }
+    };
+
+    const dbTask = async () => {
+      if (!db) return;
+      try {
+        await db.from('donations').insert([
+          {
+            donor_name: isAnonymous ? 'गुप्त दानी' : donorName?.trim() || 'श्रद्धालु दाता',
+            donor_email: donorEmail?.trim() || null,
+            donor_phone: cleanPhone || null,
+            category_id: sevaId || 'roadside-relief',
+            category_name: sevaName || 'अन्नदान',
+            quantity: 1,
+            unit_label: packageLabel || '',
+            amount: numericAmount,
+            payment_method: gatewayMode === 'zapupi' ? 'ZapUPI' : 'Direct UPI (Fallback)',
+            transaction_ref: orderId,
+            sankalp_message: message?.trim() || null,
+            is_anonymous: Boolean(isAnonymous),
+            status: 'pending',
+          },
+        ]);
+      } catch (err) {
+        console.warn('DB insert note:', err);
+      }
+    };
+
+    await Promise.allSettled([extractTask(), dbTask()]);
+
     if (!upiPayload) {
       upiPayload = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(fallbackUpiName)}&cu=INR&am=${encodeURIComponent(numericAmount.toFixed(2))}&tn=${encodeURIComponent(orderId)}`;
     }
@@ -111,33 +144,12 @@ export async function POST(request: Request) {
     let qrImageUrl = '';
     try {
       qrImageUrl = await QRCode.toDataURL(upiPayload, {
-        width: 260,
+        width: 240,
         margin: 1,
         color: { dark: '#3B1F0A', light: '#ffffff' },
       });
     } catch (qrErr) {
       console.warn('QR generation error:', qrErr);
-    }
-
-    const db = getServiceSupabase();
-    if (db) {
-      await db.from('donations').insert([
-        {
-          donor_name: isAnonymous ? 'गुप्त दानी' : donorName?.trim() || 'श्रद्धालु दाता',
-          donor_email: donorEmail?.trim() || null,
-          donor_phone: cleanPhone || null,
-          category_id: sevaId || 'roadside-relief',
-          category_name: sevaName || 'अन्नदान',
-          quantity: 1,
-          unit_label: packageLabel || '',
-          amount: numericAmount,
-          payment_method: gatewayMode === 'zapupi' ? 'ZapUPI' : 'Direct UPI (Fallback)',
-          transaction_ref: orderId,
-          sankalp_message: message?.trim() || null,
-          is_anonymous: Boolean(isAnonymous),
-          status: 'pending',
-        },
-      ]);
     }
 
     return NextResponse.json({
