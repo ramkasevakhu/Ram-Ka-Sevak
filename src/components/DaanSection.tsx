@@ -167,6 +167,13 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
       setPaymentUrl(data.payment_url || null);
       if (data.upi_id) setUpiId(data.upi_id);
       setGatewayMode(data.mode);
+
+      // Direct redirect to ZapUPI payment page when available
+      if (data.mode === 'zapupi' && data.payment_url) {
+        window.location.href = data.payment_url;
+        return;
+      }
+
       if (data.fallback && data.fallback_reason) {
         setFallbackNotice(data.fallback_reason);
       }

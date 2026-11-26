@@ -82,36 +82,10 @@ export async function POST(request: Request) {
       fallbackReason = 'ZAP_KEY सर्वर पर कॉन्फ़िगर नहीं है।';
     }
 
-    // Run cashier HTML extraction AND Supabase DB insert in parallel to cut latency in half
+    // Run Supabase DB insert (no cashier HTML scraping needed when redirecting directly to ZapUPI payment_url)
     const db = getServiceSupabase();
 
-    const extractTask = async () => {
-      if (!paymentUrl) return;
-      try {
-        const htmlRes = await fetch(paymentUrl, {
-          signal: AbortSignal.timeout(2200),
-        });
-        const html = await htmlRes.text();
-        const match = html.match(/const\s+serverData\s*=\s*(\{.+?\});/);
-        if (match) {
-          const serverData = JSON.parse(match[1]);
-          const inp = serverData.data;
-          if (inp && inp.upi_id) {
-            upiId = inp.upi_id;
-            txnId = inp.txnId || txnId;
-            const autoKey = inp.autoCode || 'tr';
-            const autoVal = inp.txnRef || '';
-            const amountFormatted = parseFloat(inp.pay_amount || numericAmount).toFixed(2);
-            upiPayload = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(fallbackUpiName)}&cu=INR&am=${encodeURIComponent(amountFormatted)}&tn=${encodeURIComponent(txnId)}&${encodeURIComponent(autoKey)}=${encodeURIComponent(autoVal)}`;
-          }
-        }
-      } catch {
-        // Fallback below
-      }
-    };
-
-    const dbTask = async () => {
-      if (!db) return;
+    if (db) {
       try {
         await db.from('donations').insert([
           {
@@ -133,9 +107,7 @@ export async function POST(request: Request) {
       } catch (err) {
         console.warn('DB insert note:', err);
       }
-    };
-
-    await Promise.allSettled([extractTask(), dbTask()]);
+    }
 
     if (!upiPayload) {
       upiPayload = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(fallbackUpiName)}&cu=INR&am=${encodeURIComponent(numericAmount.toFixed(2))}&tn=${encodeURIComponent(orderId)}`;
