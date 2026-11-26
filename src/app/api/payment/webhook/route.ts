@@ -1,37 +1,38 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
-
-const ZAP_KEY = process.env.ZAP_KEY || 'zapc267112a11cfc2c29fa5d3a52a636afc';
+import { getServiceSupabase } from '@/lib/supabase';
 
 export async function POST(request: Request) {
   try {
     const payload = await request.json();
     const orderId = payload.order_id || payload.orderId;
-    const status = payload.status?.toLowerCase();
     const utr = payload.utr || payload.txid || payload.txn_id;
 
     if (!orderId) {
       return NextResponse.json({ status: 'error', message: 'Missing order_id' }, { status: 400 });
     }
 
-    // Verify order status directly from ZapUPI API to prevent spoofing
+    const zapKey = process.env.ZAP_KEY;
+    if (!zapKey) {
+      return NextResponse.json({ status: 'ignored', message: 'Gateway not configured' }, { status: 200 });
+    }
+
     const verifyRes = await fetch('https://pay.zapupi.com/api/order-status', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        zap_key: ZAP_KEY,
+        zap_key: zapKey,
         order_id: orderId,
       }),
     });
 
     const verifyData = await verifyRes.json();
-    const isReallySuccess =
-      verifyData?.status?.toLowerCase() === 'success' ||
-      verifyData?.status?.toLowerCase() === 'completed';
+    const paymentStatus = (verifyData?.data?.status || verifyData?.status || '').toLowerCase();
+    const isReallySuccess = paymentStatus === 'success' || paymentStatus === 'completed';
 
-    if (isReallySuccess && supabase) {
-      const realUtr = verifyData.utr || utr || orderId;
-      await supabase
+    const db = getServiceSupabase();
+    if (isReallySuccess && db) {
+      const realUtr = verifyData?.data?.utr || utr || orderId;
+      await db
         .from('donations')
         .update({
           status: 'verified',
@@ -40,7 +41,6 @@ export async function POST(request: Request) {
         .eq('transaction_ref', orderId);
     }
 
-    // Respond HTTP 200 within 10 seconds as required by ZapUPI
     return NextResponse.json({ status: 'received' }, { status: 200 });
   } catch (err: any) {
     console.error('Webhook processing error:', err);

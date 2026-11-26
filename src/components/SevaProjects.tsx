@@ -1,296 +1,76 @@
 'use client';
 
-import React, { useState } from 'react';
-import { 
-  CheckCircle2, 
-  ArrowRight, 
-  Sparkles, 
-  Heart,
-  Utensils, 
-  HeartHandshake, 
-  Activity, 
-  ShieldAlert,
-  Info
-} from 'lucide-react';
-import { DETAILED_SEVA_CATEGORIES, DetailedSevaCategory } from '@/lib/constants';
+import React from 'react';
+import { DETAILED_SEVA_CATEGORIES } from '@/lib/constants';
+import { ArrowRight } from 'lucide-react';
 
 interface SevaProjectsProps {
-  onDonateClick: (
-    category: DetailedSevaCategory, 
-    amount: number, 
-    quantityText: string,
-    exactWhatIsGiven: string
-  ) => void;
+  onSelectSeva: (categoryId: string, defaultAmount: number) => void;
 }
 
-export const SevaProjects: React.FC<SevaProjectsProps> = ({ onDonateClick }) => {
-  const [activeTab, setActiveTab] = useState<string>('roadside-relief');
-  const [selectedOptionIdx, setSelectedOptionIdx] = useState<Record<string, number>>({
-    'roadside-relief': 1,
-    'animal-welfare': 1,
-    'medical-emergency': 0,
-    'disaster-relief': 0,
-  });
-
-  const [customAmounts, setCustomAmounts] = useState<Record<string, string>>({
-    'roadside-relief': '',
-    'animal-welfare': '',
-    'medical-emergency': '',
-    'disaster-relief': '',
-  });
-
-  const currentCategory = DETAILED_SEVA_CATEGORIES.find(c => c.id === activeTab) || DETAILED_SEVA_CATEGORIES[0];
-  const currentOptionIdx = selectedOptionIdx[currentCategory.id] ?? 0;
-  const isCustom = Boolean(customAmounts[currentCategory.id]);
-  
-  const selectedOption = currentCategory.options[currentOptionIdx] || currentCategory.options[0];
-  const finalAmount = isCustom 
-    ? parseInt(customAmounts[currentCategory.id], 10) || currentCategory.unitCost 
-    : selectedOption.amount;
-
-  const handleSelectOption = (catId: string, idx: number) => {
-    setSelectedOptionIdx(prev => ({ ...prev, [catId]: idx }));
-    setCustomAmounts(prev => ({ ...prev, [catId]: '' }));
-  };
-
-  const handleCustomChange = (catId: string, val: string) => {
-    const sanitized = val.replace(/\D/g, '');
-    setCustomAmounts(prev => ({ ...prev, [catId]: sanitized }));
-  };
-
-  const getTabIcon = (id: string) => {
-    switch (id) {
-      case 'roadside-relief':
-        return <Utensils className="w-4 h-4 shrink-0" />;
-      case 'animal-welfare':
-        return <HeartHandshake className="w-4 h-4 shrink-0" />;
-      case 'medical-emergency':
-        return <Activity className="w-4 h-4 shrink-0" />;
-      case 'disaster-relief':
-        return <ShieldAlert className="w-4 h-4 shrink-0" />;
-      default:
-        return <Heart className="w-4 h-4 shrink-0" />;
-    }
-  };
-
+export const SevaProjects: React.FC<SevaProjectsProps> = ({ onSelectSeva }) => {
   return (
-    <section id="seva-projects" className="py-14 lg:py-20 bg-white relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-300 text-xs sm:text-sm font-bold text-amber-800 mb-3 shadow-xs">
-            <Sparkles className="w-4 h-4 text-kesariya-600" />
-            <span>100% Direct Grassroots Impact • सच्ची ज़मीनी सेवा</span>
-          </div>
-          
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
-            हमारे 4 पवित्र सेवा संकल्प
-            <span className="block mt-1 bg-gradient-to-r from-kesariya-600 to-amber-600 bg-clip-text text-transparent">
-              Kahan, Kaise aur Kya Madad Pahunchti Hai
-            </span>
+    <section id="seva-sankalp" className="py-10 sm:py-14 px-4 bg-[#FFFDF9]">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-7">
+          <h2 className="text-2xl sm:text-3xl font-black text-[#3B1F0A]">
+            हमारे 4 सेवा संकल्प
           </h2>
-          
-          <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
-            Har ek rupaye ka 100% hisaab transparent hai. Niche diye gaye Seva Sankalp me se chuniye aur dekhiye aapke sahyog se kaunsa khana, dawaai ya emergency relief kit di jaati hai.
+          <p className="text-sm sm:text-base text-[#6B5E55] mt-1">
+            प्रत्येक सेवा में आपका सहयोग सीधे ज़रूरतमंदों तक पहुँचता है
           </p>
         </div>
 
-        {/* 4 Seva Tab Buttons (Fixed Overflow & Replaced 'Project' with 'Seva') */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 mb-8">
-          {DETAILED_SEVA_CATEGORIES.map((cat) => {
-            const isActive = activeTab === cat.id;
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {DETAILED_SEVA_CATEGORIES.map((seva) => {
+            const defaultOpt = seva.options.find((o) => o.popular) || seva.options[0];
             return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setActiveTab(cat.id)}
-                className={`min-w-0 w-full overflow-hidden flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-2xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer border-2 text-center sm:text-left ${
-                  isActive
-                    ? 'bg-gradient-to-r from-kesariya-600 to-amber-600 text-white border-amber-300 shadow-lg shadow-kesariya-600/25 scale-[1.02]'
-                    : 'bg-amber-50/70 hover:bg-amber-100 text-slate-700 border-amber-200/80 hover:border-amber-300'
-                }`}
+              <div
+                key={seva.id}
+                className="bg-white rounded-2xl border border-amber-200 overflow-hidden shadow-xs flex flex-col justify-between"
               >
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
-                  isActive ? 'bg-white/20 text-white' : 'bg-amber-200/70 text-amber-800'
-                }`}>
-                  {getTabIcon(cat.id)}
+                <div>
+                  <div className="relative aspect-[16/10] w-full bg-amber-100 overflow-hidden">
+                    <img
+                      src={seva.imageUrl}
+                      alt={seva.imageAlt}
+                      width={640}
+                      height={400}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                    <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-white/95 text-[#3B1F0A] text-xs font-black shadow-xs">
+                      {seva.tabNumber}. {seva.shortName}
+                    </span>
+                  </div>
+
+                  <div className="p-4">
+                    <h3 className="text-base font-black text-[#3B1F0A] mb-1">
+                      {seva.titleHindi}
+                    </h3>
+                    <p className="text-sm text-[#5C4E44] leading-snug mb-3">
+                      {seva.shortDesc}
+                    </p>
+                    <div className="text-xs font-extrabold text-kesariya-700 bg-amber-50 px-2.5 py-1.5 rounded-lg inline-block">
+                      शुरुआत ₹{seva.unitCost} से • {seva.unitLabel}
+                    </div>
+                  </div>
                 </div>
-                
-                {/* Text Container with strict boundaries to prevent overflow */}
-                <div className="w-full min-w-0 flex-1 overflow-hidden leading-tight text-center sm:text-left">
-                  <span className="text-[10px] sm:text-[11px] opacity-80 block font-bold uppercase tracking-wider truncate">
-                    सेवा {cat.tabNumber} • Seva
-                  </span>
-                  <span className="block text-xs sm:text-sm font-extrabold break-words line-clamp-2 mt-0.5">
-                    {cat.shortName}
-                  </span>
+
+                <div className="px-4 pb-4">
+                  <button
+                    type="button"
+                    onClick={() => onSelectSeva(seva.id, defaultOpt.amount)}
+                    className="w-full min-h-[48px] rounded-xl bg-amber-100 hover:bg-kesariya-600 hover:text-white text-[#3B1F0A] font-extrabold text-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <span>सेवा चुनें</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>
-
-        {/* Active Seva Card (Side-by-Side Horizontal Layout) */}
-        <div className="glass-3d-card rounded-3xl overflow-hidden border-2 border-amber-300/80 shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-0">
-          
-          {/* Left Column: Photo & Exact Breakdown (5 Cols) */}
-          <div className="lg:col-span-5 bg-gradient-to-b from-amber-50/50 to-white p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-amber-200 flex flex-col justify-between">
-            <div>
-              {/* Image Header with Badge */}
-              <div className="relative h-48 sm:h-60 rounded-2xl overflow-hidden mb-5 shadow-md border-2 border-white">
-                <img
-                  src={currentCategory.imageUrl}
-                  alt={currentCategory.imageAlt}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
-                <div className="absolute bottom-3 left-3 right-3 text-white">
-                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-400 text-slate-950 inline-block mb-1">
-                    सेवा {currentCategory.tabNumber} • {currentCategory.titleHindi}
-                  </span>
-                  <h3 className="text-lg sm:text-xl font-black leading-tight text-white">
-                    {currentCategory.titleEnglish}
-                  </h3>
-                </div>
-              </div>
-
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-5">
-                {currentCategory.shortDesc}
-              </p>
-
-              {/* Exact Physical Breakdown Checklist */}
-              <div className="bg-white p-4 sm:p-5 rounded-2xl border border-amber-200 shadow-xs space-y-2.5">
-                <div className="flex items-center gap-1.5 text-xs font-black text-amber-900 uppercase tracking-wide mb-1">
-                  <Info className="w-4 h-4 text-kesariya-600" />
-                  <span>{currentCategory.exactBreakdownTitle}</span>
-                </div>
-
-                {currentCategory.exactBreakdownItems.map((item, i) => (
-                  <div key={i} className="flex items-start gap-2 text-xs sm:text-sm text-slate-700">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span className="leading-snug">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-5 pt-3 border-t border-amber-100 text-[11px] text-slate-500 font-medium">
-              🚩 100% Direct Grassroots Seva • Zero Middlemen • Verified video updates on reels (@vipuone)
-            </div>
-          </div>
-
-          {/* Right Column: Clear Amount Options (7 Cols) */}
-          <div className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between bg-white">
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
-                  Seva Package Chunein (सहयोग चुनें)
-                </span>
-                <span className="text-xs font-bold text-kesariya-700 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
-                  {currentCategory.unitName}
-                </span>
-              </div>
-
-              {/* Clean, Highly Readable Options Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
-                {currentCategory.options.map((opt, idx) => {
-                  const isSelected = !isCustom && currentOptionIdx === idx;
-                  return (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => handleSelectOption(currentCategory.id, idx)}
-                      className={`p-3.5 rounded-2xl text-left transition-all cursor-pointer border-2 relative flex flex-col justify-between ${
-                        isSelected
-                          ? 'border-kesariya-500 bg-amber-50/70 shadow-md ring-2 ring-kesariya-200 scale-[1.01]'
-                          : 'border-slate-200 hover:border-amber-300 bg-white hover:bg-slate-50'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <span className="text-xs sm:text-sm font-extrabold text-slate-900">
-                          {opt.label}
-                        </span>
-                        <span className="text-sm sm:text-base font-black text-kesariya-700">
-                          ₹{opt.amount.toLocaleString('en-IN')}
-                        </span>
-                      </div>
-
-                      <p className="text-[11px] text-slate-500 leading-snug">
-                        {opt.whatIsGiven}
-                      </p>
-
-                      {opt.popular && (
-                        <span className="absolute -top-2.5 right-3 text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-xs">
-                          Popular (लोकप्रिय)
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Clean Custom Amount Box */}
-              <div className="p-4 rounded-2xl bg-amber-50/50 border border-amber-200 mb-5 flex flex-col sm:flex-row items-center gap-3">
-                <span className="text-xs font-bold text-slate-700 shrink-0">
-                  Apni Iccha Anusaar Rashi Likhein (Custom Amount):
-                </span>
-                <div className="relative w-full sm:flex-1">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">
-                    ₹
-                  </span>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    placeholder={`Minimum ₹${currentCategory.unitCost} ya jo iccha ho`}
-                    value={customAmounts[currentCategory.id] || ''}
-                    onChange={(e) => handleCustomChange(currentCategory.id, e.target.value)}
-                    className="w-full pl-7 pr-3 py-2 text-sm rounded-xl border border-slate-200 focus:border-kesariya-500 bg-white text-slate-900 font-bold"
-                  />
-                </div>
-              </div>
-
-              {/* Luxury Golden-Champagne Ambient Selection Card */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-100/90 via-amber-50 to-kesariya-100/80 border-2 border-amber-300 shadow-sm mb-5 text-slate-900">
-                <div className="flex items-center justify-between text-xs text-amber-800 font-bold mb-1">
-                  <span>Selected Seva Impact • सीधा ज़मीनी प्रभाव:</span>
-                  <span className="bg-amber-200/80 px-2 py-0.5 rounded-md text-[10px] text-amber-950 font-black">
-                    100% Direct Ground Delivery
-                  </span>
-                </div>
-                <div className="flex items-center justify-between gap-3">
-                  <div className="text-xs sm:text-sm font-extrabold text-slate-800 leading-snug">
-                    {isCustom 
-                      ? `₹${finalAmount} Direct Seva Contribution` 
-                      : selectedOption.whatIsGiven}
-                  </div>
-                  <div className="text-2xl sm:text-3xl font-black text-kesariya-700 shrink-0">
-                    ₹{finalAmount.toLocaleString('en-IN')}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Donate Button */}
-            <button
-              type="button"
-              onClick={() => onDonateClick(
-                currentCategory, 
-                finalAmount, 
-                isCustom ? 'Custom Amount' : selectedOption.label,
-                isCustom ? `₹${finalAmount} Direct Seva` : selectedOption.whatIsGiven
-              )}
-              className="w-full btn-divine-3d text-white font-black text-base py-4 rounded-2xl flex items-center justify-center gap-3 cursor-pointer shadow-xl hover:scale-[1.01] transition-transform"
-            >
-              <Heart className="w-5 h-5 fill-white" />
-              <span>Daan Karein (सहयोग करें) • ₹{finalAmount.toLocaleString('en-IN')}</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
-
-          </div>
-
-        </div>
-
       </div>
     </section>
   );

@@ -1,25 +1,39 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { ArrowRight, Heart } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { HeroSection } from '@/components/HeroSection';
-import { UniversalStories } from '@/components/UniversalStories';
+import { ImpactCounters } from '@/components/ImpactCounters';
+import { DaanSection } from '@/components/DaanSection';
+import { GroundProofVideos } from '@/components/GroundProofVideos';
 import { SevaProjects } from '@/components/SevaProjects';
+import { TransparencySection } from '@/components/TransparencySection';
 import { CreatorTrustSection } from '@/components/CreatorTrustSection';
+import { UniversalStories } from '@/components/UniversalStories';
 import { Footer } from '@/components/Footer';
-import { PaymentModal } from '@/components/PaymentModal';
 import { DivineBlessingModal } from '@/components/DivineBlessingModal';
-import { DETAILED_SEVA_CATEGORIES, DetailedSevaCategory } from '@/lib/constants';
-import { Heart, ArrowRight } from 'lucide-react';
+import {
+  DEFAULT_IMPACT_COUNTERS,
+  DEFAULT_TRANSPARENCY,
+  INITIAL_COMMUNITY_BLESSINGS,
+} from '@/lib/constants';
+import {
+  ImpactCounters as ImpactCountersType,
+  PublicSupporter,
+  TransparencyData,
+  VideoItem,
+} from '@/lib/types';
 
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState<DetailedSevaCategory | null>(DETAILED_SEVA_CATEGORIES[0]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('roadside-relief');
   const [selectedAmount, setSelectedAmount] = useState<number>(250);
-  const [selectedQuantityText, setSelectedQuantityText] = useState<string>('5 Logon ka Khana');
-  const [selectedExactBreakdown, setSelectedExactBreakdown] = useState<string>('5 Complete Hot Meal Packs sadak par beghar buzurgon ko direct handover');
 
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [isBlessingModalOpen, setIsBlessingModalOpen] = useState(false);
+  const [videos, setVideos] = useState<VideoItem[]>([]);
+  const [impactCounters, setImpactCounters] = useState<ImpactCountersType>(DEFAULT_IMPACT_COUNTERS);
+  const [transparency, setTransparency] = useState<TransparencyData>(DEFAULT_TRANSPARENCY);
+  const [supporters, setSupporters] = useState<PublicSupporter[]>(INITIAL_COMMUNITY_BLESSINGS);
+
   const [blessingDetails, setBlessingDetails] = useState<{
     donorName: string;
     categoryName: string;
@@ -29,110 +43,105 @@ export default function Home() {
     message?: string;
   } | null>(null);
 
-  const handleOpenDonate = (
-    cat: DetailedSevaCategory,
-    amount: number,
-    quantityText: string,
-    exactWhatIsGiven: string
-  ) => {
-    setSelectedCategory(cat);
-    setSelectedAmount(amount);
-    setSelectedQuantityText(quantityText);
-    setSelectedExactBreakdown(exactWhatIsGiven);
-    setIsPaymentModalOpen(true);
-  };
+  useEffect(() => {
+    fetch('/api/public/data')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data.videos)) setVideos(data.videos);
+        if (data.impactCounters) setImpactCounters(data.impactCounters);
+        if (data.transparency) setTransparency(data.transparency);
+        if (Array.isArray(data.recentSupporters)) setSupporters(data.recentSupporters);
+      })
+      .catch(() => {
+        // Fallback defaults already set
+      });
+  }, []);
 
-  const handleScrollToProjects = () => {
-    const el = document.getElementById('seva-projects');
+  const scrollToDaan = () => {
+    const el = document.getElementById('daan-section');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handlePaymentSuccess = (details: {
-    donorName: string;
-    categoryName: string;
-    unitsText: string;
-    amount: number;
-    transactionRef: string;
-    message?: string;
-  }) => {
-    setIsPaymentModalOpen(false);
-    setBlessingDetails(details);
-    setIsBlessingModalOpen(true);
+  const scrollToVideos = () => {
+    const el = document.getElementById('ground-proof');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      const aboutEl = document.getElementById('about-legal');
+      if (aboutEl) aboutEl.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleSelectSeva = (catId: string, defaultAmt: number) => {
+    setSelectedCategoryId(catId);
+    setSelectedAmount(defaultAmt);
+    scrollToDaan();
   };
 
   return (
-    <main className="min-h-screen flex flex-col justify-between">
-      {/* 1. Navigation */}
-      <Navbar onOpenDonateModal={() => setIsPaymentModalOpen(true)} />
+    <div className="min-h-screen flex flex-col bg-[#FFFDF9]">
+      <Navbar onDonateClick={scrollToDaan} />
 
-      {/* 2. Hero Section (25% Pure Hindi + 60% Hinglish + 15% English) */}
-      <HeroSection />
+      <main className="flex-1">
+        {/* 1. Hero */}
+        <HeroSection
+          onDonateClick={scrollToDaan}
+          onWatchVideosClick={scrollToVideos}
+        />
 
-      {/* 3. 12 Universal Compassion Stories Carousel (Floating side arrows on carousel cards) */}
-      <UniversalStories onExploreSeva={handleScrollToProjects} />
+        {/* 2. Impact Counters */}
+        <ImpactCounters counters={impactCounters} />
 
-      {/* 4. 4 Sacred Seva Sankalp (Fixed overflow, donation terminology, clear breakdown) */}
-      <SevaProjects onDonateClick={handleOpenDonate} />
+        {/* 3. Daan Karein (4-step mobile-first) */}
+        <DaanSection
+          selectedCategoryId={selectedCategoryId}
+          onSelectCategoryId={setSelectedCategoryId}
+          selectedAmount={selectedAmount}
+          onSelectAmount={setSelectedAmount}
+          onPaymentSuccess={(details) => setBlessingDetails(details)}
+        />
 
-      {/* 5. Creator Trust & 100% Genuine Ground Verification (@vipuone) */}
-      <CreatorTrustSection />
+        {/* 4. Ground Proof (Embedded Videos — auto-hidden if empty) */}
+        <GroundProofVideos videos={videos} />
 
-      {/* 6. Footer */}
-      <Footer />
+        {/* 5. 4 Seva Sankalp Cards */}
+        <SevaProjects onSelectSeva={handleSelectSeva} />
 
-      {/* 8. Payment & UPI Modal */}
-      <PaymentModal
-        isOpen={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
-        category={selectedCategory}
-        amount={selectedAmount}
-        quantityText={selectedQuantityText}
-        exactWhatIsGiven={selectedExactBreakdown}
-        onPaymentSuccess={handlePaymentSuccess}
-      />
+        {/* 6. Transparency + Recent Supporters */}
+        <TransparencySection transparency={transparency} supporters={supporters} />
 
-      {/* 9. Divine Blessing & Seva Receipt Modal */}
+        {/* 7. About + Legal Status (once) */}
+        <CreatorTrustSection onWatchVideosClick={scrollToVideos} />
+
+        {/* 8. 12 Kathayein (default 3, collapsible) */}
+        <UniversalStories />
+      </main>
+
+      {/* 9. Contact + Footer */}
+      <Footer onWatchVideosClick={scrollToVideos} />
+
+      {/* Thank-you Screen */}
       <DivineBlessingModal
-        isOpen={isBlessingModalOpen}
-        onClose={() => setIsBlessingModalOpen(false)}
+        isOpen={Boolean(blessingDetails)}
+        onClose={() => setBlessingDetails(null)}
+        onWatchVideo={scrollToVideos}
         details={blessingDetails}
       />
 
-      {/* 10. Floating Mobile Donate Bar */}
-      <div className="fixed bottom-4 left-4 right-4 z-40 lg:hidden">
+      {/* Mobile Sticky Bottom Bar */}
+      <div className="fixed bottom-3 left-3 right-3 z-40 lg:hidden">
         <button
-          onClick={() => {
-            const cat = selectedCategory || DETAILED_SEVA_CATEGORIES[0];
-            handleOpenDonate(
-              cat, 
-              cat.options[1]?.amount || 250, 
-              cat.options[1]?.label || '5 Logon ka Khana',
-              cat.options[1]?.whatIsGiven || '5 Complete Hot Meal Packs'
-            );
-          }}
-          className="w-full bg-gradient-to-r from-kesariya-600 via-amber-600 to-kesariya-700 text-white font-black py-3.5 px-5 rounded-2xl flex items-center justify-between shadow-[0_10px_30px_rgba(234,88,12,0.45)] border border-amber-300/40 active:scale-98 transition-transform cursor-pointer"
+          type="button"
+          onClick={scrollToDaan}
+          className="w-full min-h-[52px] px-5 rounded-2xl bg-kesariya-600 hover:bg-kesariya-700 active:scale-[0.98] text-white font-black text-base flex items-center justify-between shadow-lg border border-amber-300/40 cursor-pointer"
         >
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-base">
-              🚩
-            </div>
-            <div className="text-left">
-              <span className="text-[11px] font-bold text-amber-200 block uppercase tracking-wider leading-none">
-                सेवा ही भक्ति है
-              </span>
-              <span className="text-sm font-extrabold text-white leading-tight">
-                Support Seva (सहयोग करें)
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1.5 text-xs font-bold bg-white text-kesariya-700 px-3.5 py-1.5 rounded-xl shadow-sm">
-            <Heart className="w-3.5 h-3.5 fill-kesariya-600" />
-            <span>Daan Karein</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </div>
+          <span className="flex items-center gap-2">
+            <Heart className="w-4 h-4 fill-white shrink-0" />
+            <span>₹{selectedAmount.toLocaleString('en-IN')} • दान करें</span>
+          </span>
+          <ArrowRight className="w-5 h-5 shrink-0" />
         </button>
       </div>
-    </main>
+    </div>
   );
 }

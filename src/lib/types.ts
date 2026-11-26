@@ -1,59 +1,61 @@
-export type SevaCategoryId = 'roadside-relief' | 'animal-welfare' | 'medical-emergency' | 'disaster-relief';
+export type SevaCategoryId =
+  | 'roadside-relief'
+  | 'animal-welfare'
+  | 'medical-emergency'
+  | 'disaster-relief';
 
-export interface SevaUnitConfig {
-  unitLabelHindi: string;
-  unitLabelEnglish: string;
-  unitCost: number; // e.g. 50 for 1 meal
-  presets: number[]; // e.g. [1, 5, 10, 25, 50, 100]
-  unitDescription: string;
+export type VideoPlatform = 'youtube' | 'instagram' | 'facebook';
+
+export interface VideoItem {
+  id: string;
+  title: string;
+  url: string;
+  platform: VideoPlatform;
+  category: string;
+  video_date: string;
+  is_visible: boolean;
+  sort_order: number;
+  created_at?: string;
 }
 
-export interface SevaCategory {
-  id: SevaCategoryId;
-  titleHindi: string;
-  titleEnglish: string;
-  badgeHindi: string;
-  badgeEnglish: string;
-  tagline: string;
-  description: string;
-  iconName: string;
-  minAmount: number;
-  highlightTag?: string;
-  unitConfig: SevaUnitConfig;
-  quickSlabs: {
-    label: string;
-    amount: number;
-    impact: string;
-    popular?: boolean;
-  }[];
-  points: string[];
+export interface ImpactCounters {
+  mealsServed: number;
+  animalsTreated: number;
+  totalDonationsAmount: number;
+}
+
+export interface TransparencyData {
+  monthLabel: string;
+  incomeAmount: number;
+  expenseAmount: number;
+  notes: string;
 }
 
 export interface DonationRecord {
-  id?: string;
-  donorName: string;
-  donorPhone?: string;
-  donorEmail?: string;
-  categoryId: SevaCategoryId;
-  categoryName: string;
-  quantity: number;
-  unitLabel: string;
+  id: string;
+  donor_name: string;
+  donor_phone?: string | null;
+  donor_email?: string | null;
+  category_id: string;
+  category_name: string;
+  quantity?: number;
+  unit_label?: string | null;
   amount: number;
-  paymentMethod: 'UPI_INTENT' | 'UPI_QR' | 'RAZORPAY';
-  transactionRef?: string;
-  sankalpMessage?: string;
-  isAnonymous?: boolean;
-  status: 'pending' | 'success' | 'verified';
-  createdAt?: string;
+  payment_method: string;
+  transaction_ref?: string | null;
+  sankalp_message?: string | null;
+  admin_note?: string | null;
+  is_anonymous: boolean;
+  status: 'success' | 'verified' | 'pending' | 'failed';
+  created_at: string;
 }
 
-export interface SankalpBlessing {
+export interface PublicSupporter {
   id: string;
-  donorName: string;
-  categoryName: string;
-  unitsText: string;
+  donor_name: string;
+  category_name: string;
+  units_text: string;
   amount: number;
-  message?: string;
-  timeAgo: string;
-  isVerified: boolean;
+  message?: string | null;
+  created_at: string;
 }

@@ -1,141 +1,106 @@
 'use client';
 
 import React from 'react';
-import { 
-  Instagram, 
-  Youtube, 
-  Facebook, 
-  Mail, 
-  Heart, 
-  ShieldCheck, 
-  ExternalLink 
-} from 'lucide-react';
+import Link from 'next/link';
+import { Mail, MapPin, MessageCircle, Video } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onWatchVideosClick?: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onWatchVideosClick }) => {
+  const scrollToVideos = () => {
+    if (onWatchVideosClick) {
+      onWatchVideosClick();
+      return;
+    }
+    const el = document.getElementById('ground-proof');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <footer id="contact-transparency" className="bg-slate-900 text-slate-300 pt-16 pb-12 border-t-4 border-amber-500">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Sanskrit Pavitra Shloka Banner */}
-        <div className="text-center pb-12 border-b border-slate-800">
-          <p className="text-amber-400 font-bold tracking-widest text-sm sm:text-base mb-2">
-            ॥ सर्वे भवन्तु सुखिनः सर्वे सन्तु निरामयाः । सर्वे भद्राणि पश्यन्तु मा कश्चिद्दुःखभाग्भवेत् ॥
-          </p>
-          <p className="text-xs text-slate-400 max-w-xl mx-auto">
-            "Sabhi sukhi rahein, sabhi nirogi rahein, sabka kalyan ho aur kisi ko koi dukh na ho."
-          </p>
-        </div>
-
-        {/* 3 Column Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 py-12 border-b border-slate-800">
-          
-          {/* Brand & Vision */}
-          <div className="lg:col-span-5 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-kesariya-600 flex items-center justify-center text-xl shadow-md text-white">
-                🏹
-              </div>
+    <footer id="contact-footer" className="bg-[#2B1708] text-amber-100 pt-10 pb-24 sm:pb-10 px-4 border-t-4 border-kesariya-600">
+      <div className="max-w-5xl mx-auto space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Brand */}
+          <div className="space-y-2.5">
+            <div className="flex items-center gap-2.5">
+              <span className="text-2xl">🏹</span>
               <div>
-                <span className="text-xl font-black text-white tracking-tight">
-                  RAM KA SEVAK
-                </span>
-                <span className="text-xs text-amber-400 font-bold block">
-                  सेवा ही भक्ति है • {SITE_CONFIG.domain}
-                </span>
+                <div className="text-lg font-black text-white">{SITE_CONFIG.name}</div>
+                <div className="text-xs text-amber-300 font-bold">{SITE_CONFIG.tagline}</div>
               </div>
             </div>
-
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed pr-4">
-              Prabhu Shri Ram ki paavan prerna se chalaayi jaa rahi zameeni seva initiative. Roadside beghar buzurgon ko garam bhojan, bejubaan pashuon ki dekhbhaal, emergency hospital ilaj aur aafat rahat me imaandaari aur zero middlemen commission.
+            <p className="text-sm text-amber-200/80 leading-relaxed">
+              सड़क पर भूखे लोगों को भोजन, पशुओं का इलाज व आपदा राहत में समर्पित व्यक्तिगत सेवा पहल।
             </p>
-
-            {/* Legal Status Notice for Payment Gateways & Donors */}
-            <div className="p-3.5 rounded-xl bg-slate-800/90 border border-slate-700 text-xs text-amber-200/95 leading-relaxed space-y-1">
-              <div>
-                <strong>वैधानिक स्थिति (Legal Status):</strong> यह <strong>विपु (@vipuone) और 5 युवाओं की समर्पित टीम</strong> द्वारा संचालित एक व्यक्तिगत ज़मीनी सेवा पहल है (पंजीकृत NGO/Trust नहीं है)।
-              </div>
-              <div className="text-[11px] text-slate-400">
-                दान पर कोई 80G या आयकर छूट (Tax Exemption) उपलब्ध नहीं है। प्रत्येक सहयोग सीधे सड़क पर भोजन, चारा और दवाओं की खरीद में लगाया जाता है।
-              </div>
-            </div>
           </div>
 
-          {/* Seva Sankalp List */}
-          <div className="lg:col-span-3 space-y-3">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-white">
-              हमारे 4 पवित्र सेवा संकल्प
-            </h4>
-            <ul className="space-y-2 text-xs sm:text-sm text-slate-400">
-              <li>• 01. Annadaan & Street Food Seva</li>
-              <li>• 02. Gau Mata & Stray Animal Care</li>
-              <li>• 03. Emergency Medical & Hospital Aid</li>
-              <li>• 04. Disaster & Calamity Emergency Relief</li>
-            </ul>
-          </div>
+          {/* Contact */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-black uppercase tracking-wider text-white">संपर्क करें</h3>
+            <div className="space-y-2 text-sm">
+              <a
+                href={`https://wa.me/${SITE_CONFIG.whatsappNumber}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 min-h-[44px] px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>WhatsApp पर बात करें</span>
+              </a>
 
-          {/* Social Media & Contact */}
-          <div className="lg:col-span-4 space-y-4">
-            <h4 className="text-sm font-bold uppercase tracking-wider text-white">
-              Official Contact & Social Links
-            </h4>
-
-            <div className="space-y-2.5 text-xs sm:text-sm">
               <a
                 href={`mailto:${SITE_CONFIG.officialEmail}`}
-                className="flex items-center gap-2.5 text-slate-300 hover:text-amber-400 transition-colors"
+                className="flex items-center gap-2 text-amber-100 hover:text-white"
               >
-                <Mail className="w-4 h-4 text-amber-500 shrink-0" />
+                <Mail className="w-4 h-4 text-amber-400 shrink-0" />
                 <span>{SITE_CONFIG.officialEmail}</span>
               </a>
 
-              <a
-                href={SITE_CONFIG.socialLinks.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2.5 text-slate-300 hover:text-pink-400 transition-colors"
-              >
-                <Instagram className="w-4 h-4 text-pink-500 shrink-0" />
-                <span>Instagram: @{SITE_CONFIG.creatorUsername}</span>
-              </a>
-
-              <a
-                href={SITE_CONFIG.socialLinks.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2.5 text-slate-300 hover:text-red-400 transition-colors"
-              >
-                <Youtube className="w-4 h-4 text-red-500 shrink-0" />
-                <span>YouTube: @{SITE_CONFIG.creatorUsername}</span>
-              </a>
-
-              <a
-                href={SITE_CONFIG.socialLinks.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2.5 text-slate-300 hover:text-blue-400 transition-colors"
-              >
-                <Facebook className="w-4 h-4 text-blue-500 shrink-0" />
-                <span>Facebook: {SITE_CONFIG.creatorUsername}</span>
-              </a>
+              <div className="flex items-start gap-2 text-amber-200/80">
+                <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <span>{SITE_CONFIG.cityPlaceholder}</span>
+              </div>
             </div>
           </div>
 
+          {/* Social & Policies */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-black uppercase tracking-wider text-white">वीडियो व नीतियाँ</h3>
+            <div className="flex flex-wrap gap-2">
+              {['Instagram', 'YouTube', 'Facebook'].map((platform) => (
+                <button
+                  key={platform}
+                  type="button"
+                  onClick={scrollToVideos}
+                  className="min-h-[40px] px-3 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Video className="w-3.5 h-3.5 text-amber-300" />
+                  <span>{platform} वीडियो</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-x-4 gap-y-2 pt-2 text-xs font-bold text-amber-200">
+              <Link href="/privacy" className="hover:text-white underline underline-offset-4">
+                गोपनीयता नीति (Privacy)
+              </Link>
+              <Link href="/terms" className="hover:text-white underline underline-offset-4">
+                नियम व शर्तें (Terms)
+              </Link>
+              <Link href="/refund-policy" className="hover:text-white underline underline-offset-4">
+                दान व रिफंड नीति (Refund)
+              </Link>
+            </div>
+          </div>
         </div>
 
-        {/* Bottom Disclaimer & Copyright */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <div>
-            © {new Date().getFullYear()} <strong>{SITE_CONFIG.domain}</strong>. All Rights Reserved. Ground Seva by @{SITE_CONFIG.creatorUsername}.
-          </div>
-
-          <div className="flex items-center gap-1 text-slate-400">
-            <span>निस्वार्थ भाव से समर्पित</span>
-            <Heart className="w-3.5 h-3.5 fill-kesariya-500 text-kesariya-500" />
-            <span>जय श्री राम</span>
-          </div>
+        <div className="pt-6 border-t border-amber-900/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-amber-300/80">
+          <span>© {new Date().getFullYear()} {SITE_CONFIG.domain} • @{SITE_CONFIG.creatorUsername}</span>
+          <span>व्यक्तिगत सेवा पहल • कोई 80G छूट नहीं</span>
         </div>
-
       </div>
     </footer>
   );

@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
-
-const ZAP_KEY = process.env.ZAP_KEY || 'zapc267112a11cfc2c29fa5d3a52a636afc';
+import { getServiceSupabase } from '@/lib/supabase';
 
 export async function POST(request: Request) {
   try {
@@ -11,42 +9,53 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Order ID is required' }, { status: 400 });
     }
 
-    // Direct Server-to-Server Verification with ZapUPI
+    const zapKey = process.env.ZAP_KEY;
+    if (!zapKey) {
+      return NextResponse.json({ verified: false, status: 'pending', mode: 'direct_upi' });
+    }
+
     const zapRes = await fetch('https://pay.zapupi.com/api/order-status', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        zap_key: ZAP_KEY,
+        zap_key: zapKey,
         order_id,
       }),
     });
 
     const zapData = await zapRes.json();
-
-    // In ZapUPI:
-    // zapData.status === 'success' means the API request itself succeeded.
-    // The REAL payment status is inside zapData.data.status ('Success', 'Pending', 'Failed')
-    // and zapData.data.utr contains the bank reference number.
     const txnData = zapData?.data;
     const paymentStatus = (txnData?.status || '').toLowerCase();
     const utr = (txnData?.utr || '').trim();
 
-    // MUST be strictly Success/Completed AND have a valid bank UTR
-    const isPaymentVerified = (paymentStatus === 'success' || paymentStatus === 'completed') && utr.length >= 6;
+    const isPaymentVerified =
+      (paymentStatus === 'success' || paymentStatus === 'completed') && utr.length >= 6;
 
     if (isPaymentVerified) {
       const realUtr = utr || txnData.txn_id || order_id;
-
-      // Update Database in Supabase to verified
-      if (supabase) {
+      const db = getServiceSupabase();
+      if (db) {
         try {
-          await supabase
+          const { data: updated } = await db
             .from('donations')
-            .update({
-              status: 'verified',
-              transaction_ref: realUtr,
-            })
-            .eq('transaction_ref', order_id);
+            .update({ status: 'verified', transaction_ref: realUtr })
+            .eq('transaction_ref', order_id)
+            .select()
+            .single();
+
+          if (updated) {
+            await db.from('community_blessings').insert([
+              {
+                donation_id: updated.id,
+                donor_name: updated.is_anonymous ? 'गुप्त दानी' : updated.donor_name,
+                category_name: updated.category_name,
+                units_text: updated.unit_label || `₹${updated.amount} सेवा`,
+                amount: updated.amount,
+                message: updated.sankalp_message || null,
+                is_verified: true,
+              },
+            ]);
+          }
         } catch (dbErr) {
           console.warn('DB update note:', dbErr);
         }
@@ -60,7 +69,6 @@ export async function POST(request: Request) {
       });
     }
 
-    // Still pending, failed or no bank UTR yet
     return NextResponse.json({
       verified: false,
       status: paymentStatus || 'pending',
