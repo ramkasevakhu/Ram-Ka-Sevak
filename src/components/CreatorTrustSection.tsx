@@ -40,12 +40,12 @@ export const CreatorTrustSection: React.FC<CreatorTrustSectionProps> = ({
             </div>
 
             <p className="text-sm sm:text-base text-[#5C4E44] leading-relaxed">
-              मैं <strong>{SITE_CONFIG.creatorName} (@{SITE_CONFIG.creatorUsername})</strong> और हमारी टीम मिलकर ऋषिकेश, उत्तराखंड में सड़क पर बेघर बुज़ुर्गों को भोजन, घायल पशुओं का इलाज और गरीब मरीज़ों को दवा सहायता पहुँचाती है।
+              मैं <strong>{SITE_CONFIG.creatorName} (@{SITE_CONFIG.creatorUsername})</strong> और हमारी 5 साथियों की टीम मिलकर ऋषिकेश, उत्तराखंड में सड़क पर बेघर बुज़ुर्गों को भोजन, घायल पशुओं का इलाज और गरीब मरीज़ों को दवा सहायता पहुँचाती है।
             </p>
 
-            <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-300 text-xs sm:text-sm text-[#3B1F0A] leading-relaxed text-left">
-              <strong className="text-[#3B1F0A] block mb-1">पारदर्शिता सूचना (Transparency):</strong>
-              यह पंजीकृत NGO/Trust नहीं है, व्यक्तिगत सेवा पहल है। 80G/टैक्स छूट उपलब्ध नहीं। प्रत्येक सेवा कार्य का वीडियो प्रमाण वेबसाइट व Instagram रील्स पर साझा किया जाता है।
+            <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-[#5C4E44] leading-relaxed text-left">
+              <strong className="text-[#3B1F0A] block mb-1">वैधानिक स्पष्टता:</strong>
+              यह कोई पंजीकृत NGO या ट्रस्ट नहीं है, बल्कि एक व्यक्तिगत सेवा पहल है। इसलिए यहाँ किए गए सहयोग पर <strong>80G कर छूट उपलब्ध नहीं है</strong>। प्रत्येक सेवा कार्य का वीडियो प्रमाण वेबसाइट व सोशल मीडिया पर साझा किया जाता है।
             </div>
 
             <div className="pt-1 flex flex-wrap justify-center sm:justify-start gap-2.5">

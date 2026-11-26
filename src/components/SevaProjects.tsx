@@ -14,29 +14,28 @@ export const SevaProjects: React.FC<SevaProjectsProps> = ({ onSelectSeva }) => {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-7">
           <h2 className="text-2xl sm:text-3xl font-black text-[#3B1F0A]">
-            4 सेवा संकल्प
+            हमारी चार सेवाएँ
           </h2>
           <p className="text-sm sm:text-base text-[#6B5E55] mt-1">
-            आपका हर सहयोग सीधे ज़मीनी सेवा में पहुँचता है
+            हर सहयोग कहाँ और कैसे पहुँचता है
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {DETAILED_SEVA_CATEGORIES.map((seva) => {
             const defaultOpt = seva.options.find((o) => o.popular) || seva.options[0];
-            const quickOptions = seva.options.slice(0, 3);
             return (
               <div
                 key={seva.id}
                 className="bg-white rounded-2xl border border-amber-200 overflow-hidden shadow-xs flex flex-col justify-between"
               >
                 <div>
-                  <div className="relative aspect-[4/3] w-full bg-amber-100 overflow-hidden">
+                  <div className="relative aspect-[16/10] w-full bg-amber-100 overflow-hidden">
                     <img
                       src={seva.imageUrl}
                       alt={seva.imageAlt}
-                      width={1024}
-                      height={768}
+                      width={640}
+                      height={400}
                       loading="lazy"
                       className="w-full h-full object-cover"
                     />
@@ -52,28 +51,8 @@ export const SevaProjects: React.FC<SevaProjectsProps> = ({ onSelectSeva }) => {
                     <p className="text-sm text-[#5C4E44] leading-snug mb-3">
                       {seva.shortDesc}
                     </p>
-
-                    {/* Quick Amount Cards */}
-                    <div className="grid grid-cols-3 gap-1.5" role="group" aria-label={`${seva.shortName} सहयोग राशि`}>
-                      {quickOptions.map((opt) => (
-                        <button
-                          key={opt.amount}
-                          type="button"
-                          onClick={() => onSelectSeva(seva.id, opt.amount)}
-                          className={`min-h-[44px] px-1.5 py-1.5 rounded-xl border text-center transition-colors cursor-pointer ${
-                            opt.popular
-                              ? 'border-kesariya-500 bg-amber-50 text-[#3B1F0A] hover:bg-kesariya-600 hover:text-white'
-                              : 'border-amber-200 bg-[#FFFDF9] text-[#3B1F0A] hover:border-kesariya-500 hover:bg-amber-50'
-                          }`}
-                        >
-                          <div className="text-sm font-black leading-none">
-                            ₹{opt.amount}
-                          </div>
-                          <div className="text-[10px] font-bold opacity-80 mt-0.5 truncate">
-                            {opt.label}
-                          </div>
-                        </button>
-                      ))}
+                    <div className="text-xs font-extrabold text-kesariya-700 bg-amber-50 px-2.5 py-1.5 rounded-lg inline-block">
+                      शुरुआत ₹{seva.unitCost} से • {seva.unitLabel}
                     </div>
                   </div>
                 </div>
@@ -84,7 +63,7 @@ export const SevaProjects: React.FC<SevaProjectsProps> = ({ onSelectSeva }) => {
                     onClick={() => onSelectSeva(seva.id, defaultOpt.amount)}
                     className="w-full min-h-[48px] rounded-xl bg-amber-100 hover:bg-kesariya-600 hover:text-white text-[#3B1F0A] font-extrabold text-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                   >
-                    <span>दान करें</span>
+                    <span>सेवा चुनें</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
