@@ -22,12 +22,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             ॥ जय श्री राम ॥ • @{SITE_CONFIG.creatorUsername}
           </span>
 
-          <h1 className="text-[30px] sm:text-4xl lg:text-5xl font-black text-[#3B1F0A] leading-[1.18] tracking-tight mb-2.5">
-            कोई भूखा न सोए, हर बेज़ुबान को सहारा मिले।
+          <h1 className="text-[32px] sm:text-4xl lg:text-5xl font-black text-[#3B1F0A] leading-[1.18] tracking-tight mb-2.5">
+            कोई भूखा न सोए।
           </h1>
 
           <p className="text-base sm:text-lg text-[#5C4E44] leading-relaxed mb-5">
-            सड़क पर ज़रूरतमंदों को गरम भोजन, घायल पशुओं का इलाज और गरीब मरीज़ों को दवा सहायता।
+            ऋषिकेश में सड़क पर ज़रूरतमंदों को गरम भोजन, घायल पशुओं का इलाज और गरीब मरीज़ों को दवा सहायता।
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3">
@@ -37,7 +37,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               className="min-h-[52px] px-6 rounded-2xl bg-kesariya-600 hover:bg-kesariya-700 active:scale-[0.98] text-white font-black text-base flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
             >
               <Heart className="w-5 h-5 fill-white shrink-0" />
-              <span>दान करें</span>
+              <span>सहयोग करें</span>
             </button>
 
             <button
@@ -56,7 +56,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="relative aspect-video w-full rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-amber-200 shadow-md bg-amber-100">
             <img
               src="/images/annadaan-seva.jpg"
-              alt="राम का सेवक ज़मीनी अन्नदान सेवा"
+              alt="ऋषिकेश में राम का सेवक ज़मीनी अन्नदान सेवा"
               width={800}
               height={450}
               fetchPriority="high"

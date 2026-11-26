@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Video, ShieldCheck } from 'lucide-react';
+import { Video, ShieldCheck, MapPin } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
 
 interface CreatorTrustSectionProps {
@@ -17,7 +17,7 @@ export const CreatorTrustSection: React.FC<CreatorTrustSectionProps> = ({
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
           <img
             src="/vipu-profile.jpg"
-            alt="विपु (@vipuone) - राम का सेवक"
+            alt="विपु (@vipuone) - राम का सेवक, ऋषिकेश"
             width={112}
             height={112}
             loading="lazy"
@@ -33,15 +33,19 @@ export const CreatorTrustSection: React.FC<CreatorTrustSectionProps> = ({
               <h2 className="text-2xl sm:text-3xl font-black text-[#3B1F0A]">
                 हमारे बारे में व वैधानिक स्थिति
               </h2>
+              <div className="inline-flex items-center gap-1 text-xs font-bold text-[#6B5E55] mt-1">
+                <MapPin className="w-3.5 h-3.5 text-kesariya-600" />
+                <span>{SITE_CONFIG.locationHindi}</span>
+              </div>
             </div>
 
             <p className="text-sm sm:text-base text-[#5C4E44] leading-relaxed">
-              मैं <strong>{SITE_CONFIG.creatorName} (@{SITE_CONFIG.creatorUsername})</strong> और हमारी 5 साथियों की टीम मिलकर सड़क पर बेघर बुज़ुर्गों को भोजन, घायल पशुओं का इलाज और गरीब मरीज़ों को दवा सहायता पहुँचाती है।
+              मैं <strong>{SITE_CONFIG.creatorName} (@{SITE_CONFIG.creatorUsername})</strong> और हमारी 5 साथियों की टीम मिलकर ऋषिकेश, उत्तराखंड में सड़क पर बेघर बुज़ुर्गों को भोजन, घायल पशुओं का इलाज और गरीब मरीज़ों को दवा सहायता पहुँचाती है।
             </p>
 
             <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-[#5C4E44] leading-relaxed text-left">
-              <strong className="text-[#3B1F0A] block mb-1">वैधानिक स्पष्टता (Legal Status):</strong>
-              यह कोई पंजीकृत NGO या ट्रस्ट नहीं है, बल्कि एक व्यक्तिगत सेवा पहल है। इसलिए यहाँ किए गए सहयोग पर <strong>80G टैक्स छूट उपलब्ध नहीं है</strong>। प्रत्येक कार्य का वीडियो प्रमाण वेबसाइट व सोशल मीडिया पर साझा किया जाता है।
+              <strong className="text-[#3B1F0A] block mb-1">वैधानिक स्पष्टता:</strong>
+              यह कोई पंजीकृत NGO या ट्रस्ट नहीं है, बल्कि एक व्यक्तिगत सेवा पहल है। इसलिए यहाँ किए गए सहयोग पर <strong>80G कर छूट उपलब्ध नहीं है</strong>। प्रत्येक सेवा कार्य का वीडियो प्रमाण वेबसाइट व सोशल मीडिया पर साझा किया जाता है।
             </div>
 
             <div className="pt-1 flex flex-wrap justify-center sm:justify-start gap-2.5">

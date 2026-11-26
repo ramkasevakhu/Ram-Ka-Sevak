@@ -11,6 +11,7 @@ import {
   AlertCircle,
   ArrowRight,
   RefreshCw,
+  ExternalLink,
 } from 'lucide-react';
 import { DETAILED_SEVA_CATEGORIES, DetailedSevaCategory, SITE_CONFIG } from '@/lib/constants';
 
@@ -46,44 +47,24 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [message, setMessage] = useState('');
 
-  const [paymentStep, setPaymentStep] = useState<'details' | 'pay'>('details');
+  const [paymentStep, setPaymentStep] = useState<'details' | 'fallback_upi'>('details');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const [paymentStatusMsg, setPaymentStatusMsg] = useState<'idle' | 'pending' | 'failed'>('idle');
+  const [fallbackNotice, setFallbackNotice] = useState('');
 
   const [orderId, setOrderId] = useState<string | null>(null);
   const [upiPayload, setUpiPayload] = useState<string | null>(null);
   const [qrImageUrl, setQrImageUrl] = useState<string | null>(null);
-  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
-  const [countdown, setCountdown] = useState<number>(300);
+  const [upiId, setUpiId] = useState<string>(SITE_CONFIG.defaultUpiId);
+  const [paymentStatusMsg, setPaymentStatusMsg] = useState<'idle' | 'pending' | 'failed'>('idle');
 
   const pollRef = useRef<NodeJS.Timeout | null>(null);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
-      if (timerRef.current) clearInterval(timerRef.current);
     };
   }, []);
-
-  useEffect(() => {
-    if (paymentStep === 'pay') {
-      setCountdown(300);
-      if (timerRef.current) clearInterval(timerRef.current);
-      timerRef.current = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            if (timerRef.current) clearInterval(timerRef.current);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    } else {
-      if (timerRef.current) clearInterval(timerRef.current);
-    }
-  }, [paymentStep]);
 
   const matchedOption = category.options.find((o) => o.amount === selectedAmount);
   const liveImpactSummary = matchedOption
@@ -108,19 +89,14 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
     }
   };
 
-  const formatTimer = (secs: number) => {
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    return `${m}:${s < 10 ? '0' : ''}${s}`;
-  };
-
   const handleCreatePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
+    setFallbackNotice('');
     setPaymentStatusMsg('idle');
 
-    if (!selectedAmount || selectedAmount < 10) {
-      setErrorMsg('कृपया कम से कम ₹10 की राशि चुनें।');
+    if (!selectedAmount || selectedAmount < 50) {
+      setErrorMsg('कृपया कम से कम ₹50 की सहयोग राशि दर्ज करें।');
       return;
     }
     if (!donorName.trim()) {
@@ -159,38 +135,20 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
       setOrderId(data.order_id);
       setUpiPayload(data.upi_payload);
       setQrImageUrl(data.qr_image_url);
-      setPaymentUrl(data.payment_url || null);
-      setPaymentStep('pay');
+      if (data.upi_id) setUpiId(data.upi_id);
 
-      if (data.mode === 'zapupi') {
-        if (pollRef.current) clearInterval(pollRef.current);
-        pollRef.current = setInterval(async () => {
-          try {
-            const stRes = await fetch('/api/payment/check-status', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ order_id: data.order_id }),
-            });
-            const stData = await stRes.json();
-            if (stData.verified && stData.status === 'success') {
-              if (pollRef.current) clearInterval(pollRef.current);
-              onPaymentSuccess({
-                donorName: isAnonymous ? 'गुप्त दानी' : donorName.trim(),
-                categoryName: category.shortName,
-                unitsText: matchedOption?.impactLine || `₹${selectedAmount} सेवा सहयोग`,
-                amount: selectedAmount,
-                transactionRef: stData.utr || data.order_id,
-                message: message.trim(),
-              });
-            } else if (stData.status === 'failed') {
-              if (pollRef.current) clearInterval(pollRef.current);
-              setPaymentStatusMsg('failed');
-            }
-          } catch {
-            // Keep polling silently
-          }
-        }, 3000);
+      // If ZapUPI payment_url is ready, redirect user to ZapUPI payment page
+      if (data.mode === 'zapupi' && data.payment_url) {
+        window.location.href = data.payment_url;
+        return;
       }
+
+      // Graceful Fallback: Show clear message + Direct UPI ID / QR
+      setFallbackNotice(
+        data.fallback_reason ||
+          'ऑटो-गेटवे अभी व्यस्त है। आप नीचे दिए गए UPI बटन या QR कोड से सीधे सहयोग कर सकते हैं।'
+      );
+      setPaymentStep('fallback_upi');
     } catch (err: any) {
       setErrorMsg(err.message || 'कनेक्शन त्रुटि। कृपया पुनः प्रयास करें।');
     } finally {
@@ -208,61 +166,36 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
     window.location.href = url;
   };
 
-  const handleVerifyOrComplete = async () => {
+  const handleConfirmFallbackPayment = async () => {
     if (!orderId) return;
     setIsSubmitting(true);
-    setErrorMsg('');
-
     try {
-      const stRes = await fetch('/api/payment/check-status', {
+      await fetch('/api/donate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order_id: orderId }),
-      });
-      const stData = await stRes.json();
-
-      if (stData.verified && stData.status === 'success') {
-        if (pollRef.current) clearInterval(pollRef.current);
-        onPaymentSuccess({
-          donorName: isAnonymous ? 'गुप्त दानी' : donorName.trim(),
+        body: JSON.stringify({
+          donorName: donorName.trim(),
+          categoryId: category.id,
           categoryName: category.shortName,
-          unitsText: matchedOption?.impactLine || `₹${selectedAmount} सेवा सहयोग`,
+          quantity: 1,
+          unitLabel: matchedOption?.impactLine || `₹${selectedAmount} सेवा`,
           amount: selectedAmount,
-          transactionRef: stData.utr || orderId,
-          message: message.trim(),
-        });
-      } else if (stData.mode === 'direct_upi') {
-        // Record direct UPI attempt in database and show thank-you receipt
-        await fetch('/api/donate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            donorName: donorName.trim(),
-            categoryId: category.id,
-            categoryName: category.shortName,
-            quantity: 1,
-            unitLabel: matchedOption?.impactLine || `₹${selectedAmount} सेवा`,
-            amount: selectedAmount,
-            paymentMethod: 'Direct UPI',
-            transactionRef: orderId,
-            sankalpMessage: message.trim(),
-            isAnonymous,
-            status: 'pending',
-          }),
-        });
-        onPaymentSuccess({
-          donorName: isAnonymous ? 'गुप्त दानी' : donorName.trim(),
-          categoryName: category.shortName,
-          unitsText: matchedOption?.impactLine || `₹${selectedAmount} सेवा सहयोग`,
-          amount: selectedAmount,
+          paymentMethod: 'Direct UPI (Fallback)',
           transactionRef: orderId,
-          message: message.trim(),
-        });
-      } else if (stData.status === 'failed') {
-        setPaymentStatusMsg('failed');
-      } else {
-        setPaymentStatusMsg('pending');
-      }
+          sankalpMessage: message.trim(),
+          isAnonymous,
+          status: 'pending',
+        }),
+      });
+      onPaymentSuccess({
+        donorName: isAnonymous ? 'गुप्त दानी' : donorName.trim(),
+        categoryName: category.shortName,
+        unitsText: matchedOption?.impactLine || `₹${selectedAmount} सेवा सहयोग`,
+        amount: selectedAmount,
+        transactionRef: orderId,
+        message: message.trim(),
+      });
+      setPaymentStep('details');
     } catch {
       setPaymentStatusMsg('failed');
     } finally {
@@ -274,6 +207,7 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
     if (pollRef.current) clearInterval(pollRef.current);
     setPaymentStatusMsg('idle');
     setErrorMsg('');
+    setFallbackNotice('');
     setPaymentStep('details');
   };
 
@@ -282,10 +216,10 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-5">
           <h2 className="text-2xl sm:text-3xl font-black text-[#3B1F0A]">
-            4 आसान चरणों में सेवा दान करें
+            4 आसान चरणों में सेवा सहयोग करें
           </h2>
           <p className="text-sm sm:text-base text-[#6B5E55] mt-1">
-            सीधा UPI सहयोग • हर सेवा का वीडियो प्रमाण
+            त्वरित और सुरक्षित UPI भुगतान
           </p>
         </div>
 
@@ -325,7 +259,7 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
             </div>
           </div>
 
-          {/* STEP 2: Amount Chuno (Compact 2-column grid) */}
+          {/* STEP 2: Amount Chuno (Compact 2-column grid, min ₹50) */}
           <div>
             <div className="flex items-center justify-between mb-2.5">
               <span className="text-sm font-black text-[#3B1F0A]">
@@ -365,14 +299,14 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
                 );
               })}
 
-              {/* Custom Amount Input */}
+              {/* Custom Amount Input (min ₹50) */}
               <div className="col-span-2 sm:col-span-1 flex items-center relative">
                 <span className="absolute left-3.5 text-base font-black text-kesariya-700">₹</span>
                 <input
                   type="text"
                   inputMode="numeric"
-                  aria-label="अन्य राशि दर्ज करें"
-                  placeholder="अन्य राशि लिखें"
+                  aria-label="अन्य राशि दर्ज करें (न्यूनतम ₹50)"
+                  placeholder="अन्य राशि (न्यूनतम ₹50)"
                   value={customInput}
                   onChange={(e) => handleCustomChange(e.target.value)}
                   className="w-full min-h-[52px] pl-8 pr-3 rounded-2xl border-2 border-slate-200 focus:border-kesariya-600 focus:outline-none text-base font-bold text-[#3B1F0A]"
@@ -405,7 +339,7 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
             </details>
           </div>
 
-          {/* STEP 3 & 4: Donor Details OR Payment Screen */}
+          {/* STEP 3 & 4: Donor Details -> ZapUPI Redirect OR Graceful Fallback UPI */}
           {paymentStep === 'details' ? (
             <form onSubmit={handleCreatePayment} className="space-y-4">
               <div className="text-sm font-black text-[#3B1F0A]">
@@ -480,29 +414,26 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
                 {isSubmitting ? (
                   <>
                     <Clock className="w-5 h-5 animate-spin" />
-                    <span>भुगतान तैयार हो रहा है...</span>
+                    <span>भुगतान पेज खुल रहा है...</span>
                   </>
                 ) : (
                   <>
-                    <span>₹{selectedAmount.toLocaleString('en-IN')} • भुगतान के लिए आगे बढ़ें</span>
+                    <span>₹{selectedAmount.toLocaleString('en-IN')} • भुगतान करें</span>
                     <ArrowRight className="w-5 h-5" />
+                    <ExternalLink className="w-4 h-4 opacity-80" />
                   </>
                 )}
               </button>
             </form>
           ) : (
-            /* STEP 4: Payment */
+            /* FALLBACK DIRECT UPI / QR WHEN ZAPUPI IS UNAVAILABLE */
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-black text-[#3B1F0A]">
-                  4. UPI द्वारा भुगतान करें (₹{selectedAmount.toLocaleString('en-IN')})
-                </span>
-                <span className="text-xs font-mono font-bold bg-amber-100 text-amber-900 px-2.5 py-1 rounded-lg">
-                  {formatTimer(countdown)}
-                </span>
-              </div>
+              {fallbackNotice && (
+                <div className="p-3 rounded-xl bg-amber-50 border border-amber-300 text-sm font-bold text-amber-900">
+                  {fallbackNotice}
+                </div>
+              )}
 
-              {/* UPI Intent Buttons (48px+ min height) */}
               <div className="grid grid-cols-3 gap-2.5">
                 <button
                   type="button"
@@ -536,7 +467,6 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
                 <span>किसी भी UPI ऐप से भुगतान करें</span>
               </button>
 
-              {/* Desktop / Scan QR Code */}
               {qrImageUrl && (
                 <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 text-center">
                   <img
@@ -547,26 +477,20 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
                     className="w-44 h-44 mx-auto rounded-xl bg-white p-2 border border-amber-200"
                   />
                   <p className="text-xs font-bold text-[#5C4E44] mt-2">
-                    UPI ID: <span className="font-mono text-[#3B1F0A]">{SITE_CONFIG.defaultUpiId}</span>
+                    UPI ID: <span className="font-mono text-[#3B1F0A]">{upiId}</span>
                   </p>
                 </div>
               )}
 
-              {paymentStatusMsg === 'pending' && (
-                <div className="p-3 rounded-xl bg-amber-50 border border-amber-300 text-sm font-bold text-amber-900">
-                  भुगतान की पुष्टि प्रतीक्षारत है। यदि आपने UPI से भुगतान कर दिया है, तो कुछ सेकंड बाद पुनः जाँचें।
-                </div>
-              )}
-
               {paymentStatusMsg === 'failed' && (
-                <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-sm font-bold text-red-700 space-y-2">
-                  <p>भुगतान पूरा नहीं हो सका या रद्द हो गया।</p>
+                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-sm font-bold text-red-700 flex items-center justify-between gap-2">
+                  <span>पुष्टि करने में त्रुटि हुई।</span>
                   <button
                     type="button"
                     onClick={handleRetry}
-                    className="min-h-[48px] px-4 rounded-xl bg-red-600 text-white font-bold text-sm flex items-center gap-2 cursor-pointer"
+                    className="min-h-[40px] px-3 rounded-lg bg-red-600 text-white text-xs font-bold flex items-center gap-1 cursor-pointer"
                   >
-                    <RefreshCw className="w-4 h-4" />
+                    <RefreshCw className="w-3.5 h-3.5" />
                     <span>दोबारा प्रयास करें</span>
                   </button>
                 </div>
@@ -575,33 +499,20 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
               <div className="flex flex-col sm:flex-row gap-2.5">
                 <button
                   type="button"
-                  onClick={handleVerifyOrComplete}
+                  onClick={handleConfirmFallbackPayment}
                   disabled={isSubmitting}
                   className="flex-1 min-h-[50px] rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-base cursor-pointer disabled:opacity-60"
                 >
-                  {isSubmitting ? 'जाँच हो रही है...' : 'मैंने भुगतान कर दिया है ✓'}
+                  {isSubmitting ? 'दर्ज हो रहा है...' : 'मैंने भुगतान कर दिया है ✓'}
                 </button>
                 <button
                   type="button"
                   onClick={handleRetry}
                   className="min-h-[50px] px-4 rounded-2xl border border-slate-300 text-sm font-bold text-slate-700 cursor-pointer"
                 >
-                  ← विवरण बदलें
+                  ← वापस जाएँ
                 </button>
               </div>
-
-              {paymentUrl && (
-                <div className="text-center">
-                  <a
-                    href={paymentUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-bold text-kesariya-700 underline"
-                  >
-                    बैकअप भुगतान पेज खोलें ↗
-                  </a>
-                </div>
-              )}
             </div>
           )}
 
@@ -613,7 +524,7 @@ export const DaanSection: React.FC<DaanSectionProps> = ({
             </div>
             <div className="flex items-center gap-1.5">
               <Info className="w-4 h-4 text-amber-700 shrink-0" />
-              <span>व्यक्तिगत पहल (80G छूट नहीं)</span>
+              <span>व्यक्तिगत सेवा पहल (80G उपलब्ध नहीं)</span>
             </div>
             <div className="flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />

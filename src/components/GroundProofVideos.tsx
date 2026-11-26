@@ -30,17 +30,16 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
         <div className="text-center mb-6">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-extrabold mb-2">
             <Film className="w-3.5 h-3.5 text-kesariya-700" />
-            <span>ज़मीनी प्रमाण</span>
+            <span>हमारे ज़मीनी वीडियो</span>
           </span>
           <h2 className="text-2xl sm:text-3xl font-black text-[#3B1F0A]">
-            सेवा के असली वीडियो देखें
+            सेवा का सीधा प्रमाण
           </h2>
           <p className="text-sm sm:text-base text-[#6B5E55] mt-1">
             हर सहयोग का ज़मीनी वीडियो यहीं वेबसाइट पर देखें
           </p>
         </div>
 
-        {/* Mobile: swipeable horizontal/vertical-ratio carousel | Desktop: 3-4 cards grid */}
         <div className="flex lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-x-auto lg:overflow-visible pb-3 snap-x snap-mandatory no-scrollbar">
           {videos.map((video) => {
             const parsed = parseVideoUrl(video.url);
@@ -52,7 +51,6 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
                 key={video.id}
                 className="w-[82vw] max-w-[320px] lg:w-full lg:max-w-none shrink-0 snap-center bg-[#FFFDF9] rounded-2xl border border-amber-200 overflow-hidden shadow-xs flex flex-col"
               >
-                {/* 9:16 Reels / Video Frame */}
                 <div className="relative aspect-[9/14] w-full bg-slate-900 overflow-hidden">
                   {isPlaying && parsed.valid && parsed.embedUrl && !hasFailed ? (
                     <iframe
@@ -71,7 +69,6 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
                       }
                     />
                   ) : hasFailed ? (
-                    /* Fallback Card when embed fails */
                     <div className="w-full h-full flex flex-col items-center justify-center p-5 text-center text-white bg-gradient-to-b from-slate-800 to-slate-950">
                       <p className="text-sm font-bold mb-3">{video.title}</p>
                       <a
@@ -85,7 +82,6 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
                       </a>
                     </div>
                   ) : (
-                    /* Lazy Preview Poster (Zero iframe overhead until clicked) */
                     <button
                       type="button"
                       onClick={() => setActiveVideoId(video.id)}
@@ -107,7 +103,7 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
                           onClick={(e) => e.stopPropagation()}
                           className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-black/50 text-[11px] font-bold text-amber-200 hover:underline flex items-center gap-1"
                         >
-                          <span>Instagram</span>
+                          <span>Instagram पर देखें</span>
                           <ExternalLink className="w-3 h-3" />
                         </a>
                       )}
@@ -115,7 +111,6 @@ export const GroundProofVideos: React.FC<GroundProofVideosProps> = ({ videos }) 
                   )}
                 </div>
 
-                {/* Video Meta */}
                 <div className="p-3.5 flex-1 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between gap-2 text-[11px] font-bold text-kesariya-700 mb-1">

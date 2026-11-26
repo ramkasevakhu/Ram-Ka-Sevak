@@ -33,7 +33,7 @@ export const Footer: React.FC<FooterProps> = ({ onWatchVideosClick }) => {
               </div>
             </div>
             <p className="text-sm text-amber-200/80 leading-relaxed">
-              सड़क पर भूखे लोगों को भोजन, पशुओं का इलाज व आपदा राहत में समर्पित व्यक्तिगत सेवा पहल।
+              ऋषिकेश, उत्तराखंड से संचालित व्यक्तिगत ज़मीनी सेवा पहल।
             </p>
           </div>
 
@@ -61,14 +61,14 @@ export const Footer: React.FC<FooterProps> = ({ onWatchVideosClick }) => {
 
               <div className="flex items-start gap-2 text-amber-200/80">
                 <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                <span>{SITE_CONFIG.cityPlaceholder}</span>
+                <span>{SITE_CONFIG.locationHindi}</span>
               </div>
             </div>
           </div>
 
-          {/* Social & Policies */}
+          {/* Quick Links, Social & Policies */}
           <div className="space-y-3">
-            <h3 className="text-sm font-black uppercase tracking-wider text-white">वीडियो व नीतियाँ</h3>
+            <h3 className="text-sm font-black uppercase tracking-wider text-white">त्वरित लिंक व नीतियाँ</h3>
             <div className="flex flex-wrap gap-2">
               {['Instagram', 'YouTube', 'Facebook'].map((platform) => (
                 <button
@@ -78,20 +78,20 @@ export const Footer: React.FC<FooterProps> = ({ onWatchVideosClick }) => {
                   className="min-h-[40px] px-3 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white inline-flex items-center gap-1.5 cursor-pointer"
                 >
                   <Video className="w-3.5 h-3.5 text-amber-300" />
-                  <span>{platform} वीडियो</span>
+                  <span>{platform}</span>
                 </button>
               ))}
             </div>
 
             <div className="flex flex-wrap gap-x-4 gap-y-2 pt-2 text-xs font-bold text-amber-200">
               <Link href="/privacy" className="hover:text-white underline underline-offset-4">
-                गोपनीयता नीति (Privacy)
+                गोपनीयता नीति
               </Link>
               <Link href="/terms" className="hover:text-white underline underline-offset-4">
-                नियम व शर्तें (Terms)
+                नियम व शर्तें
               </Link>
               <Link href="/refund-policy" className="hover:text-white underline underline-offset-4">
-                दान व रिफंड नीति (Refund)
+                दान व रिफंड नीति
               </Link>
             </div>
           </div>
@@ -99,7 +99,7 @@ export const Footer: React.FC<FooterProps> = ({ onWatchVideosClick }) => {
 
         <div className="pt-6 border-t border-amber-900/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-amber-300/80">
           <span>© {new Date().getFullYear()} {SITE_CONFIG.domain} • @{SITE_CONFIG.creatorUsername}</span>
-          <span>व्यक्तिगत सेवा पहल • कोई 80G छूट नहीं</span>
+          <span>{SITE_CONFIG.locationHindi} • कोई 80G छूट नहीं</span>
         </div>
       </div>
     </footer>

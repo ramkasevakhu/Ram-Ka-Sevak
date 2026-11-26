@@ -14,10 +14,10 @@ export const SevaProjects: React.FC<SevaProjectsProps> = ({ onSelectSeva }) => {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-7">
           <h2 className="text-2xl sm:text-3xl font-black text-[#3B1F0A]">
-            हमारे 4 सेवा संकल्प
+            हमारी चार सेवाएँ
           </h2>
           <p className="text-sm sm:text-base text-[#6B5E55] mt-1">
-            प्रत्येक सेवा में आपका सहयोग सीधे ज़रूरतमंदों तक पहुँचता है
+            हर सहयोग कहाँ और कैसे पहुँचता है
           </p>
         </div>
 

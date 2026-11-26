@@ -17,73 +17,71 @@ export async function POST(request: Request) {
       isAnonymous,
     } = body;
 
-    const numericAmount = Math.max(10, Number(amount) || 50);
+    const numericAmount = Number(amount);
+    if (!numericAmount || numericAmount < 50) {
+      return NextResponse.json(
+        { error: 'न्यूनतम सहयोग राशि ₹50 आवश्यक है।' },
+        { status: 400 }
+      );
+    }
+
     const cleanPhone = donorPhone ? String(donorPhone).replace(/\D/g, '').slice(0, 10) : '';
     const orderId = `RKS_${Date.now()}_${Math.floor(1000 + Math.random() * 9000)}`;
 
     const zapKey = process.env.ZAP_KEY;
+    const webhookSecret = process.env.ZAP_WEBHOOK_SECRET;
+    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://ramkasevak.org').replace(/\/$/, '');
     const fallbackUpiId = process.env.NEXT_PUBLIC_UPI_ID || 'vipuone@upi';
     const fallbackUpiName = process.env.NEXT_PUBLIC_UPI_NAME || 'Ram Ka Sevak';
 
     let paymentUrl: string | null = null;
+    let payId: string | null = null;
     let upiPayload = '';
     let upiId = fallbackUpiId;
-    let txnId = orderId;
-    let gatewayMode: 'zapupi' | 'direct_upi' = 'direct_upi';
+    let gatewayMode: 'zapupi' | 'direct_upi_fallback' = 'direct_upi_fallback';
+    let fallbackReason = '';
 
     if (zapKey) {
       try {
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://ramkasevak.org';
-        const zapRes = await fetch('https://pay.zapupi.com/api/create-order?switch=220', {
+        const webhookUrl = webhookSecret
+          ? `${appUrl}/api/payment/webhook?token=${encodeURIComponent(webhookSecret)}`
+          : `${appUrl}/api/payment/webhook`;
+
+        // Official ZapUPI Create Order API: POST https://pay.zapupi.com/api/create-order
+        const zapRes = await fetch('https://pay.zapupi.com/api/create-order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             zap_key: zapKey,
             order_id: orderId,
-            amount: String(numericAmount),
-            customer_mobile: cleanPhone.length === 10 ? cleanPhone : '9999999999',
-            remark: `Ram Ka Sevak | ${packageLabel || 'Seva'}`,
-            webhook_url: `${appUrl}/api/payment/webhook`,
+            amount: numericAmount.toFixed(2),
+            ...(cleanPhone.length === 10 ? { customer_mobile: cleanPhone } : {}),
+            remark: `Ram Ka Sevak | ${packageLabel || sevaName || 'Seva'}`,
+            success_url: `${appUrl}/?payment_status=success&order_id=${orderId}`,
+            failed_url: `${appUrl}/?payment_status=failed&order_id=${orderId}`,
+            timeout_url: `${appUrl}/?payment_status=timeout&order_id=${orderId}`,
+            webhook_url: webhookUrl,
           }),
         });
 
         const zapData = await zapRes.json();
-        if (zapRes.ok && zapData.status !== 'failed' && zapData.status !== 'error') {
+
+        if (zapRes.ok && zapData.status === 'success' && zapData.payment_url) {
           gatewayMode = 'zapupi';
-          paymentUrl = zapData.payment_url || null;
-          txnId = zapData.txn_id || orderId;
-
-          if (paymentUrl) {
-            try {
-              const htmlRes = await fetch(paymentUrl);
-              const html = await htmlRes.text();
-              const match = html.match(/const\s+serverData\s*=\s*(\{.+?\});/);
-              if (match) {
-                const serverData = JSON.parse(match[1]);
-                const inp = serverData.data;
-                if (inp && inp.upi_id) {
-                  upiId = inp.upi_id;
-                  txnId = inp.txnId || txnId;
-                  const autoKey = inp.autoCode || 'tr';
-                  const autoVal = inp.txnRef || '';
-                  const amountFormatted = parseFloat(inp.pay_amount || numericAmount).toFixed(2);
-                  upiPayload = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(fallbackUpiName)}&cu=INR&am=${encodeURIComponent(amountFormatted)}&tn=${encodeURIComponent(txnId)}&${encodeURIComponent(autoKey)}=${encodeURIComponent(autoVal)}`;
-                }
-              }
-            } catch {
-              // Fallback below
-            }
-          }
+          paymentUrl = zapData.payment_url;
+          payId = zapData.pay_id || null;
+        } else {
+          fallbackReason = zapData.message || 'ZapUPI भुगतान गेटवे अभी उपलब्ध नहीं है।';
         }
-      } catch (err) {
-        console.warn('ZapUPI unavailable, using direct UPI intent:', err);
+      } catch (err: any) {
+        fallbackReason = err?.message || 'ZapUPI से कनेक्ट करने में त्रुटि हुई।';
       }
+    } else {
+      fallbackReason = 'ZapUPI कुंजी कॉन्फ़िगर नहीं है।';
     }
 
-    if (!upiPayload) {
-      const amountFormatted = numericAmount.toFixed(2);
-      upiPayload = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(fallbackUpiName)}&cu=INR&am=${encodeURIComponent(amountFormatted)}&tn=${encodeURIComponent(orderId)}`;
-    }
+    // Build fallback direct UPI intent & QR so donor is never blocked if ZapUPI fails
+    upiPayload = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(fallbackUpiName)}&cu=INR&am=${encodeURIComponent(numericAmount.toFixed(2))}&tn=${encodeURIComponent(orderId)}`;
 
     let qrImageUrl = '';
     try {
@@ -93,43 +91,42 @@ export async function POST(request: Request) {
         color: { dark: '#3B1F0A', light: '#ffffff' },
       });
     } catch (qrErr) {
-      console.warn('QR code generation error:', qrErr);
+      console.warn('QR generation error:', qrErr);
     }
 
+    // Record pending donation in Supabase
     const db = getServiceSupabase();
     if (db) {
-      try {
-        await db.from('donations').insert([
-          {
-            donor_name: isAnonymous ? 'गुप्त दानी' : donorName?.trim() || 'श्रद्धालु दाता',
-            donor_email: donorEmail?.trim() || null,
-            donor_phone: cleanPhone || null,
-            category_id: sevaId || 'roadside-relief',
-            category_name: sevaName || 'अन्नदान',
-            quantity: 1,
-            unit_label: packageLabel || '',
-            amount: numericAmount,
-            payment_method: gatewayMode === 'zapupi' ? 'UPI Gateway' : 'Direct UPI',
-            transaction_ref: orderId,
-            sankalp_message: message?.trim() || null,
-            is_anonymous: Boolean(isAnonymous),
-            status: 'pending',
-          },
-        ]);
-      } catch (dbErr) {
-        console.warn('DB recording note:', dbErr);
-      }
+      await db.from('donations').insert([
+        {
+          donor_name: isAnonymous ? 'गुप्त दानी' : donorName?.trim() || 'श्रद्धालु दाता',
+          donor_email: donorEmail?.trim() || null,
+          donor_phone: cleanPhone || null,
+          category_id: sevaId || 'roadside-relief',
+          category_name: sevaName || 'अन्नदान',
+          quantity: 1,
+          unit_label: packageLabel || '',
+          amount: numericAmount,
+          payment_method: gatewayMode === 'zapupi' ? 'ZapUPI' : 'Direct UPI (Fallback)',
+          transaction_ref: orderId,
+          sankalp_message: message?.trim() || null,
+          is_anonymous: Boolean(isAnonymous),
+          status: 'pending',
+        },
+      ]);
     }
 
     return NextResponse.json({
       success: true,
       mode: gatewayMode,
+      fallback: gatewayMode !== 'zapupi',
+      fallback_reason: fallbackReason || undefined,
       order_id: orderId,
       payment_url: paymentUrl,
+      pay_id: payId,
       upi_payload: upiPayload,
       qr_image_url: qrImageUrl,
       upi_id: upiId,
-      txn_id: txnId,
     });
   } catch (error: any) {
     console.error('Create order error:', error);

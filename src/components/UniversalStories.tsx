@@ -17,10 +17,10 @@ export const UniversalStories: React.FC = () => {
         <div className="text-center mb-7">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-extrabold mb-2">
             <BookOpen className="w-3.5 h-3.5 text-kesariya-700" />
-            <span>12 पावन प्रेरणा प्रसंग</span>
+            <span>सभी धर्मों की सेवा-भावना</span>
           </span>
           <h2 className="text-2xl sm:text-3xl font-black text-[#3B1F0A]">
-            सेवा की 12 पावन कथाएँ
+            प्रेरक कथाएँ
           </h2>
           <p className="text-sm sm:text-base text-[#6B5E55] mt-1">
             सभी धर्मों और ग्रंथों का एक ही संदेश — दीन-दुखियों की सेवा ही परम धर्म है
@@ -47,7 +47,7 @@ export const UniversalStories: React.FC = () => {
                   {story.subtitle}
                 </p>
                 <p className="text-sm text-[#5C4E44] leading-relaxed">
-                  {story.description}
+                  {story.summary}
                 </p>
               </div>
 
@@ -71,7 +71,7 @@ export const UniversalStories: React.FC = () => {
               </>
             ) : (
               <>
-                <span>और देखें (बाकी 9 कथाएँ)</span>
+                <span>सभी कथाएँ देखें (12)</span>
                 <ChevronDown className="w-4 h-4" />
               </>
             )}
