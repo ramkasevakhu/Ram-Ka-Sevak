@@ -3,6 +3,10 @@
 import React from 'react';
 import { Heart, Play } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
+import { parseVideoUrl } from '@/lib/videoUtils';
+
+// Add a YouTube/Instagram/Facebook URL here when ready to play a video in Hero
+const HERO_VIDEO_URL = '';
 
 interface HeroSectionProps {
   onDonateClick: () => void;
@@ -13,6 +17,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onDonateClick,
   onWatchVideosClick,
 }) => {
+  const parsedHeroVideo = HERO_VIDEO_URL ? parseVideoUrl(HERO_VIDEO_URL) : null;
+
   return (
     <section className="bg-gradient-to-b from-[#FFF7EA] to-[#FFFDF9] pt-5 pb-8 sm:pt-10 sm:pb-12 px-4">
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
@@ -51,28 +57,31 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
         </div>
 
-        {/* Real Seva Photo Card (16:9, prevents CLS) */}
+        {/* Hero Video (when configured) or 4-Seva Banner Image */}
         <div className="lg:col-span-6">
-          <div className="relative aspect-video w-full rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-amber-200 shadow-md bg-amber-100">
-            <img
-              src="/images/annadaan-seva.jpg"
-              alt="ऋषिकेश में राम का सेवक ज़मीनी अन्नदान सेवा"
-              width={800}
-              height={450}
-              fetchPriority="high"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
-            <div className="absolute bottom-3 left-3.5 right-3.5 flex items-center justify-between text-white text-xs sm:text-sm font-bold">
-              <span>@{SITE_CONFIG.creatorUsername} • ज़मीनी सेवा</span>
-              <button
-                type="button"
-                onClick={onWatchVideosClick}
-                className="px-2.5 py-1 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white text-xs font-extrabold cursor-pointer"
-              >
-                ▶ वीडियो देखें
-              </button>
-            </div>
+          <div className="relative aspect-[3/2] w-full rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-amber-200 shadow-md bg-amber-50">
+            {parsedHeroVideo?.valid && parsedHeroVideo.embedUrl ? (
+              <iframe
+                src={
+                  parsedHeroVideo.platform === 'youtube'
+                    ? `${parsedHeroVideo.embedUrl}&autoplay=1&mute=1&loop=1&playlist=${parsedHeroVideo.videoId}`
+                    : parsedHeroVideo.embedUrl
+                }
+                title="राम का सेवक — ज़मीनी सेवा वीडियो"
+                className="w-full h-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            ) : (
+              <img
+                src="/images/hero-seva.jpg"
+                alt="सेवा ही परमो धर्म — राम का सेवक 4 प्रमुख सेवाएँ"
+                width={1200}
+                height={800}
+                fetchPriority="high"
+                className="w-full h-full object-cover"
+              />
+            )}
           </div>
         </div>
       </div>

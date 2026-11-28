@@ -1,4 +1,4 @@
-import { ImpactCounters, TransparencyData } from './types';
+import { ImpactCounters, MaintenanceMode, TransparencyData } from './types';
 
 export interface SevaOption {
   amount: number;
@@ -53,6 +53,11 @@ export const DEFAULT_TRANSPARENCY: TransparencyData = {
   incomeAmount: 68500,
   expenseAmount: 66200,
   notes: 'राशन, सब्ज़ी, पशु चारा, दवाइयाँ और आपदा राहत सामग्री में सीधा व्यय।',
+};
+
+export const DEFAULT_MAINTENANCE_MODE: MaintenanceMode = {
+  enabled: false,
+  message: 'वेबसाइट पर आवश्यक सुधार और सेवा अद्यतन कार्य चल रहा है। कृपया कुछ समय बाद पुनः पधारें।',
 };
 
 export const DETAILED_SEVA_CATEGORIES: DetailedSevaCategory[] = [

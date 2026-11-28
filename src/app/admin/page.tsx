@@ -16,9 +16,17 @@ import {
   Download,
   Search,
   Shield,
+  Wrench,
+  ExternalLink,
 } from 'lucide-react';
-import { DETAILED_SEVA_CATEGORIES } from '@/lib/constants';
-import { DonationRecord, ImpactCounters, TransparencyData, VideoItem } from '@/lib/types';
+import { DEFAULT_MAINTENANCE_MODE, DETAILED_SEVA_CATEGORIES } from '@/lib/constants';
+import {
+  DonationRecord,
+  ImpactCounters,
+  MaintenanceMode,
+  TransparencyData,
+  VideoItem,
+} from '@/lib/types';
 import { parseVideoUrl } from '@/lib/videoUtils';
 
 type Tab = 'videos' | 'donations' | 'content';
@@ -45,10 +53,12 @@ export default function AdminPage() {
   const [videos, setVideos] = useState<VideoItem[]>([]);
   const [vidTitle, setVidTitle] = useState('');
   const [vidUrl, setVidUrl] = useState('');
-  const [vidCategory, setVidCategory] = useState('annadaan');
+  const [vidCategory, setVidCategory] = useState('अन्नदान');
   const [vidDate, setVidDate] = useState(new Date().toISOString().slice(0, 10));
   const [editingVideoId, setEditingVideoId] = useState<string | null>(null);
   const [videoMsg, setVideoMsg] = useState('');
+  const [videoIsError, setVideoIsError] = useState(false);
+  const [savingVideo, setSavingVideo] = useState(false);
 
   // Donations state
   const [donations, setDonations] = useState<DonationRecord[]>([]);
@@ -91,6 +101,8 @@ export default function AdminPage() {
     expenseAmount: 66200,
     notes: '',
   });
+  const [maintenanceMode, setMaintenanceMode] = useState<MaintenanceMode>(DEFAULT_MAINTENANCE_MODE);
+  const [togglingMaint, setTogglingMaint] = useState(false);
   const [contentMsg, setContentMsg] = useState('');
 
   // Confirmation modal
@@ -124,11 +136,12 @@ export default function AdminPage() {
   }, [filterStatus, filterCategory, filterFrom, filterTo, searchQ]);
 
   const loadContent = useCallback(async () => {
-    const res = await fetch('/api/admin/content');
+    const res = await fetch('/api/admin/content', { cache: 'no-store' });
     if (res.ok) {
       const data = await res.json();
       if (data.impactCounters) setCounters(data.impactCounters);
       if (data.transparency) setTransparency(data.transparency);
+      if (data.maintenanceMode) setMaintenanceMode(data.maintenanceMode);
     }
   }, []);
 
@@ -187,28 +200,41 @@ export default function AdminPage() {
 
   const handleSaveVideo = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (savingVideo) return;
     setVideoMsg('');
-    const method = editingVideoId ? 'PATCH' : 'POST';
-    const payload = editingVideoId
-      ? { id: editingVideoId, title: vidTitle, url: vidUrl, category: vidCategory, video_date: vidDate }
-      : { title: vidTitle, url: vidUrl, category: vidCategory, video_date: vidDate };
+    setVideoIsError(false);
+    setSavingVideo(true);
 
-    const res = await fetch('/api/admin/videos', {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      setVideoMsg(data.error || 'त्रुटि हुई।');
-      return;
+    try {
+      const method = editingVideoId ? 'PATCH' : 'POST';
+      const payload = editingVideoId
+        ? { id: editingVideoId, title: vidTitle, url: vidUrl, category: vidCategory, video_date: vidDate }
+        : { title: vidTitle, url: vidUrl, category: vidCategory, video_date: vidDate };
+
+      const res = await fetch('/api/admin/videos', {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setVideoIsError(true);
+        setVideoMsg(data.error || 'त्रुटि हुई।');
+        return;
+      }
+
+      setVidTitle('');
+      setVidUrl('');
+      setEditingVideoId(null);
+      setVideoIsError(false);
+      setVideoMsg('वीडियो सहेजा गया।');
+      loadVideos();
+    } catch {
+      setVideoIsError(true);
+      setVideoMsg('नेटवर्क त्रुटि। कृपया पुनः प्रयास करें।');
+    } finally {
+      setSavingVideo(false);
     }
-
-    setVidTitle('');
-    setVidUrl('');
-    setEditingVideoId(null);
-    setVideoMsg('वीडियो सहेजा गया।');
-    loadVideos();
   };
 
   const handleToggleVideoVisibility = async (v: VideoItem) => {
@@ -318,13 +344,37 @@ export default function AdminPage() {
     URL.revokeObjectURL(url);
   };
 
+  const handleToggleMaintenance = async (nextEnabled: boolean) => {
+    if (togglingMaint) return;
+    setTogglingMaint(true);
+    setContentMsg('');
+    const nextMaint = { ...maintenanceMode, enabled: nextEnabled };
+    setMaintenanceMode(nextMaint);
+    try {
+      const res = await fetch('/api/admin/content', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ maintenanceMode: nextMaint }),
+      });
+      setContentMsg(
+        res.ok
+          ? nextEnabled
+            ? 'रखरखाव मोड चालू किया गया। अब केवल एडमिन लॉगिन से वेबसाइट दिखेगी।'
+            : 'रखरखाव मोड बंद किया गया। वेबसाइट सभी के लिए उपलब्ध है।'
+          : 'अपडेट करने में त्रुटि हुई।'
+      );
+    } finally {
+      setTogglingMaint(false);
+    }
+  };
+
   const handleSaveContent = async (e: React.FormEvent) => {
     e.preventDefault();
     setContentMsg('');
     const res = await fetch('/api/admin/content', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ impactCounters: counters, transparency }),
+      body: JSON.stringify({ impactCounters: counters, transparency, maintenanceMode }),
     });
     setContentMsg(res.ok ? 'सामग्री सफलतापूर्वक अपडेट हुई।' : 'अपडेट करने में त्रुटि हुई।');
   };
@@ -396,16 +446,42 @@ export default function AdminPage() {
     <div className="min-h-screen bg-[#FFFDF9] text-[#3B1F0A]">
       {/* Top Bar */}
       <header className="sticky top-0 z-30 bg-white border-b border-amber-200 px-4 py-3">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
+        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="font-black text-lg">🏹 राम का सेवक • एडमिन पैनल</div>
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="min-h-[40px] px-3.5 rounded-xl border border-slate-300 text-sm font-bold flex items-center gap-1.5 cursor-pointer hover:bg-slate-50"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>लॉगआउट</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              disabled={togglingMaint}
+              onClick={() => handleToggleMaintenance(!maintenanceMode.enabled)}
+              className={`min-h-[40px] px-3.5 rounded-xl border text-xs sm:text-sm font-extrabold flex items-center gap-1.5 cursor-pointer transition-colors disabled:opacity-60 ${
+                maintenanceMode.enabled
+                  ? 'bg-red-600 border-red-600 text-white hover:bg-red-700'
+                  : 'bg-amber-50 border-amber-300 text-[#3B1F0A] hover:bg-amber-100'
+              }`}
+            >
+              <Wrench className="w-4 h-4" />
+              <span>
+                {maintenanceMode.enabled ? 'मेंटेनेंस: ON (बंद करें)' : 'मेंटेनेंस: OFF'}
+              </span>
+            </button>
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="min-h-[40px] px-3.5 rounded-xl border border-amber-300 bg-white text-xs sm:text-sm font-bold flex items-center gap-1.5 hover:bg-amber-50"
+            >
+              <ExternalLink className="w-4 h-4" />
+              <span>वेबसाइट देखें</span>
+            </a>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="min-h-[40px] px-3.5 rounded-xl border border-slate-300 text-xs sm:text-sm font-bold flex items-center gap-1.5 cursor-pointer hover:bg-slate-50"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>लॉगआउट</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -496,15 +572,26 @@ export default function AdminPage() {
                 </div>
               )}
 
-              {videoMsg && <p className="text-sm font-bold text-emerald-700">{videoMsg}</p>}
+              {videoMsg && (
+                <p className={`text-sm font-bold ${videoIsError ? 'text-red-600' : 'text-emerald-700'}`}>
+                  {videoMsg}
+                </p>
+              )}
 
               <div className="flex gap-2">
                 <button
                   type="submit"
-                  className="min-h-[48px] px-5 rounded-xl bg-kesariya-600 text-white font-black text-sm flex items-center gap-1.5 cursor-pointer"
+                  disabled={savingVideo}
+                  className="min-h-[48px] px-5 rounded-xl bg-kesariya-600 text-white font-black text-sm flex items-center gap-1.5 cursor-pointer disabled:opacity-60"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>{editingVideoId ? 'अपडेट करें' : 'वीडियो जोड़ें'}</span>
+                  <span>
+                    {savingVideo
+                      ? 'सहेजा जा रहा है...'
+                      : editingVideoId
+                      ? 'अपडेट करें'
+                      : 'वीडियो जोड़ें'}
+                  </span>
                 </button>
                 {editingVideoId && (
                   <button
@@ -918,6 +1005,44 @@ export default function AdminPage() {
             onSubmit={handleSaveContent}
             className="bg-white rounded-2xl border border-amber-200 p-5 sm:p-6 space-y-6 max-w-2xl"
           >
+            {/* Maintenance Mode Section */}
+            <div className="space-y-3 p-4 rounded-2xl border-2 border-amber-200 bg-[#FFFDF9]">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-lg font-black flex items-center gap-2">
+                    <Wrench className="w-5 h-5 text-kesariya-600" />
+                    <span>रखरखाव मोड (Maintenance Mode)</span>
+                  </h2>
+                  <p className="text-xs text-[#6B5E55] mt-0.5">
+                    चालू करने पर सामान्य ग्राहक वेबसाइट नहीं देख पाएंगे। आप एडमिन ID व पासवर्ड से लॉगिन करके वेबसाइट देख व जाँच सकते हैं।
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  disabled={togglingMaint}
+                  onClick={() => handleToggleMaintenance(!maintenanceMode.enabled)}
+                  className={`min-h-[44px] px-4 rounded-xl font-black text-sm cursor-pointer transition-colors disabled:opacity-60 ${
+                    maintenanceMode.enabled
+                      ? 'bg-red-600 text-white hover:bg-red-700'
+                      : 'bg-emerald-600 text-white hover:bg-emerald-700'
+                  }`}
+                >
+                  {maintenanceMode.enabled ? 'चालू है (बंद करें)' : 'बंद है (चालू करें)'}
+                </button>
+              </div>
+              <div>
+                <label className="block text-xs font-bold mb-1">ग्राहकों को दिखने वाला संदेश</label>
+                <textarea
+                  rows={2}
+                  value={maintenanceMode.message}
+                  onChange={(e) =>
+                    setMaintenanceMode({ ...maintenanceMode, message: e.target.value })
+                  }
+                  className="w-full p-3 rounded-xl border border-slate-300 text-sm bg-white"
+                />
+              </div>
+            </div>
+
             <div className="space-y-3">
               <h2 className="text-lg font-black">प्रभाव आंकड़े (Impact Counters)</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

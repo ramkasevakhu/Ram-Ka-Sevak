@@ -31,6 +31,11 @@ export interface TransparencyData {
   notes: string;
 }
 
+export interface MaintenanceMode {
+  enabled: boolean;
+  message: string;
+}
+
 export interface DonationRecord {
   id: string;
   donor_name: string;
